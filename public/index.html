@@ -13,7 +13,7 @@
             background-color: bisque;
         }
 
-        .player-list-elem {
+        .player-elem {
             display: inline-block;
             border: 1px solid black;
             padding-top: 10px;
@@ -54,6 +54,8 @@
         const txtUserName = document.getElementById('user-name');
         const btnLogin = document.getElementById('login');
         const loginFormContainer = document.getElementById('login-form')
+        const gameContainer = document.getElementById('game');
+        const playersList = document.getElementById('players');
         
         btnLogin.onclick = () => {
             webSocket.send(JSON.stringify({
@@ -64,7 +66,39 @@
 
 
         function handleMessage(message) {
-            console.log(message);
+            const messageObj = JSON.parse(message.data); 
+            
+            switch (messageObj.type) {
+                case "CORRECT-LOGIN": correctLogin(messageObj);break;
+                case "PLAYER-JOINED": playerJoined(messageObj);break;
+                case "INVALID-USERNAME": invalidUsername(messageObj); break;                
+            }
+        }
+
+        function correctLogin(message) {
+            loginFormContainer.classList.add('hidden');
+            gameContainer.classList.toggle('hidden');
+
+            message.others.map(addPlayerToList);
+        }
+
+        function playerJoined(message) {
+            addPlayerToList(message.data);
+        }
+
+        function addPlayerToList(player) {
+            console.log(player);
+            const elem = `
+                <span class="player-elem" playerId="${player.id}">
+                    ${player.userName} (hp: ${player.hp})
+                </span>
+            `;
+
+            playersList.innerHTML += elem;
+        }
+
+        function invalidUsername(message) {
+            alert('Nazwa użytkonika nie może być pusta');
         }
     </script>
     
