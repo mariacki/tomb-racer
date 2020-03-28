@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="author" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style type="text/css">
+        body {
+            background-color: bisque;
+        }
+
+        .player-list-elem {
+            display: inline-block;
+            border: 1px solid black;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: white;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="login-form">
+        Nazwa użytkownika
+        <input type="text" id="user-name">
+        <button id="login">Zaloguj</button>
+    </div>
+
+    <div class="hidden" id="game">
+        <div id="game">
+
+        </div>
+
+        <div id="players">
+           
+        </div>
+    </div>
+
+    <script>
+        const webSocket = new WebSocket("ws://localhost:8000");
+        
+        webSocket.onmessage = handleMessage;
+
+        //Setup login
+        const txtUserName = document.getElementById('user-name');
+        const btnLogin = document.getElementById('login');
+        const loginFormContainer = document.getElementById('login-form')
+        
+        btnLogin.onclick = () => {
+            webSocket.send(JSON.stringify({
+                type: "LOGIN",
+                username: txtUserName.value,
+            }));
+        }
+
+
+        function handleMessage(message) {
+            console.log(message);
+        }
+    </script>
+    
+</body>
+
+</html>
