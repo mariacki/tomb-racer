@@ -97,6 +97,18 @@
             playersList.innerHTML += elem;
         }
 
+        function removePlayerFromList(player) {
+            const elements = document.getElementsByClassName('player-elem');
+
+            for (let i = 0; i < elements.length; i++) {
+                const element = elements.item(i);
+
+                if (element.getAttribute('playerId') === player.id) {
+                    element.remove();
+                }
+            }
+        }
+
         function invalidUsername(message) {
             alert('Nazwa użytkonika nie może być pusta');
         }

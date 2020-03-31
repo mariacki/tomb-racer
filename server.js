@@ -11,7 +11,6 @@ const webSocketServer = new websocket.Server({
 
 const webSocketHandler = new wsHandler.WebSocketHandler();
 
-
 webSocketServer.on('connection', (ws) => {
     webSocketHandler.handleConnection(ws);
 })
