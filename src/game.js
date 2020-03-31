@@ -75,7 +75,6 @@ class Board
             .push(...tailRow.filter(startingPoints));
         
         this.tails.map(getStartingPoints)
-        console.log(this.startingPoints);
     }
 
     /**

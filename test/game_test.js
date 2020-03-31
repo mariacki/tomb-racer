@@ -56,6 +56,7 @@ describe('New Game', () => {
             const addedPlayer = addPlayer(userExample);
 
             assert.deepStrictEqual([], addedPlayer.inventory);
+
         })
 
         it ('have positions of starting points on the board', () => {
