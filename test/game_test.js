@@ -1,62 +1,55 @@
 const assert = require('assert');
 const {Game, Tail} = require('./../src/game');
+const example = require('./utils');
 
 
 describe('New Game', () => {
-    
-    const userExample = {
-        userId: 1,
-        userName: "test-user"
-    }
 
     describe('Players Joining Game', () => {
-        let game = null;
-        let board = [];
-        let eventsListener = {};
+        let eventsListener;
+        let board;
+        let addedPlayers;
 
         beforeEach((done) => {
-            board = [[Tail.startingPoint()]];
-            eventsListener = {};
+            addedPlayers = [];
+            eventsListener = example.emptyEventsListener();
+            board = example.defaultBoard();
+
+            eventsListener.onPlayerAdded = (player) => addedPlayers.push(player);
 
             done();
-        })
-
-        const addPlayer = (user) => {
-            let addedPlayer = null;
-            eventsListener.onPlayerAdded = (player) => addedPlayer = player;
-
-            game.addPlayer(user);
-
-            return addedPlayer;
-        }
+        })       
 
         it ('have userId', () => {
-            game = new Game({board, eventsListener});
-            const addedPlayer = addPlayer(userExample);
+            const game = new Game({board, eventsListener});
+            
+            game.addPlayer(example.users.first);
 
-            assert.equal(1, addedPlayer.userId);
+            assert.equal(1, addedPlayers[0].userId);
         })
 
         it ('have username', () => {
-            game = new Game({board, eventsListener});
-            const addedPlayer = addPlayer(userExample); 
+            const game = new Game({board, eventsListener});
+            
+            game.addPlayer(example.users.first);
 
-            assert.equal("test-user", addedPlayer.userName);
+            assert.equal("A", addedPlayers[0].userName);
         })
 
         it ('have initial HP', () => {
-            game = new Game({board, eventsListener});
-            const addedPlayer = addPlayer(userExample); 
+            const game = new Game({board, eventsListener});
+            
+            game.addPlayer(example.users.first);
 
-            assert.equal(100, addedPlayer.hp);
+            assert.equal(100, addedPlayers[0].hp);
         })
 
         it ('have empty inventory', () => {
             game = new Game({board, eventsListener});
-            const addedPlayer = addPlayer(userExample);
+            
+            game.addPlayer(example.users.first);
 
-            assert.deepStrictEqual([], addedPlayer.inventory);
-
+            assert.deepStrictEqual([], addedPlayers[0].inventory);
         })
 
         it ('have positions of starting points on the board', () => {
@@ -64,29 +57,26 @@ describe('New Game', () => {
                 [Tail.startingPoint(), Tail.startingPoint()],
                 [Tail.startingPoint()]
             ]
-            game = new Game({board, eventsListener});
+            const game = new Game({board, eventsListener});
             
-            const playerOne = addPlayer({userId: 1, userName: "a"});
-            const playerTwo = addPlayer({userId: 2, userName: "b"});
-            const playerThree = addPlayer({userId: 3, userName: "c"});
+            game.addPlayer(example.users.first);
+            game.addPlayer(example.users.second);
+            game.addPlayer(example.users.third);
         
-            assert.deepEqual({row: 0, col: 0}, playerOne.position);
-            assert.deepEqual({row: 0, col: 1}, playerTwo.position);
-            assert.deepEqual({row: 1, col: 0}, playerThree.position);                    
+            assert.deepEqual({row: 0, col: 0}, addedPlayers[0].position);
+            assert.deepEqual({row: 0, col: 1}, addedPlayers[1].position);
+            assert.deepEqual({row: 1, col: 0}, addedPlayers[2].position);                    
        })
 
        it ('are not be accepted if all starting points are taken', () => {
             const board = [[Tail.startingPoint()], [Tail.startingPoint()]]
-            const eventsListener = {
-                onPlayerAdded() {}
-            }
             game = new Game({board, eventsListener});
            
-            game.addPlayer({userId: 1, userName: "a"});
-            game.addPlayer({userId: 2, userName: "b"})
+            game.addPlayer(example.users.first);
+            game.addPlayer(example.users.second)
 
             try {
-                game.addPlayer({userId: 1, userName: "a"});
+                game.addPlayer(example.users.third);
                 assert.fail();
             } catch (err) {
                 assert.equal("JOIN-ERROR", err.type);
@@ -126,5 +116,5 @@ describe('New Game', () => {
 
             assert.equal("GAME-STARTED", eventStarted.type);
         })
-    })
-})
+    });
+});

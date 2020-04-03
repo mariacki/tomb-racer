@@ -117,7 +117,8 @@ class Game
         this.currentStartingPointIndex = 0;
         this.playerCount = 0;
         this.requestedStarts = 0;
-        this.players = [];        
+        this.players = [];   
+        this.currentPlayerIndex = 0;     
     }
 
     addPlayer(playerInfo) {
@@ -152,9 +153,61 @@ class Game
 
         if (this.requestedStarts === this.playerCount) {
             this.eventsListener.onGameStarted({
-                type: "GAME-STARTED"
+                type: "GAME-STARTED",
+                currentTurn: this._currentTurn()
             })
         }
+    }
+
+    /**
+     * 
+     * @param {Number} userId 
+     */
+    finishTurn(userId) {
+        this._assertCurrentPlayer(userId);
+        this.eventsListener.onTurnFinished(this._nextTurn());
+    }
+
+    _nextTurn() {
+        this._nextPlayerTurn();
+        return this._currentTurn();
+    }
+
+    _currentTurn() {
+        return {
+            userId: this._currentUserId()
+        }
+    }
+
+    /**
+     * 
+     * @param {Number} userId 
+     */
+    _assertCurrentPlayer(userId) {
+        if (!this._isCurrentPlayer(userId)) {
+            throw {type: "INVALID-USER-FINISHING-TURN"}
+        }
+    }
+
+    /**
+     * @param {Number} userId
+     * @returns {Boolean}
+     */
+    _isCurrentPlayer(userId) {
+        return this._currentUserId() === userId;
+    }
+
+    _nextPlayerTurn() {
+        this.currentPlayerIndex++;
+        if (this.currentPlayerIndex === this.players.length)
+            this.currentPlayerIndex = 0;
+    }
+
+    /**
+     * @returns {Number}
+     */
+    _currentUserId() {
+        return this.players[this.currentPlayerIndex].userId;
     }
 
     state() {
