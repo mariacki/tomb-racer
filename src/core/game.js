@@ -14,26 +14,52 @@ class Positon {
     }
 }
 
+class Tile
+{
+    constructor(position) {
+        this.position = position;
+    }
+
+    /**
+     * @returns {String}
+     */
+    getType() {
+        throw "Not implemented by subclass";
+    }
+}
+
 /**
  * Tail that players are placed at the beginning to the game.
  */
-class StartingPointTail {
-    /**
-     * 
-     * @param {Position} position 
-     */
+class StartingPointTail extends Tile {
     constructor(position) {
-        this.position = position;
+        super(position);
+    }
+
+    getType() {
+        return "STARTING POINT"
+    }
+}
+
+class WalkableTile extends Tile {
+    getType() {
+        return "WALKABLE"
     }
 }
 
 /**
  * Factory for game tails.
  */
-const Tail = {
+const Tiles = {
     startingPoint() {
         return (row, col) => {
             return new StartingPointTail({row, col});
+        }
+    },
+
+    walkable () {
+        return (row, col) => {
+            return new WalkableTile({row, col});
         }
     }
 }
@@ -47,7 +73,7 @@ class Board
      * 
      * @param {Array[][]} tails 
      */
-    constructor(tails) {        
+    constructor(tails) {            
         this._createTails(tails);
         this._createStartingPoints();
     }
@@ -109,6 +135,9 @@ class Player
     }
 }
 
+const GAME_STATE_NEW = 1;
+const GAME_STATE_PLAYING = 2;
+
 class Game
 {
     constructor(ctx) {
@@ -118,7 +147,8 @@ class Game
         this.playerCount = 0;
         this.requestedStarts = 0;
         this.players = [];   
-        this.currentPlayerIndex = 0;     
+        this.currentPlayerIndex = 0;
+        this.gameState = GAME_STATE_NEW;     
     }
 
     addPlayer(playerInfo) {
@@ -152,6 +182,7 @@ class Game
         this.requestedStarts++;
 
         if (this.requestedStarts === this.playerCount) {
+            this.gameState = GAME_STATE_PLAYING;
             this.eventsListener.onGameStarted({
                 type: "GAME-STARTED",
                 currentTurn: this._currentTurn()
@@ -164,7 +195,9 @@ class Game
      * @param {Number} userId 
      */
     finishTurn(userId) {
-        this._assertCurrentPlayer(userId);
+        this._assertCurrentPlayer(userId, {
+            type: 'INVALID-USER-FINISHING-TURN'
+        });
         this.eventsListener.onTurnFinished(this._nextTurn());
     }
 
@@ -181,11 +214,11 @@ class Game
 
     /**
      * 
-     * @param {Number} userId 
+     * @param    {Number} userId 
      */
-    _assertCurrentPlayer(userId) {
+    _assertCurrentPlayer(userId, exception) {
         if (!this._isCurrentPlayer(userId)) {
-            throw {type: "INVALID-USER-FINISHING-TURN"}
+            throw exception;
         }
     }
 
@@ -210,6 +243,23 @@ class Game
         return this.players[this.currentPlayerIndex].userId;
     }
 
+    movePlayer(userId, position) {
+        if (this.gameState != GAME_STATE_PLAYING) {
+            throw {
+                type: "CANNOT-MOVE-PLAYER-GAME-NOT-STARTED"
+            }
+        }
+        
+        this._assertCurrentPlayer(userId, {
+            type: "INVALID-USER-MOVING"
+        });
+
+        this.eventsListener.onPlayerMoved({
+            userId,
+            newPosition: position
+        });
+    }
+
     state() {
         return {
             players: this.players
@@ -219,5 +269,5 @@ class Game
 
 module.exports = {
     Game,
-    Tail
+    Tail: Tiles
 }

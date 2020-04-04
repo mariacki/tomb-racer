@@ -1,10 +1,11 @@
-const {Tail, Game} = require('./../src/game');
+const {Tail, Game} = require('./../src/core/game');
 
 const emptyEventsListener = () => {
     return {
         onPlayerAdded() {},
         onGameStarted() {}, 
-        onTurnFinished() {}
+        onTurnFinished() {},
+        onPlayerMoved() {},
     }
 }
 

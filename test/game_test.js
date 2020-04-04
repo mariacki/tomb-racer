@@ -1,5 +1,5 @@
 const assert = require('assert');
-const {Game, Tail} = require('./../src/game');
+const {Game, Tail} = require('../src/core/game');
 const example = require('./utils');
 
 
