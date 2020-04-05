@@ -1,6 +1,6 @@
 ### Cel gry:
 
-Na każdej planszy znajduja się cztery klucze służące do odblokowania wejścia do skarbu. Wygrywa gracz, który jako pierwszy 
+Na każdej planszy znajduja się cztery klucze służące do odblokowania wejścia do skarbu. Wygrywa gracz, który jako pierwszy ukradnie skarb i wróci z nim na pole, na którym rozpoczynał grę.
 
 
 ### Rozpoczęcie gry:
@@ -13,11 +13,12 @@ Na każdej planszy znajduja się cztery klucze służące do odblokowania wejś
 
 ### Przebieg tury: 
 Podczas swojej tury gracz może:
-1. Rzucić kostką i przemieścić się o tyle pól na planszy w dowolnym kierunku ile oczek wyrzucił.
-2. Użyć przycisku/dźwigni przy którym stoi. 
-3. Jeżeli posiada broń, może strzelić w dowolnym kierunku. 
-4. Jeżeli na polu, na którym stoi gracz, znajdują się przedmioty, gracz może je podnieść i dodać do swojego inwentarza. 
-5. Może użyć przedmiotu ze swojego inwentarza.
+1. Przemieścić się o dowolną liczbę pól - maksymalnie X na turę.
+2. Wykonać atak w dowolnym kierunku.
+3. Podnieść przedmiot. 
+4. Użyć przedmiotu. 
+5. Użyć przycisku / dżwigni znajdującego się na polu na którym stoi.
 
-W turze gracz możę wykonać 3 z powyższych akcji, lub zakończyć turę bez wykonywania żadnej z nich.
+Gracz może w turze wykonać daną akcję wiele razy pod warunkiem, że liczba akcji nie przekracza Y.
+
 

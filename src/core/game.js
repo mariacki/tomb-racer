@@ -1,123 +1,9 @@
-/**
- * Player position on the board
- */
-class Positon {
+const {Tiles, Position} = require('./tiles');
+const {Board} = require('./board');
+const error = require('./error');
 
-    /**
-     * 
-     * @param {Number} row 
-     * @param {Number} col 
-     */
-    constructor(row, col) {
-        this.row = row;
-        this.col = col;
-    }
-}
-
-class Tile
-{
-    constructor(position) {
-        this.position = position;
-    }
-
-    /**
-     * @returns {String}
-     */
-    getType() {
-        throw "Not implemented by subclass";
-    }
-}
-
-/**
- * Tail that players are placed at the beginning to the game.
- */
-class StartingPointTail extends Tile {
-    constructor(position) {
-        super(position);
-    }
-
-    getType() {
-        return "STARTING POINT"
-    }
-}
-
-class WalkableTile extends Tile {
-    getType() {
-        return "WALKABLE"
-    }
-}
-
-/**
- * Factory for game tails.
- */
-const Tiles = {
-    startingPoint() {
-        return (row, col) => {
-            return new StartingPointTail({row, col});
-        }
-    },
-
-    walkable () {
-        return (row, col) => {
-            return new WalkableTile({row, col});
-        }
-    }
-}
-
-/**
- * Represents the board.
- */
-class Board
-{
-    /**
-     * 
-     * @param {Array[][]} tails 
-     */
-    constructor(tails) {            
-        this._createTails(tails);
-        this._createStartingPoints();
-    }
-
-    /**
-     * 
-     * @param {Array} tailDefs 
-     */
-    _createTails(tailDefs) {
-        this.currentStartingPointIndex = 0;
-        this.tails = tailDefs.map(
-            (rowDefs, rowNumber) => 
-                rowDefs.map(
-                    (createTail, columnNumber) => 
-                        createTail(rowNumber, columnNumber)
-                )
-        )
-    }
-
-    _createStartingPoints() {
-        this.startingPoints = [];
-        const startingPoints = (tail) => tail instanceof StartingPointTail;
-        const getStartingPoints = (tailRow) => this
-            .startingPoints
-            .push(...tailRow.filter(startingPoints));
-        
-        this.tails.map(getStartingPoints)
-    }
-
-    /**
-     * @returns {Position}
-     */
-    nextStartingPosition() {
-        const startingPoint = this.startingPoints[this.currentStartingPointIndex++];
-        return startingPoint.position;
-    }
-
-    /**
-     * @returns {Boolean}
-     */
-    hasNextStartingPoint() {
-        return this.currentStartingPointIndex === this.startingPoints.length;
-    }
-}
+const GAME_STATE_NEW = 1;
+const GAME_STATE_PLAYING = 2;
 
 class Player
 {
@@ -132,18 +18,26 @@ class Player
         this.hp = 100;
         this.position = position;
         this.inventory = [];
+        this.walkPoints = 5;
+    }
+
+    /**
+     * 
+     * @param {Number} distanceTraveled 
+     * @param {Position} position 
+     */
+    travel(distanceTraveled, position) {
+        this.walkPoints -= distanceTraveled;
+        this.position = position;
     }
 }
 
-const GAME_STATE_NEW = 1;
-const GAME_STATE_PLAYING = 2;
 
 class Game
 {
     constructor(ctx) {
         this.eventsListener = ctx.eventsListener;
-        this.board = new Board(ctx.board);
-        this.currentStartingPointIndex = 0;
+        this.board = new Board(ctx.board);   
         this.playerCount = 0;
         this.requestedStarts = 0;
         this.players = [];   
@@ -164,10 +58,7 @@ class Game
 
     _assertEnoughSpace() {
         if (this.board.hasNextStartingPoint()) {
-            throw {
-                type: "JOIN-ERROR",
-                message: "Maximum number of players exceeded"
-            }
+            throw error.joinError();
         }
     }
 
@@ -195,9 +86,7 @@ class Game
      * @param {Number} userId 
      */
     finishTurn(userId) {
-        this._assertCurrentPlayer(userId, {
-            type: 'INVALID-USER-FINISHING-TURN'
-        });
+        this._assertCurrentPlayer(userId, error.invalidUserFinishinTrun());
         this.eventsListener.onTurnFinished(this._nextTurn());
     }
 
@@ -240,23 +129,38 @@ class Game
      * @returns {Number}
      */
     _currentUserId() {
-        return this.players[this.currentPlayerIndex].userId;
+        return this._currentPlayer().userId;
+    }
+
+    /**
+     * @returns {Player}
+     */
+    _currentPlayer() {
+        return this.players[this.currentPlayerIndex];
     }
 
     movePlayer(userId, position) {
         if (this.gameState != GAME_STATE_PLAYING) {
-            throw {
-                type: "CANNOT-MOVE-PLAYER-GAME-NOT-STARTED"
-            }
+            throw error.cannotMoveGameNotStarted();
+        }
+
+        this._assertCurrentPlayer(userId, error.invalidUserMoving())
+
+        const player = this._currentPlayer();
+        const newPosition = new Position(position.row, position.col);
+        const path = this.board.shortestPath(player.position, newPosition);
+
+        if (player.walkPoints < path.length) {
+            throw error.moveExceedsDistance();
         }
         
-        this._assertCurrentPlayer(userId, {
-            type: "INVALID-USER-MOVING"
-        });
+        player.travel(path.length, newPosition);
 
         this.eventsListener.onPlayerMoved({
             userId,
-            newPosition: position
+            newPosition,
+            walkPoints: player.walkPoints,
+            path
         });
     }
 

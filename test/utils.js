@@ -10,7 +10,7 @@ const emptyEventsListener = () => {
 }
 
 const defaultBoard = () => {
-    return [[Tail.startingPoint()]];
+    return [[Tail.startingPoint(), Tail.startingPoint()]];
 }
 
 const users = {
@@ -28,8 +28,8 @@ const users = {
     }
 }
 
-const createStartedGame = (eventsListener) => {
-    const board = [[Tail.startingPoint(), Tail.startingPoint()]];
+const createStartedGame = (eventsListener, board = null) => {
+    board = board ? board : defaultBoard();
     const game = new Game({board, eventsListener});
 
     game.addPlayer(users.first);
