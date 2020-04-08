@@ -1,0 +1,29 @@
+{
+  "name": "tr-main",
+  "version": "1.0.0",
+  "description": "Main Tomb Racer Package",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariacki/tomb-racer.git"
+  },
+  "author": "m.przypadlo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mariacki/tomb-racer/issues"
+  },
+  "homepage": "https://github.com/mariacki/tomb-racer#readme",
+  "dependencies": {
+    "mocha": "^7.1.1",
+    "tr-shared-code": "https://github.com/mariacki/tomb-racer-comon.git",
+    "ws": "^7.2.3"
+  }
+}

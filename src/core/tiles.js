@@ -47,10 +47,11 @@ class Tile
 class StartingPointTail extends Tile {
     constructor(position) {
         super(position);
+        this.type = TileType.STARTING_POINT;
     }
 
     getType() {
-        return "STARTING POINT"
+        return this.type;
     }
 
     isWalkable() {
@@ -62,10 +63,11 @@ class WalkableTile extends Tile {
 
     constructor(position) {
         super(position);
+        this.type = TileType.WALKABLE;
     }
 
     getType() {
-        return "WALKABLE"
+        return this.type;
     }
 
     isWalkable() {
@@ -74,10 +76,13 @@ class WalkableTile extends Tile {
 }
 
 class WallTile extends Tile {
-    constructor(position) {super(position)}
+    constructor(position) {
+        super(position)
+        this.type = TileType.WALL;
+    }
 
     getType() {
-        return TileType.WALL;
+        return this.type;
     }
 
     isWalkable() {
@@ -111,7 +116,7 @@ const Tiles = {
 
 const TileType = {
     WALKABLE: "WALKABLE",
-    STARTING_POINT: "STARTING POINT",
+    STARTING_POINT: "STARTING_POINT",
     WALL: "WALL"
 }
 

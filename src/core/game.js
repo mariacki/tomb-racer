@@ -13,6 +13,7 @@ class Player
      * @param {Position} position 
      */
     constructor(userInfo, position) {
+        console.log("User info", userInfo);
         this.userId = userInfo.userId;
         this.userName = userInfo.userName;
         this.hp = 100;
@@ -166,6 +167,7 @@ class Game
 
     state() {
         return {
+            board: this.board.tails,
             players: this.players
         }
     }

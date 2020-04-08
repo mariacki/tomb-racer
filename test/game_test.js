@@ -117,4 +117,6 @@ describe('New Game', () => {
             assert.equal("GAME-STARTED", eventStarted.type);
         })
     });
+
+    describe('Leaving the game', () => {})
 });
