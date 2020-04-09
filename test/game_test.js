@@ -118,5 +118,10 @@ describe('New Game', () => {
         })
     });
 
-    describe('Leaving the game', () => {})
+    describe('Leaving the game', () => {
+        it ('should remove player from the list', () => {
+            const board = example.defaultBoard();
+            const eventsListener = example.emptyEventsListener(); 
+        })
+    })
 });
