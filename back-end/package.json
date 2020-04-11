@@ -18,7 +18,8 @@
     "@types/websocket": "^1.0.0",
     "@types/ws": "^7.2.3",
     "systemjs": "^6.3.0",
-    "ws": "^7.2.3"
+    "ws": "^7.2.3",
+    "http-proxy-agent": ">=2.1.0"
   },
   "devDependencies": {
     "mocha": "^7.1.1",
