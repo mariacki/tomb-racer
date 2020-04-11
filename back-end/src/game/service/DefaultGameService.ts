@@ -1,81 +1,47 @@
-import { GameService } from '../contract/GameService';
-import CreateGame from '../contract/dto/CreateGame';
-import { GameRepository } from '../contract/GameRepository';
-import { IdProvider } from '../contract/IdProvider';
-import { Game } from '../model/Game';
-import { contract } from '..';
-import { AddPlayer } from '../contract/dto';
-import Player from '../model/Player';
+import {
+    GameService,
+    GameRepository,
+    IdProvider,
+    DTO,
+    events,
+    boardDefinition
+} from '../contract'
 
-enum ErrorType {
-    FIELD_REQUIRED = "FIELD REQUIRED",
-    FIELD_NOT_UNIQUE = "FIELD NOT UNIQUE",
-    GAME_NOT_FOUND = "GAME NOT FOUND"
-}
+import {
+    ValidationError,
+    ErrorType,
+    GameNotFound, 
+} from './../errors';
 
-class GameError extends Error
-{
-    type: ErrorType;
+import {
+    GameCreatedEvent,
+    PlayerJoinedEvent
+} from './../events';
 
-    constructor(type: ErrorType, message: string = "") {
-        super(message);
-        this.type = type;
-    }
-}
+import {
+    Game, Player
+} from './../model';
 
-class ValidationError extends GameError
-{
-    field: string;
-    
-    constructor(type: ErrorType, field: string, message: string = "")
-    {
-        super(type, message);
-        this.type = type;
-        this.field = field;
-    }
-}
-
-class GameNotFoundError extends GameError
-{
-    gameId: string;
-
-    constructor(gameId: string) {
-        super(ErrorType.GAME_NOT_FOUND)
-        this.gameId = gameId;
-    }
-}
-
-class GameCreatedEvent extends contract.events.Event
-{
-    constructor(game: Game) {
-        super(
-            contract.events.EventType.GAME_CREATED,
-            {
-                gameId: game.id,
-                gameName: game.name,
-                numberOfPlayers: game.players.length
-            }
-        )
-    }
-}
+import { Board } from '../model/Board';
+import PlayerLeftEvent from '../events/PlayerLeftEvent';
 
 export class DefaultGameService implements GameService
 {
     gameRepository: GameRepository;
     idProvider: IdProvider
-    eventDispatcher: contract.events.EventDispatcher;
+    eventDispatcher: events.EventDispatcher;
 
     constructor(
         gameRepository: GameRepository,
         idProvider: IdProvider,
-        eventsDispatcher: contract.events.EventDispatcher
+        eventsDispatcher: events.EventDispatcher
     ) {
         this.gameRepository = gameRepository;
         this.idProvider = idProvider;
         this.eventDispatcher = eventsDispatcher;
     }
 
-    createGame(data: CreateGame, board: []): void {
+    createGame(data: DTO.CreateGame, board: boardDefinition[][]): void {
 
         if (data.gameName == "") {
             throw new ValidationError(ErrorType.FIELD_REQUIRED, "gameName");
@@ -87,28 +53,54 @@ export class DefaultGameService implements GameService
 
         const newGame = new Game(
             this.idProvider.newId(),
-            data.gameName
+            data.gameName,
+            new Board(board)
         )
 
         this.gameRepository.add(newGame)
-        
         this.eventDispatcher.dispatch(new GameCreatedEvent(newGame));
     }
 
-    addPlayer(addPlayerRequest: AddPlayer) {
+    addPlayer(addPlayerRequest: DTO.AddPlayer) {
         const game = this.gameRepository.findById(addPlayerRequest.gameId);
         
         if (!game) {
-            throw new GameNotFoundError(addPlayerRequest.gameId);
+            throw new GameNotFound(addPlayerRequest.gameId);
         }
-        
-        const player = new Player();
 
-        player.userId = addPlayerRequest.userId;
-        player.userName = addPlayerRequest.userName;
+        const player = new Player(
+            addPlayerRequest.userId,
+            addPlayerRequest.userName
+        );
 
-        game.players.push(player);
+        game.addPlayer(player);
 
         this.gameRepository.persist(game);
+        this.eventDispatcher.dispatch(new PlayerJoinedEvent(player, game.id))
+    }
+
+    removePlayer(removePlayer: DTO.AddPlayer): void {
+        const game = this.gameRepository.findById(removePlayer.gameId);
+
+        if (!game) {
+            throw new GameNotFound(removePlayer.gameId);
+        }
+
+        game.removePlayer(removePlayer.userId);
+
+        this.gameRepository.persist(game);
+        this.eventDispatcher.dispatch(new PlayerLeftEvent(removePlayer.userId));
+    }
+
+    startRequest(player: DTO.AddPlayer): void {
+        const game = this.getGame(player.gameId);
+    }
+
+    private getGame(gameId: string) {
+        const game = this.gameRepository.findById(gameId);
+
+        if (!game) {
+            throw new GameNotFound(gameId);
+        }
     }
 }

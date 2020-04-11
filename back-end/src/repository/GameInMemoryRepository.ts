@@ -1,5 +1,5 @@
 import { GameRepository } from "../game/contract/GameRepository";
-import { Game } from "../game/model/Game";
+import { Game } from "../game/model";
 
 export class GameInMemoryRepository implements GameRepository
 {
@@ -29,7 +29,6 @@ export class GameInMemoryRepository implements GameRepository
 
     private byId(gameId: string) {
         return (game: Game) => { 
-            console.log(`${game.id} == ${gameId}`);
             return game.id == gameId };
     }
 }

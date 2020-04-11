@@ -1,5 +1,5 @@
 import { GameInMemoryRepository } from '../../../src/repository/GameInMemoryRepository';
-import { Game } from '../../../src/game/model/Game';
+import { Game } from '../../../src/game/model';
 
 export class GameRepositorySpy extends GameInMemoryRepository
 {

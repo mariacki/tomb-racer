@@ -1,5 +1,7 @@
 export enum EventType {
-    GAME_CREATED
+    GAME_CREATED,
+    PLAYER_JOINED,
+    PLAYER_LEFT
 }
 
 export class Event {

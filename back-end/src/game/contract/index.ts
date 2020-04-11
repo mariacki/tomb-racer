@@ -1,5 +1,5 @@
 import { GameRepository } from './GameRepository';
-import { GameService } from './GameService';
+import { GameService, boardDefinition } from './GameService';
 import { IdProvider } from './IdProvider';
 import * as events from './Events';
 import * as DTO from './dto';
@@ -9,5 +9,6 @@ export {
     GameService,
     IdProvider,
     DTO,
-    events
+    events,
+    boardDefinition
 }

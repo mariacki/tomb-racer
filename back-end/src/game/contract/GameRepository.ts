@@ -1,4 +1,4 @@
-import { Game } from '../model/Game';
+import { Game }  from '../model';
 
 export interface GameRepository
 {
