@@ -6,7 +6,7 @@ import { EventDispatcher } from "../contract/Events";
 import GameStartedEvent from "../events/GameStartedEvent";
 import Context from "../contract/Context";
 import Turn from "./Turn";
-import { Movement } from "../contract/dto";
+import { Movement, Position } from "../contract/dto";
 import GameNotStarted from "../errors/GameNotStarted";
 import IncorrectPlayerAction from "../errors/IncorrectPlayerAction";
 import { pathToFileURL } from "url";
@@ -65,10 +65,23 @@ export default class Game
     }
 
     movment(movement: Movement, env: Context) {        
+        this.assertGameStarted();
+        this.assertCurrentTurn(movement);
+        this.assertValidPath(movement.path);
+        const lastPosition = movement.path[movement.path.length - 1];
+        const player = this.getPlayer(movement.userId);
+
+        player.position = lastPosition;
+        env.eventDispatcher.dispatch(new PlayerMoved(player, movement.path));
+    }
+
+    private assertGameStarted() {
         if (this.state != State.STARTED) {
             throw new GameNotStarted(this.id);
         }
+    }
 
+    private assertCurrentTurn(movement: Movement) {
         if (this.currentTurn.userId != movement.userId) {
             throw new IncorrectPlayerAction(
                 this.id,
@@ -76,17 +89,13 @@ export default class Game
                 movement.userId
             )
         }
+    }
 
-        if (movement.path.length != this.currentTurn.stepPoints) {
-            throw new InvalidPath();
-        }
-
-        this.board.validatePath(movement.path);
-        const lastPosition = movement.path[movement.path.length - 1];
-        const player = this.getPlayer(movement.userId);
-
-        player.position = lastPosition;
-        env.eventDispatcher.dispatch(new PlayerMoved(player, movement.path));
+    private assertValidPath(path: Position[]) {
+        this.board.validatePath(
+            path, 
+            this.currentTurn.stepPoints
+        );
     }
 
     private shouldStart(): boolean {

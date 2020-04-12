@@ -96,7 +96,7 @@ describe('Moving Player', () => {
         assert.deepEqual(event.data.path, path);
     })
 
-    it ('cannot be done if path is different than players step points', () => {
+    it ('cannot be done if path length is different than players step points', () => {
         ctx.randomResult = 2;
         const movement = new contract.DTO.Movement(
             UserExample.first.userId,
@@ -112,4 +112,8 @@ describe('Moving Player', () => {
             return true;
         })
     });
+
+    it ('removes player health when path goes through spikes', () => {
+        assert.equal(1, 0);
+    })
 })

@@ -47,11 +47,20 @@ export class Board
         return startingPoint.pos;
     }
 
-    validatePath(path: Position[]) {
-        for (const pos of path) {
-            if (!this.isValid(pos)) {
-                throw new InvalidPath();
-            }
+    validatePath(path: Position[], expectedLenght: number) {
+        const validPositions = path.filter(this.validPositions());
+
+        if (
+            (validPositions.length != path.length) ||
+            (path.length != expectedLenght)
+        ) {
+            throw new InvalidPath();
+        }
+    }
+
+    private validPositions() {
+        return (position: Position) => {
+            return this.isValid(position);
         }
     }
 
