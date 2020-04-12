@@ -51,6 +51,7 @@ describe('Leaving the game', () => {
             assert.deepEqual(event, {
                 type: EventType.PLAYER_LEFT,
                 data: {
+                    gameId: "id1",
                     userId: UserExample.first.userId
                 }
             })

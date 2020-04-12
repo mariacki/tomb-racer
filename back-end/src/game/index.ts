@@ -1,6 +1,8 @@
 import * as contract from './contract';
 import { DefaultGameService } from './service/DefaultGameService'
-import { TileType, Tile, Position } from './model/tile/Tile';
+import { TileType, Tile } from './model/tile/Tile';
+import Context  from './contract/Context';
+import Position from './contract/dto/Position';
 
 export const Tiles = {
     startingPoint() {
@@ -10,19 +12,23 @@ export const Tiles = {
                 new Position(row,col)
             );
         }
+    }, 
+    path() {
+        return (row: number, col: number) => {
+            return new Tile(TileType.PATH, new Position(row, col))
+        }
+    },
+    wall() {
+        return (row: number, col: number) => {
+            return new Tile(TileType.WALL, new Position(row, col))
+        }
     }
 }
 
 export const configure = (
-    gameRepository: contract.GameRepository,
-    idProvider: contract.IdProvider,
-    eventDispatcher: contract.events.EventDispatcher
+    ctx: Context
 ) => {
-    return new DefaultGameService(
-        gameRepository,
-        idProvider,
-        eventDispatcher
-    ) 
+    return new DefaultGameService(ctx) 
 }
 
 export {

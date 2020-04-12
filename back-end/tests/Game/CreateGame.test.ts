@@ -1,10 +1,11 @@
 import 'mocha';
 import assert from 'assert';
-import { contract } from './../../src/game';
+import { contract, Tiles } from './../../src/game';
 import { GameTestContext } from './GameTestContext';
 
 describe('New Game', () => {
     const ctx = new GameTestContext();
+    const validBoard = [[Tiles.startingPoint(), Tiles.startingPoint()]];
 
     beforeEach(ctx.initializer());
 
@@ -20,7 +21,7 @@ describe('New Game', () => {
             const invalidCommand = new contract.DTO.CreateGame("");
     
             assert.throws(() => {
-                ctx.gameService.createGame(invalidCommand, []);
+                ctx.gameService.createGame(invalidCommand, validBoard);
             }, validationError("FIELD REQUIRED", "gameName"));
         });
     
@@ -29,9 +30,20 @@ describe('New Game', () => {
             const secondGame = new contract.DTO.CreateGame("a name");
     
             assert.throws(() => {
-                ctx.gameService.createGame(firstGame, []);
-                ctx.gameService.createGame(secondGame, []);
+                ctx.gameService.createGame(firstGame, validBoard);
+                ctx.gameService.createGame(secondGame, validBoard);
             }, validationError("FIELD NOT UNIQUE", "gameName"))
+        })
+
+        it ('cannot be created with board without at least two starting points', () => {
+            const gameDef = new contract.DTO.CreateGame("Some game");
+
+            assert.throws(() => {
+                ctx.gameService.createGame(gameDef, [[Tiles.startingPoint()]])
+            }, (error) => {
+                assert.equal(error.type, "INVALID BOARD");
+                return true;
+            })
         })
     })
 
@@ -39,7 +51,7 @@ describe('New Game', () => {
         it ('has unique id', () => {
             const someGame = new contract.DTO.CreateGame('Game name');
 
-            ctx.gameService.createGame(someGame, []);
+            ctx.gameService.createGame(someGame, validBoard);
 
             const game = ctx.gameRepositorySpy.addedGames[0];
             assert.equal(game.id, ctx.idProvider.ids[0]);
@@ -48,7 +60,7 @@ describe('New Game', () => {
         it ('has empty player list', () => {
             const someGame = new contract.DTO.CreateGame("Game name");
 
-            ctx.gameService.createGame(someGame, []);
+            ctx.gameService.createGame(someGame, validBoard);
 
             const game = ctx.gameRepositorySpy.addedGames[0];
             assert.deepEqual(game.players, []);
@@ -57,7 +69,7 @@ describe('New Game', () => {
         it ('has WAITING FOR PLAYERS state', () => {
             const someGame = new contract.DTO.CreateGame("Game name");
 
-            ctx.gameService.createGame(someGame, []);
+            ctx.gameService.createGame(someGame, validBoard);
 
             const game = ctx.gameRepositorySpy.addedGames[0];
             assert.equal(game.state, "WAITING FOR PLAYERS");
@@ -74,7 +86,7 @@ describe('New Game', () => {
                 }
             }
 
-            ctx.gameService.createGame(someGame, []);
+            ctx.gameService.createGame(someGame, validBoard);
 
             const event = ctx.eventDispatcher.dispatchedEvents[0];
             assert.deepEqual(event, expectedEvent);

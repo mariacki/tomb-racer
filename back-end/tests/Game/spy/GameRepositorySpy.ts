@@ -5,6 +5,7 @@ export class GameRepositorySpy extends GameInMemoryRepository
 {
     addedGames: Array<Game> = [];
     persistedGames: Array<Game> = [];
+    lastPersistedGame: Game;
 
     add(game: Game) {
         super.add(game);
@@ -14,5 +15,6 @@ export class GameRepositorySpy extends GameInMemoryRepository
     persist(game: Game) {
         super.persist(game);
         this.persistedGames.push(game);
+        this.lastPersistedGame = game;
     }
 }

@@ -1,7 +1,9 @@
-import {Tile, TileType, Position} from './tile/Tile'
+import Position from '../contract/dto/Position';
+import {Tile, TileType} from './tile/Tile'
 import { boardDefinition } from '../contract'
-import { cursorTo } from 'readline';
 import { NumberOfStartingPointsExceeded } from '../errors';
+import InvalidBoard from '../errors/InvalidBoard';
+import InvalidPath from '../errors/InvalidPath';
 
 class StartingPoint
 {
@@ -21,6 +23,14 @@ export class Board
     constructor(definition: boardDefinition[][]) {
         this.createTiles(definition);
         this.findStartingPoints();
+
+        this.assertEnoughStartingPoints();
+    }
+
+    private assertEnoughStartingPoints() {
+        if (this.startingPoints.length < 2) {
+            throw new InvalidBoard();
+        }
     }
 
     nextFreePosition(): Position {
@@ -35,6 +45,19 @@ export class Board
         startingPoint.isFree = false;
         
         return startingPoint.pos;
+    }
+
+    validatePath(path: Position[]) {
+        for (const pos of path) {
+            if (!this.isValid(pos)) {
+                throw new InvalidPath();
+            }
+        }
+    }
+
+    private isValid(position: Position): boolean {
+        const tile: Tile = this.tiles[position.row][position.col];
+        return tile.isWalkable();
     }
 
     private createTiles(definitions: boardDefinition[][]) {

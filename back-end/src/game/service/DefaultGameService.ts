@@ -24,21 +24,24 @@ import {
 
 import { Board } from '../model/Board';
 import PlayerLeftEvent from '../events/PlayerLeftEvent';
+import CannotStartGame from '../errors/CannotStartGame';
+import Context  from '../contract/Context';
+import { contract } from '..';
+import { EventDispatcher } from '../contract/Events';
+import Movement from '../contract/dto/Movement';
 
 export class DefaultGameService implements GameService
 {
+    context: Context;
     gameRepository: GameRepository;
-    idProvider: IdProvider
-    eventDispatcher: events.EventDispatcher;
+    idProvider: IdProvider;
+    eventDispatcher: EventDispatcher;
 
-    constructor(
-        gameRepository: GameRepository,
-        idProvider: IdProvider,
-        eventsDispatcher: events.EventDispatcher
-    ) {
-        this.gameRepository = gameRepository;
-        this.idProvider = idProvider;
-        this.eventDispatcher = eventsDispatcher;
+    constructor(context: Context) {
+        this.context = context;
+        this.gameRepository = context.repository;
+        this.idProvider = context.idProvider;
+        this.eventDispatcher = context.eventDispatcher;
     }
 
     createGame(data: DTO.CreateGame, board: boardDefinition[][]): void {
@@ -61,7 +64,7 @@ export class DefaultGameService implements GameService
         this.eventDispatcher.dispatch(new GameCreatedEvent(newGame));
     }
 
-    addPlayer(addPlayerRequest: DTO.AddPlayer) {
+    addPlayer(addPlayerRequest: DTO.PlayerData) {
         const game = this.gameRepository.findById(addPlayerRequest.gameId);
         
         if (!game) {
@@ -79,7 +82,7 @@ export class DefaultGameService implements GameService
         this.eventDispatcher.dispatch(new PlayerJoinedEvent(player, game.id))
     }
 
-    removePlayer(removePlayer: DTO.AddPlayer): void {
+    removePlayer(removePlayer: DTO.PlayerData): void {
         const game = this.gameRepository.findById(removePlayer.gameId);
 
         if (!game) {
@@ -89,18 +92,33 @@ export class DefaultGameService implements GameService
         game.removePlayer(removePlayer.userId);
 
         this.gameRepository.persist(game);
-        this.eventDispatcher.dispatch(new PlayerLeftEvent(removePlayer.userId));
+        this.eventDispatcher.dispatch(new PlayerLeftEvent(removePlayer.userId, game.id));
     }
 
-    startRequest(player: DTO.AddPlayer): void {
-        const game = this.getGame(player.gameId);
+    startRequest(player: DTO.PlayerData): void {
+        try {
+            const game = this.getGame(player.gameId);
+            game.startRequest(player.userId, this.context);
+            this.gameRepository.persist(game);
+        } catch (gameError) {
+            throw new CannotStartGame(gameError);
+        }
     }
 
-    private getGame(gameId: string) {
+    executeMovement(movement: Movement): void {
+        const game = this.getGame(movement.gameId);
+        game.movment(movement, this.context);
+
+        this.gameRepository.persist(game);
+    }
+
+    private getGame(gameId: string): Game {
         const game = this.gameRepository.findById(gameId);
 
         if (!game) {
             throw new GameNotFound(gameId);
         }
+
+        return game;
     }
 }

@@ -1,7 +1,11 @@
-import  CreateGame from './CreateGame';
-import  AddPlayer  from './AddPlayer';
+import CreateGame from './CreateGame';
+import PlayerData  from './AddPlayer';
+import Movement from './Movement';
+import Position from './Position';
 
 export {
     CreateGame,
-    AddPlayer
+    PlayerData,
+    Movement,
+    Position
 }

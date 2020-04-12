@@ -1,6 +1,6 @@
 import { stringify } from "querystring";
 
-export default class AddPlayer
+export default class PlayerData
 {
     userId: string;
     userName: string;

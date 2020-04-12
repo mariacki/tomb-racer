@@ -1,20 +1,10 @@
+import Position from '../../contract/dto/Position';
+
 export enum TileType
 {
     PATH,
     WALL,
     STARTING_POINT
-}
-
-export class Position
-{
-    row: number;
-    col: number;
-
-    constructor(row: number, col: number) 
-    {
-        this.row = row;
-        this.col = col;
-    }
 }
 
 export class Tile
@@ -26,5 +16,10 @@ export class Tile
     {
         this.type = type;
         this.position = position;
+    }
+
+    isWalkable(): boolean {
+        return this.type == TileType.PATH ||
+            this.type == TileType.STARTING_POINT;
     }
 }

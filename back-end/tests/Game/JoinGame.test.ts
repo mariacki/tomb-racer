@@ -38,7 +38,7 @@ describe('Joining Game', () => {
             assert.throws(() => {
                 ctx.gameService.addPlayer(UserExample.first);
                 ctx.gameService.addPlayer(UserExample.second);
-                ctx.gameService.addPlayer(UserExample.thrid);
+                ctx.gameService.addPlayer(UserExample.third);
             }, (error: Error) => {
                 assert.deepEqual(error, expectedError);
                 return true;
