@@ -1,13 +1,21 @@
-import * as contract from "../../../src/game/contract";
+import { EventType, Event, EventDispatcher } from "../../../src/game/contract/Events";
 
-export class EventDispatcherMock implements contract.events.EventDispatcher
+export class EventDispatcherMock implements EventDispatcher
 {
-    dispatchedEvents: Array<contract.events.Event> = [];
-    lastEvent: contract.events.Event;
+    dispatchedEvents: Array<Event> = [];
+    lastEvent: Event;
 
-    dispatch(event: contract.events.Event): void {
+    eventsByType: Map<EventType, Event[]> = new Map();
+
+    dispatch(event: Event): void {
         this.dispatchedEvents.push(event)
         this.lastEvent = event;
+        
+        if (!this.eventsByType.has(event.type)) {
+            this.eventsByType.set(event.type, []);
+        }
+
+        this.eventsByType.get(event.type).push(event);
     }
 
 }

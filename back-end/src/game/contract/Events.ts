@@ -3,7 +3,11 @@ export enum EventType {
     PLAYER_JOINED,
     PLAYER_LEFT,
     GAME_STARTED,
-    PLAYER_MOVED
+    PLAYER_MOVED,
+    PLAYER_HIT,
+    NEXT_TURN,
+    PLAYER_DIED,
+    GAME_FINISHED
 }
 
 export class Event {

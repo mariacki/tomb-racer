@@ -6,7 +6,7 @@ export default class GameNotFound extends GameError
     gameId: string;
 
     constructor(gameId: string) {
-        super(ErrorType.GAME_NOT_FOUND)
+        super(ErrorType.GAME_NOT_FOUND, "Could not found game")
         this.gameId = gameId;
     }
 }

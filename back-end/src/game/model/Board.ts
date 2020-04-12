@@ -47,17 +47,51 @@ export class Board
         return startingPoint.pos;
     }
 
-    validatePath(path: Position[], expectedLenght: number) {
+    validatePath(path: Position[], playerPosition: Position, expectedLength: number) {
         const validPositions = path.filter(this.validPositions());
 
+        if (validPositions.length != path.length) {
+            throw new InvalidPath("Path contains invalid positions");
+        }
+
+        if (validPositions.length != expectedLength) {
+            throw new InvalidPath(`Path should have ${expectedLength} positons, given had: ${validPositions.length} positions`)
+        }
+
+        const pathFirst = path[0];
+
         if (
-            (validPositions.length != path.length) ||
-            (path.length != expectedLenght)
+            (pathFirst.row == playerPosition.row) && 
+            (pathFirst.col == playerPosition.col)
         ) {
-            throw new InvalidPath();
+            throw new InvalidPath("Path cannot start at player position");
+        }
+
+        this.validateAdjacency([playerPosition, ...path]);
+    }
+
+    private throwAdjacencyError(current: Position, prev: Position) {
+        throw new InvalidPath(`Path element: ${current.toString()} is not adjacent to ${prev.toString()}`)
+    }
+
+    private validateAdjacency(path: Position[]) {
+        for (let i = 1; i < path.length; i++) {
+            const prev = path[i - 1];
+            const current = path[i];
+
+            if (!current.isAdjacentTo(prev)) {
+                this.throwAdjacencyError(current, prev);
+            }
         }
     }
 
+    getTilesOfPath(path: Position[]): Tile[] {
+        return path.map(this.toTile())
+    }
+
+    toTile() {
+        return (position: Position) => this.tiles[position.row][position.col];
+    }
     private validPositions() {
         return (position: Position) => {
             return this.isValid(position);

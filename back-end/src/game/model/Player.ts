@@ -1,9 +1,12 @@
+import { Position } from "../contract/dto";
+
 export default class Player {
     userId: string;
     userName: string;
     hp: number = 100;
     inventory: Array<any> = [];
-    position: {row: number, col: number}
+    position: Position
+    startedOn: Position
 
     constructor(
         userId: string,

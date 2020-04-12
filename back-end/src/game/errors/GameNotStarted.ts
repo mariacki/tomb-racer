@@ -6,7 +6,7 @@ export default class GameNotStarted extends GameError
     gameId: string;
 
     constructor(gameId: string) {
-        super(ErrorType.GAME_NOT_STARTED_YET);
+        super(ErrorType.GAME_NOT_STARTED_YET, "Game not started yet");
         this.gameId = gameId;
     }
 }

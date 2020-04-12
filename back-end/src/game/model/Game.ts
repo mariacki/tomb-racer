@@ -2,20 +2,23 @@ import Player from "./Player";
 import { Board } from "./Board";
 import UserNotFound from "../errors/UserNotFound";
 import GameStartedTwice from "../errors/GameStartedTwice";
-import { EventDispatcher } from "../contract/Events";
 import GameStartedEvent from "../events/GameStartedEvent";
 import Context from "../contract/Context";
 import Turn from "./Turn";
 import { Movement, Position } from "../contract/dto";
 import GameNotStarted from "../errors/GameNotStarted";
 import IncorrectPlayerAction from "../errors/IncorrectPlayerAction";
-import { pathToFileURL } from "url";
 import PlayerMoved from "../events/PlayerMoved";
-import InvalidPath from "../errors/InvalidPath";
+import { Tile, TileType } from "./tile/Tile";
+import { randomize } from "../contract";
+import NextTurn from "../events/NextTurn";
+import PlayerDied from "../events/PlayerDied";
+import GameFinished from "../events/GameFinished";
 
 enum State {
     WAITING_FOR_USERS = "WAITING FOR PLAYERS",
-    STARTED = "STARTED"
+    STARTED = "STARTED",
+    FINISHED = "FINISHED"
 }
 
 export default class Game 
@@ -27,6 +30,7 @@ export default class Game
     board: Board
     gameStartRequests: Set<String> = new Set();
     currentTurn: Turn;
+    currentPlayerIdx = 0;
 
     constructor(
         id: string,
@@ -41,6 +45,7 @@ export default class Game
 
     addPlayer(player: Player) {
         player.position = this.board.nextFreePosition();
+        player.startedOn = player.position;
         this.players.push(player);
     }
 
@@ -61,7 +66,6 @@ export default class Game
             this.start(env);
             env.eventDispatcher.dispatch(new GameStartedEvent(this.id, this.currentTurn));
         }
-        
     }
 
     movment(movement: Movement, env: Context) {        
@@ -71,8 +75,35 @@ export default class Game
         const lastPosition = movement.path[movement.path.length - 1];
         const player = this.getPlayer(movement.userId);
 
-        player.position = lastPosition;
-        env.eventDispatcher.dispatch(new PlayerMoved(player, movement.path));
+        this.board.getTilesOfPath(movement.path).forEach((tile: Tile) => {
+            tile.onWalkThrough(player, this.board, env);
+        });
+
+        /**
+         * That is exactly what happens when you are tired. 
+         */
+        if (player.hp <= 0) {
+            player.position = player.startedOn;
+            player.hp = 100;
+            env.eventDispatcher.dispatch(new PlayerDied(this.id, player))
+        } else {
+            player.position = lastPosition;
+            env.eventDispatcher.dispatch(new PlayerMoved(this.id, player, movement.path));
+
+            if (this.board.tiles[lastPosition.row][lastPosition.col].type == TileType.FINISH_POINT) {
+                this.state = State.FINISHED;
+                env.eventDispatcher.dispatch(new GameFinished(this.id, player));
+                return;
+            }
+        }
+
+        this.nextTurn(env.rnd);
+        env.eventDispatcher.dispatch(new NextTurn(this.id, this.currentTurn));
+    }
+
+    private nextTurn(rnd: randomize) {
+        this.currentPlayerIdx++;
+        this.currentTurn = new Turn(this.players[this.currentPlayerIdx].userId, rnd)
     }
 
     private assertGameStarted() {
@@ -94,6 +125,7 @@ export default class Game
     private assertValidPath(path: Position[]) {
         this.board.validatePath(
             path, 
+            this.players[this.currentPlayerIdx].position,
             this.currentTurn.stepPoints
         );
     }

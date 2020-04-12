@@ -88,32 +88,171 @@ describe('Moving Player', () => {
 
         const game = ctx.gameRepositorySpy.lastPersistedGame;
         const player = game.players[0];
-        const event = ctx.eventDispatcher.lastEvent;
+        const event = ctx.eventDispatcher.eventsByType.get(EventType.PLAYER_MOVED)[0]
         assert.deepEqual(player.position, new Position(0, 1));
-        assert.equal(event.type, EventType.PLAYER_MOVED);
         assert.equal(event.data.userId, UserExample.first.userId);
         assert.deepEqual(event.data.position, player.position);
         assert.deepEqual(event.data.path, path);
     })
 
-    it ('cannot be done if path length is different than players step points', () => {
-        ctx.randomResult = 2;
+    it ('removes player health when path goes through spikes', () => {
+        ctx.randomResult = 3;
+        const boardWithSpikes = [
+            [Tiles.startingPoint(), Tiles.startingPoint()],
+            [Tiles.path(),          Tiles.startingPoint()],
+            [Tiles.spikes(),        Tiles.path()]
+        ]
+        ctx.startGame(boardWithSpikes);
         const movement = new contract.DTO.Movement(
             UserExample.first.userId,
             UserExample.first.gameId,
-            [new Position(0, 1)]
+            [
+                new Position(1, 0), 
+                new Position(2, 0),
+                new Position(2, 1)
+            ]
         )
-        ctx.startGame(exampleBoard);
 
-        assert.throws(() => {
-            ctx.gameService.executeMovement(movement);
-        }, (error) => {
-            assert.equal(error.type, ErrorType.INVALID_PATH)
-            return true;
+        ctx.gameService.executeMovement(movement);
+
+        const game = ctx.gameRepositorySpy.lastPersistedGame;
+        const event = ctx.eventDispatcher.eventsByType.get(EventType.PLAYER_HIT)[0];
+        assert.equal(game.players[0].hp, 80);
+        assert.equal(event.data.hpTaken, 20);
+        assert.equal(event.data.currentHp, 80);
+    })
+
+    it ('movement finishes turn', () => {
+        ctx.randomResult = 3;
+        const boardWithSpikes = [
+            [Tiles.startingPoint(), Tiles.startingPoint()],
+            [Tiles.path(),          Tiles.startingPoint()],
+            [Tiles.spikes(),        Tiles.path()]
+        ]
+        ctx.startGame(boardWithSpikes);
+        const movement = new contract.DTO.Movement(
+            UserExample.first.userId,
+            UserExample.first.gameId,
+            [
+                new Position(1, 0), 
+                new Position(2, 0),
+                new Position(2, 1)
+            ]
+        )
+        
+
+        ctx.gameService.executeMovement(movement);
+
+        const event = ctx.eventDispatcher.eventsByType.get(EventType.NEXT_TURN)[0];
+    
+        assert.equal(event.data.gameId, UserExample.second.gameId);
+        assert.equal(event.data.turn.userId, UserExample.second.userId);
+        assert.equal(event.data.turn.stepPoints, ctx.randomResult);
+    })
+
+    describe('Path', () => {
+        it ('is invalid if its length does not equal current step points', () => {
+            ctx.randomResult = 2;
+            const movement = new contract.DTO.Movement(
+                UserExample.first.userId,
+                UserExample.first.gameId,
+                [new Position(0, 1)]
+            )
+            ctx.startGame(exampleBoard);
+    
+            assert.throws(() => {
+                ctx.gameService.executeMovement(movement);
+            }, (error) => {
+                assert.equal(error.type, ErrorType.INVALID_PATH)
+                return true;
+            })
+        });
+    
+        it ('is invalid if first position is equal to user position', () => {
+            ctx.randomResult = 1;
+            const movement = new contract.DTO.Movement(
+                UserExample.first.userId,
+                UserExample.first.gameId,
+                [new Position(0, 0)]
+            )
+            ctx.startGame(exampleBoard);
+    
+            assert.throws(() => {
+                ctx.gameService.executeMovement(movement);
+            }, (error) => {
+                assert.equal(error.type, ErrorType.INVALID_PATH)
+                return true;
+            })
         })
-    });
+    
+        it ('is invalid if distance to the player position is > 1', () => {
+            ctx.randomResult = 1;
+            const movement  = new contract.DTO.Movement(
+                UserExample.first.userId,
+                UserExample.first.gameId,
+                [new Position(2, 1)]
+            )
+            ctx.startGame(exampleBoard);
+    
+            assert.throws(() => {
+                ctx.gameService.executeMovement(movement);
+            }, (error) => {
+                assert.equal(error.type, ErrorType.INVALID_PATH);
+                return true;
+            })
+        })
 
-    it ('removes player health when path goes through spikes', () => {
-        assert.equal(1, 0);
+        it ('is invalid if first element is position diagonally to the palyer position', () => {
+            ctx.randomResult = 1; 
+            const movement = new contract.DTO.Movement(
+                UserExample.first.userId,
+                UserExample.first.gameId,
+                [new Position(1, 1)]
+            )
+            ctx.startGame(exampleBoard);
+
+            assert.throws(() => {
+                ctx.gameService.executeMovement(movement);
+            }, (error) => {
+                assert.equal(error.type, ErrorType.INVALID_PATH);
+                return true;
+            })
+        })
+
+        it ('is invalid if its elemtns are position diagonally to each other', () => {
+            ctx.randomResult = 2;
+            const movement = new contract.DTO.Movement(
+                UserExample.first.userId,
+                UserExample.first.gameId,
+                [new Position(0, 1), new Position(1, 0)]
+            )
+            ctx.startGame(exampleBoard);
+
+            assert.throws(() => {
+                ctx.gameService.executeMovement(movement);
+            }, (error) => {
+                assert.equal(error.type, ErrorType.INVALID_PATH);
+                assert.equal(error.message, "Path element: (1, 0) is not adjacent to (0, 1)")
+                return true;
+            })
+        })
+
+        it ('is not valid if distance between elements is > 1', () => {
+            ctx.randomResult = 2;
+            const movement = new contract.DTO.Movement(
+                UserExample.first.userId,
+                UserExample.first.gameId,
+                [new Position(0, 1), new Position(2, 1)]
+            )
+            ctx.startGame(exampleBoard);
+
+            assert.throws(() => {
+                ctx.gameService.executeMovement(movement);
+            }, (error) => {
+                assert.equal(error.type, ErrorType.INVALID_PATH);
+                assert.equal(error.message, `Path element: (2, 1) is not adjacent to (0, 1)`)
+                return true;
+            })
+        })
     })
 })

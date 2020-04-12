@@ -3,7 +3,7 @@ import ErrorType from "./ErrorType";
 
 export default class InvalidPath extends GameError
 {
-    constructor() {
-        super(ErrorType.INVALID_PATH)
+    constructor(message: string) {
+        super(ErrorType.INVALID_PATH, message);
     }
 }

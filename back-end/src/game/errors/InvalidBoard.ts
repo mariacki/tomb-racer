@@ -4,6 +4,6 @@ import GameError from './GameError';
 export default class InvalidBoard extends GameError
 {
     constructor() {
-        super(ErrorType.INVALID_BOARD);
+        super(ErrorType.INVALID_BOARD, "Given board is invalid.");
     }
 }
