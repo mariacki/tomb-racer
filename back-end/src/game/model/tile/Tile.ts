@@ -1,16 +1,16 @@
 import Position from '../../contract/dto/Position';
-import { Player } from '..';
+import { Player, Game } from '..';
 import Context from '../../contract/Context'
 import { Board } from '../Board';
 import PlayerHit from '../../events/PlayerHit';
 
 export enum TileType
 {
-    PATH,
-    WALL,
-    STARTING_POINT,
-    SPIKES, 
-    FINISH_POINT
+    PATH = "PATH",
+    WALL = "WALL",
+    STARTING_POINT = "STARTING_POINT",
+    SPIKES = "SPIKES", 
+    FINISH_POINT = "FINISH_POINT"
 }
 
 export class Tile
@@ -30,7 +30,7 @@ export class Tile
             this.type == TileType.FINISH_POINT;
     }
 
-    onWalkThrough(player: Player, board: Board, context: Context) {}
+    onWalkThrough(player: Player, context: Context, game: Game) {}
     onPlaced(player: Player, board: Board, context: Context) {}
 }
 
@@ -46,9 +46,11 @@ export class SipikedTile extends Tile
         return true;
     }
 
-    onWalkThrough(player: Player, board: Board, context: Context) {
+    onWalkThrough(player: Player, context: Context, game: Game) {
         player.hp -= HIT_VALUE;
         context.eventDispatcher.dispatch(new PlayerHit(
+            game.id,
+            player.userId,
             HIT_VALUE,
             player.hp
         ));

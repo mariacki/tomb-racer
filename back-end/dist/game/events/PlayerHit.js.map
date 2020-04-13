@@ -1,0 +1,1 @@
+{"version":3,"file":"PlayerHit.js","sourceRoot":"","sources":["../../../src/game/events/PlayerHit.ts"],"names":[],"mappings":";;AAAA,+CAAsD;AAEtD,MAAqB,SAAU,SAAQ,cAAK;IACxC,YAAY,MAAc,EAAE,MAAc,EAAE,OAAe,EAAE,SAAiB;QAC1E,KAAK,CAAC,kBAAS,CAAC,UAAU,EAAE;YACxB,MAAM;YACN,MAAM;YACN,OAAO;YACP,SAAS;SACZ,CAAC,CAAA;IACN,CAAC;CACJ;AATD,4BASC"}

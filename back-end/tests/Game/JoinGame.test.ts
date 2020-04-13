@@ -92,7 +92,11 @@ describe('Joining Game', () => {
                         userId: player.userId,
                         userName: player.userName,
                         hp: 100, 
-                        inventory: []
+                        inventory: [],
+                        position: {
+                            row: 0,
+                            col: 0
+                        }
                     }
                 }
             })

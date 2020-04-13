@@ -29,6 +29,7 @@ import Context  from '../contract/Context';
 import { contract } from '..';
 import { EventDispatcher } from '../contract/Events';
 import Movement from '../contract/dto/Movement';
+import { GameState, GameList } from '../contract/dto/GameState';
 
 export class DefaultGameService implements GameService
 {
@@ -42,6 +43,21 @@ export class DefaultGameService implements GameService
         this.gameRepository = context.repository;
         this.idProvider = context.idProvider;
         this.eventDispatcher = context.eventDispatcher;
+    }
+
+    gameState(gameId: string): GameState {
+        return this.gameRepository.findById(gameId).getState();    
+    }
+
+    gameList(): GameList {
+        return {
+            games: this.gameRepository.findAll().map(game => {
+                return {
+                    gameId: game.id,
+                    gameName: game.name
+                }
+            })
+        }
     }
 
     createGame(data: DTO.CreateGame, board: boardDefinition[][]): void {

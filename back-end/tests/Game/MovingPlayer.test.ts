@@ -118,6 +118,7 @@ describe('Moving Player', () => {
         const game = ctx.gameRepositorySpy.lastPersistedGame;
         const event = ctx.eventDispatcher.eventsByType.get(EventType.PLAYER_HIT)[0];
         assert.equal(game.players[0].hp, 80);
+        assert.equal(event.data.gameId, game.id)
         assert.equal(event.data.hpTaken, 20);
         assert.equal(event.data.currentHp, 80);
     })
@@ -148,6 +149,26 @@ describe('Moving Player', () => {
         assert.equal(event.data.gameId, UserExample.second.gameId);
         assert.equal(event.data.turn.userId, UserExample.second.userId);
         assert.equal(event.data.turn.stepPoints, ctx.randomResult);
+    })
+
+    it('sets first player again after last one moved', () => {
+        ctx.randomResult = 1;
+        const board = [
+            [Tiles.startingPoint(), Tiles.startingPoint(), Tiles.startingPoint()],
+            [Tiles.path(), Tiles.path(), Tiles.path()]
+        ]
+        ctx.startGame(board);
+
+        const movement1 = new contract.DTO.Movement(UserExample.first.userId, UserExample.second.gameId, [new Position(1, 0)]);
+        const movement2 = new contract.DTO.Movement(UserExample.second.userId, UserExample.second.gameId, [new Position(1, 1)]);
+        const movement3 = new contract.DTO.Movement(UserExample.third.userId, UserExample.third.gameId, [new Position(1, 2)]);
+
+        ctx.gameService.executeMovement(movement1);
+        ctx.gameService.executeMovement(movement2);
+        ctx.gameService.executeMovement(movement3);
+
+        const event = ctx.eventDispatcher.eventsByType.get(EventType.NEXT_TURN)[2];
+        assert.equal(event.data.turn.userId, UserExample.first.userId);
     })
 
     describe('Path', () => {

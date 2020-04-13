@@ -1,0 +1,1 @@
+{"version":3,"file":"NextTurn.js","sourceRoot":"","sources":["../../../../../src/game/events/NextTurn.ts"],"names":[],"mappings":";;AAAA,+CAAsD;AAGtD,MAAqB,QAAS,SAAQ,cAAK;IACvC,YAAY,MAAc,EAAE,IAAU;QAClC,KAAK,CAAC,kBAAS,CAAC,SAAS,EAAE;YACvB,MAAM;YACN,IAAI;SACP,CAAC,CAAA;IACN,CAAC;CACJ;AAPD,2BAOC"}

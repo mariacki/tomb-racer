@@ -12,6 +12,7 @@ export default class PlayerJoinedEvent extends contract.events.Event
                     userId: player.userId,
                     userName: player.userName,
                     hp: 100, 
+                    position: player.position,
                     inventory: []
                 } 
             }

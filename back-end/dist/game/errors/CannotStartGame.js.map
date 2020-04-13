@@ -1,0 +1,1 @@
+{"version":3,"file":"CannotStartGame.js","sourceRoot":"","sources":["../../../src/game/errors/CannotStartGame.ts"],"names":[],"mappings":";;;;;AAAA,4DAAoC;AACpC,4DAAoC;AAEpC,MAAqB,eAAgB,SAAQ,mBAAS;IAIlD,YAAY,MAAiB;QACzB,KAAK,CAAC,mBAAS,CAAC,iBAAiB,EAAE,mBAAmB,CAAC,CAAA;QACvD,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACzB,CAAC;CACJ;AARD,kCAQC"}

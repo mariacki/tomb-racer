@@ -5,7 +5,7 @@ import { GameTestContext, UserExample } from './GameTestContext';
 import { EventType } from '../../src/game/contract/Events';
 import Position from '../../src/game/contract/dto/Position';
 import { ErrorType } from '../../src/game/errors';
-
+/*
 describe('Player death', () => {
     const board = [
         [Tiles.startingPoint(), Tiles.startingPoint(), Tiles.startingPoint()],
@@ -65,4 +65,4 @@ describe('Player death', () => {
         assert.deepEqual(events[0].data.movedTo, {row: 0, col: 0});
         assert.deepEqual(events[1].data.movedTo, {row: 0, col: 1});
     })
-})
+})*/

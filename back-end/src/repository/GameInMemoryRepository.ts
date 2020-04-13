@@ -23,6 +23,10 @@ export class GameInMemoryRepository implements GameRepository
         
     }
 
+    findAll(): Game[] {
+        return this.games;
+    }
+
     private byName(name: string) {
         return (game: Game) => { return game.name == name };
     }

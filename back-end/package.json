@@ -2,10 +2,10 @@
   "name": "tr-back-end",
   "version": "1.0.0",
   "description": "Tomb Racer WebSocket backend",
-  "main": "./built/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./built/index.js",
+    "start": "tsc && node ./dist/index.js",
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
   },
@@ -15,11 +15,13 @@
     "@types/assert": "^1.4.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.1",
+    "@types/uuid": "^7.0.2",
     "@types/websocket": "^1.0.0",
     "@types/ws": "^7.2.3",
+    "http-proxy-agent": ">=2.1.0",
     "systemjs": "^6.3.0",
     "ws": "^7.2.3",
-    "http-proxy-agent": ">=2.1.0"
+    "tr-common": "file:../common"
   },
   "devDependencies": {
     "mocha": "^7.1.1",

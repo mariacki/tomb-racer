@@ -1,0 +1,1 @@
+{"version":3,"file":"GameError.js","sourceRoot":"","sources":["../../../../../src/game/errors/GameError.ts"],"names":[],"mappings":";;AAEA,MAAqB,SAAU,SAAQ,KAAK;IAIxC,YAAY,IAAe,EAAE,OAAe;QACxC,KAAK,CAAC,OAAO,CAAC,CAAC;QACf,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IACrB,CAAC;CACJ;AARD,4BAQC"}

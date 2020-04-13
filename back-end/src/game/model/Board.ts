@@ -4,6 +4,7 @@ import { boardDefinition } from '../contract'
 import { NumberOfStartingPointsExceeded } from '../errors';
 import InvalidBoard from '../errors/InvalidBoard';
 import InvalidPath from '../errors/InvalidPath';
+import { TileState } from '../contract/dto/GameState';
 
 class StartingPoint
 {
@@ -86,7 +87,10 @@ export class Board
     }
 
     getTilesOfPath(path: Position[]): Tile[] {
-        return path.map(this.toTile())
+        return path.map((position: Position) => {
+            console.log('In the loop of positions')
+            return this.tiles[position.row][position.col];
+        })
     }
 
     toTile() {
@@ -128,5 +132,11 @@ export class Board
 
     private toStartingPoint() {
         return (tile: Tile) => new StartingPoint(tile.position);
+    }
+
+    toTileList(): TileState[][] {
+        return this.tiles.map((tilesRow) => {
+            return tilesRow.map((tile) => { return {type: tile.type.toString()}})
+        })
     }
 }

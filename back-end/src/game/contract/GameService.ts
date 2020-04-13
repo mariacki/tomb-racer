@@ -2,6 +2,7 @@ import CreateGame from './dto/CreateGame';
 import { PlayerData } from './dto';
 import { Tile } from '../model/tile/Tile';
 import Movement from './dto/Movement';
+import { GameState, GameList } from './dto/GameState';
 
 export type boardDefinition = (row: number, col: number) => Tile;
 
@@ -12,4 +13,6 @@ export interface GameService
     removePlayer(player: PlayerData): void;
     startRequest(player: PlayerData): void;
     executeMovement(movement: Movement): void;
+    gameState(gameId: string): GameState
+    gameList(): GameList
 }
