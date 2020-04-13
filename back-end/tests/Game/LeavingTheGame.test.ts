@@ -3,6 +3,8 @@ import assert from 'assert';
 import { contract, Tiles } from '../../src/game';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { EventType } from '../../src/game/contract/Events';
+import { GameNotFound } from '../../src/game/errors';
+import { ErrorType } from 'tr-common/events';
 
 describe('Leaving the game', () => {
     const ctx = new GameTestContext();
@@ -16,12 +18,9 @@ describe('Leaving the game', () => {
             
             assert.throws(() => {
                 ctx.gameService.removePlayer(UserExample.invalidGameId);
-            }, (err: Error) => {
-                assert.deepEqual(err, {
-                    type: "GAME NOT FOUND",
-                    gameId: "non-existing"
-                });
-
+            }, (err: GameNotFound) => {
+                assert.equal(err.type, ErrorType.GAME_NOT_FOUND);
+                assert.equal(err.gameId, "non-existing")
                 return true;
             })
         })

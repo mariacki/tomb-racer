@@ -4,7 +4,7 @@ import { contract, Tiles } from '../../src/game';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { EventType } from '../../src/game/contract/Events';
 import Position from '../../src/game/contract/dto/Position';
-import { ErrorType } from '../../src/game/errors';
+import { ErrorType, InvalidPath } from 'tr-common/events';
 
 describe('Moving Player', () => {
     const ctx = new GameTestContext();
@@ -253,7 +253,9 @@ describe('Moving Player', () => {
                 ctx.gameService.executeMovement(movement);
             }, (error) => {
                 assert.equal(error.type, ErrorType.INVALID_PATH);
-                assert.equal(error.message, "Path element: (1, 0) is not adjacent to (0, 1)")
+                assert.equal(error.message, "Path steps are not adjacent");
+                assert.deepEqual(error.invalidSteps[0], {row: 0, col: 1})
+                assert.deepEqual(error.invalidSteps[1], {row: 1, col: 0})
                 return true;
             })
         })
@@ -269,9 +271,12 @@ describe('Moving Player', () => {
 
             assert.throws(() => {
                 ctx.gameService.executeMovement(movement);
-            }, (error) => {
+            }, (error: InvalidPath) => {
+                console.log(error);
+                assert.equal(error.message, "Path steps are not adjacent")
                 assert.equal(error.type, ErrorType.INVALID_PATH);
-                assert.equal(error.message, `Path element: (2, 1) is not adjacent to (0, 1)`)
+                assert.deepEqual(error.invalidSteps[0], {row: 0, col: 1})
+                assert.deepEqual(error.invalidSteps[1], {row: 2, col: 1})
                 return true;
             })
         })

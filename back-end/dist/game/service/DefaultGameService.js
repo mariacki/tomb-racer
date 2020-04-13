@@ -34,11 +34,20 @@ class DefaultGameService {
             throw new errors_1.ValidationError(errors_1.ErrorType.FIELD_REQUIRED, "gameName");
         }
         if (this.gameRepository.hasGameWithName(data.gameName)) {
-            throw new errors_1.ValidationError(errors_1.ErrorType.FIELD_NOT_UNIQUE, "gameName");
+            throw this.gameDuplicated(data.gameName);
         }
         const newGame = new model_1.Game(this.idProvider.newId(), data.gameName, new Board_1.Board(board));
         this.gameRepository.add(newGame);
         this.eventDispatcher.dispatch(new events_1.GameCreatedEvent(newGame));
+    }
+    gameDuplicated(name) {
+        return {
+            isError: true,
+            type: errors_1.ErrorType.FIELD_NOT_UNIQUE,
+            origin: undefined,
+            message: "Game with this name already exists.",
+            gameName: name
+        };
     }
     addPlayer(addPlayerRequest) {
         const game = this.gameRepository.findById(addPlayerRequest.gameId);

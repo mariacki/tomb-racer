@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Tile_1 = require("./tile/Tile");
 const errors_1 = require("../errors");
-const InvalidBoard_1 = __importDefault(require("../errors/InvalidBoard"));
 const InvalidPath_1 = __importDefault(require("../errors/InvalidPath"));
 class StartingPoint {
     constructor(pos) {
@@ -23,7 +22,7 @@ class Board {
     }
     assertEnoughStartingPoints() {
         if (this.startingPoints.length < 2) {
-            throw new InvalidBoard_1.default();
+            throw MinNumberOf;
         }
     }
     nextFreePosition() {

@@ -2,6 +2,8 @@ import 'mocha';
 import assert from 'assert';
 import { contract, Tiles } from './../../src/game';
 import { GameTestContext, UserExample } from './GameTestContext';
+import { NumberOfStartingPointsExceeded } from '../../src/game/errors';
+import { ErrorType } from 'tr-common/events';
 
 describe('Joining Game', () => {
     const ctx = new GameTestContext();
@@ -11,25 +13,17 @@ describe('Joining Game', () => {
     describe('New Player', () => {
         it ('cannot be added to the game that does not exists', () => {
             const player = UserExample.invalidGameId;
-            const expectedError = {
-                type: "GAME NOT FOUND",
-                gameId: "non-existing"
-            }
 
             assert.throws(() => {
                 ctx.gameService.addPlayer(player);
-            }, (error: Error) => {
-                assert.deepEqual(error, expectedError);
+            }, (error) => {
+                assert.equal(error.type, ErrorType.GAME_NOT_FOUND);
+                assert.equal(error.gameId, "non-existing")
                 return true;
             })
         });
 
         it ('cannot be added if there is not enough starting point on the board', () => {
-            const expectedError = {
-                type: "NUMBER OF STARTING POINTS EXCEEDED",
-                maxNumberOfPlayers: 2
-            }
-
             ctx.gameService.createGame(
                 new contract.DTO.CreateGame("Some name"), 
                 defaultBoard
@@ -39,8 +33,9 @@ describe('Joining Game', () => {
                 ctx.gameService.addPlayer(UserExample.first);
                 ctx.gameService.addPlayer(UserExample.second);
                 ctx.gameService.addPlayer(UserExample.third);
-            }, (error: Error) => {
-                assert.deepEqual(error, expectedError);
+            }, (error: NumberOfStartingPointsExceeded) => {
+                assert.deepEqual(error.type, ErrorType.NUMBER_OF_STARTING_POINTS_EXCEEDED);
+                assert.deepEqual(error.maxNumberOfPlayers, 2)
                 return true;
             })
         })

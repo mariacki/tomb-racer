@@ -15,6 +15,8 @@ import NextTurn from "../events/NextTurn";
 import PlayerDied from "../events/PlayerDied";
 import GameFinished from "../events/GameFinished";
 import  { GameState, PlayerState } from "../contract/dto/GameState";
+import { NumberOfStartingPointsExceeded } from "../errors";
+import InvalidPath from "../errors/InvalidPath";
 
 enum State {
     WAITING_FOR_USERS = "WAITING FOR PLAYERS",
@@ -45,6 +47,13 @@ export default class Game
     }
 
     addPlayer(player: Player) {
+        if (!this.board.hasFreePositions()) {
+            throw new NumberOfStartingPointsExceeded(
+                this.board.startingPoints.length, 
+                this.id
+            );
+        }
+
         player.position = this.board.nextFreePosition();
         player.startedOn = player.position;
         this.players.push(player);
@@ -58,7 +67,7 @@ export default class Game
         this.assertPlayerExists(userId);
 
         if (this.gameStartRequests.has(userId)) {
-            throw new GameStartedTwice(userId);
+            throw new GameStartedTwice(userId, this.id);
         }
 
         this.gameStartRequests.add(userId);
@@ -98,25 +107,17 @@ export default class Game
     }
 
     movment(movement: Movement, env: Context) {    
-        console.log("Walking");    
         this.assertGameStarted();
-        console.log("game is started");
         this.assertCurrentTurn(movement);
-        console.log("we have current turn");
         this.assertValidPath(movement.path);
-        console.log("validation");
         const lastPosition = movement.path[movement.path.length - 1];
         const player = this.getPlayer(movement.userId);
-        console.log(player);
 
         this.board.getTilesOfPath(movement.path).forEach((tile: Tile) => {
-            console.log('In the loop of itles');
             tile.onWalkThrough(player, env, this);
         });
-        console.log("Path is valid");
-        /**
-         * That is exactly what happens when you are tired. 
-         */
+        
+        
         if (player.hp <= 0) {
             player.position = player.startedOn;
             player.hp = 100;
@@ -134,7 +135,6 @@ export default class Game
 
         this.nextTurn(env.rnd);
         env.eventDispatcher.dispatch(new NextTurn(this.id, this.currentTurn));
-        console.log("end of walking");
     }
 
     private nextTurn(rnd: randomize) {
@@ -165,11 +165,15 @@ export default class Game
     }
 
     private assertValidPath(path: Position[]) {
-        this.board.validatePath(
+        const result = this.board.validatePath(
             path, 
             this.players[this.currentPlayerIdx].position,
             this.currentTurn.stepPoints
         );
+
+        if (!result.isValid) {
+            throw new InvalidPath(this.id, result.invalidPath, result.message);
+        }
     }
 
     private shouldStart(): boolean {

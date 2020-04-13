@@ -2,6 +2,11 @@ import 'mocha';
 import assert from 'assert';
 import { contract, Tiles } from './../../src/game';
 import { GameTestContext } from './GameTestContext';
+import { 
+    GameNameDuplicated, 
+    ErrorType,
+    MinNumberOfStartingPointsNotReached
+} from 'tr-common/events';
 
 describe('New Game', () => {
     const ctx = new GameTestContext();
@@ -16,23 +21,21 @@ describe('New Game', () => {
         }
     }
     
-    describe('Validation', () => {
-        it ('should not create game without name specified', () => {
-            const invalidCommand = new contract.DTO.CreateGame("");
-    
-            assert.throws(() => {
-                ctx.gameService.createGame(invalidCommand, validBoard);
-            }, validationError("FIELD REQUIRED", "gameName"));
-        });
-    
+    describe('Validation', () => {    
         it('shoudl not create game if name is not unique', () => {
             const firstGame = new contract.DTO.CreateGame("a name");
             const secondGame = new contract.DTO.CreateGame("a name");
-    
+
             assert.throws(() => {
                 ctx.gameService.createGame(firstGame, validBoard);
-                ctx.gameService.createGame(secondGame, validBoard);
-            }, validationError("FIELD NOT UNIQUE", "gameName"))
+                ctx.gameService.createGame(secondGame, validBoard)
+            }, (error: GameNameDuplicated) => {
+                assert.equal(error.isError, true);
+                assert.equal(error.gameName, firstGame.gameName);
+                assert.equal(error.origin, undefined);
+                assert.equal(error.type, ErrorType.FIELD_NOT_UNIQUE)
+                return true;
+            })
         })
 
         it ('cannot be created with board without at least two starting points', () => {
@@ -40,8 +43,11 @@ describe('New Game', () => {
 
             assert.throws(() => {
                 ctx.gameService.createGame(gameDef, [[Tiles.startingPoint()]])
-            }, (error) => {
-                assert.equal(error.type, "INVALID BOARD");
+            }, (error: MinNumberOfStartingPointsNotReached) => {
+                assert.equal(error.isError, true);
+                assert.equal(error.origin, undefined),
+                assert.equal(error.type, ErrorType.INVALID_BOARD),
+                assert.equal(error.minNumberOfStartingPoints, 2)
                 return true;
             })
         })

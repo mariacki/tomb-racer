@@ -1,5 +1,5 @@
-import ErrorType from './ErrorType';
 import GameError from './GameError';
+import { ErrorType } from 'tr-common/events';
 
 export default class ValidationError extends GameError
 {

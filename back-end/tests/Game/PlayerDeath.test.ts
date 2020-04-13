@@ -4,7 +4,7 @@ import { contract, Tiles } from '../../src/game';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { EventType } from '../../src/game/contract/Events';
 import Position from '../../src/game/contract/dto/Position';
-import { ErrorType } from '../../src/game/errors';
+import { ErrorType } from 'tr-common/events';
 /*
 describe('Player death', () => {
     const board = [

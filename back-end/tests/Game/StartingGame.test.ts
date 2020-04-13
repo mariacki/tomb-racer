@@ -3,6 +3,7 @@ import assert from 'assert';
 import { contract, Tiles } from '../../src/game';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { EventType } from '../../src/game/contract/Events';
+import { UserNotFoundInGame, CannotStartGame, ErrorType } from 'tr-common/events';
 
 describe('Starting the game', () => {
     const ctx = new GameTestContext();
@@ -14,13 +15,9 @@ describe('Starting the game', () => {
         assert.throws(() => {
             ctx.gameService.startRequest(UserExample.first);
         }, (error) => {
-            assert.deepEqual(error, {
-                type: "CANNOT START GAME",
-                reason: {
-                    type: "GAME NOT FOUND",
-                    gameId: "id1"
-                }
-            })
+            assert.equal(error.type, ErrorType.CANNOT_START_GAME);
+            assert.equal(error.reason.type, ErrorType.GAME_NOT_FOUND);
+            assert.equal(error.reason.gameId, UserExample.first.gameId)
             return true;
         })
     })
@@ -32,9 +29,9 @@ describe('Starting the game', () => {
         assert.throws(() => {
             ctx.gameService.startRequest(UserExample.second);
         }, (error) => {
-            assert.equal(error.type, "CANNOT START GAME");
-            assert.equal(error.reason.type, "USER NOT FOUND");
-            assert.equal(error.reason.userId, UserExample.second.userId)
+            assert.equal(error.type, ErrorType.CANNOT_START_GAME);
+            assert.equal(error.reason.type, ErrorType.USER_NOT_FOUND);
+            assert.equal(error.reason.searchedUser, UserExample.second.userId)
             return true;
         })
     }), 

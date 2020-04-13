@@ -1,12 +1,15 @@
+import { 
+    ErrorType,
+    CannotStartGame as ICannotStartGame
+} from 'tr-common/events';
 import GameError from './GameError';
-import ErrorType from './ErrorType';
 
-export default class CannotStartGame extends GameError
+export default class CannotStartGame extends GameError implements ICannotStartGame 
 {
     reason: GameError;
 
     constructor(reason: GameError) {
-        super(ErrorType.CANNOT_START_GAME, "Cannot Start Game")
+        super(ErrorType.CANNOT_START_GAME, undefined, "Cannot start game")
         this.reason = reason;
     }
 }

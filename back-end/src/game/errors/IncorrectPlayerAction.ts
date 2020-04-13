@@ -1,20 +1,29 @@
 import GameError from "./GameError";
-import ErrorType from "./ErrorType";
+import { 
+    ErrorType,
+    IncorretPlayerAction as IIncorretPlayerAction
+} from 'tr-common/events';
 
-export default class IncorrectPlayerAction extends GameError
+export default class IncorrectPlayerAction extends GameError implements IIncorretPlayerAction 
 {
     gameId: string;
-    userThatShouldPlay: string;
-    userThatTriedToPlay: string;
+    playerExecutedAction: string;
+    playerThatShouldExecuteAction: string;
 
     constructor(
         gameId: string,
-        userThatShouldPlay: string,
-        userThatTriedToPlay: string
+        playerExecutedAction: string,
+        playerThatShouldExecuteAction: string
     ) {
-        super(ErrorType.INCORRECT_PLAYER_ACTION, "Inorrect Player Action");
+        super(
+            ErrorType.INCORRECT_PLAYER_ACTION, 
+            undefined,
+            "Inorrect Player Action"
+        );
+
         this.gameId = gameId;
-        this.userThatShouldPlay = userThatShouldPlay;
-        this.userThatTriedToPlay = userThatTriedToPlay;
+        this.playerExecutedAction = playerExecutedAction;
+        this.playerThatShouldExecuteAction = playerThatShouldExecuteAction;
     }
+    
 }

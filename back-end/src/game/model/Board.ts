@@ -5,6 +5,7 @@ import { NumberOfStartingPointsExceeded } from '../errors';
 import InvalidBoard from '../errors/InvalidBoard';
 import InvalidPath from '../errors/InvalidPath';
 import { TileState } from '../contract/dto/GameState';
+import PathValidationResult from './PathValidationResult';
 
 class StartingPoint
 {
@@ -34,13 +35,16 @@ export class Board
         }
     }
 
-    nextFreePosition(): Position {
+    hasFreePositions() {
         const isFree = (startingPoint: StartingPoint) => startingPoint.isFree;
         const freeStartingPoints = this.startingPoints.filter(isFree);
 
-        if (freeStartingPoints.length == 0) {
-            throw new NumberOfStartingPointsExceeded(this.startingPoints.length);
-        }
+        return freeStartingPoints.length > 0;
+    }
+
+    nextFreePosition(): Position {
+        const isFree = (startingPoint: StartingPoint) => startingPoint.isFree;
+        const freeStartingPoints = this.startingPoints.filter(isFree);
 
         const startingPoint = freeStartingPoints.shift();
         startingPoint.isFree = false;
@@ -48,15 +52,23 @@ export class Board
         return startingPoint.pos;
     }
 
-    validatePath(path: Position[], playerPosition: Position, expectedLength: number) {
-        const validPositions = path.filter(this.validPositions());
+    validatePath(path: Position[], playerPosition: Position, expectedLength: number): PathValidationResult {
+        const invalidPositions = path.filter(this.invalidPosition());
 
-        if (validPositions.length != path.length) {
-            throw new InvalidPath("Path contains invalid positions");
+        if (invalidPositions.length) {
+            return new PathValidationResult(
+                false,
+                invalidPositions,
+                "Paths goes through walls."
+            );
         }
 
-        if (validPositions.length != expectedLength) {
-            throw new InvalidPath(`Path should have ${expectedLength} positons, given had: ${validPositions.length} positions`)
+        if (path.length != expectedLength) {
+            return new PathValidationResult(
+                false,
+                path,
+                "Path has invalid length"
+            )
         }
 
         const pathFirst = path[0];
@@ -65,30 +77,35 @@ export class Board
             (pathFirst.row == playerPosition.row) && 
             (pathFirst.col == playerPosition.col)
         ) {
-            throw new InvalidPath("Path cannot start at player position");
+            return new PathValidationResult(
+                false,
+                [pathFirst],
+                "Path starts at the player position"
+            )
         }
 
-        this.validateAdjacency([playerPosition, ...path]);
+        return this.validateAdjacency([playerPosition, ...path]);
     }
 
-    private throwAdjacencyError(current: Position, prev: Position) {
-        throw new InvalidPath(`Path element: ${current.toString()} is not adjacent to ${prev.toString()}`)
-    }
-
-    private validateAdjacency(path: Position[]) {
+    private validateAdjacency(path: Position[]): PathValidationResult {
         for (let i = 1; i < path.length; i++) {
             const prev = path[i - 1];
             const current = path[i];
 
             if (!current.isAdjacentTo(prev)) {
-                this.throwAdjacencyError(current, prev);
+                return new PathValidationResult(
+                    false,
+                    [prev, current],
+                    "Path steps are not adjacent"
+                )
             }
         }
+
+        return new PathValidationResult(true, [], "Path OK");
     }
 
     getTilesOfPath(path: Position[]): Tile[] {
         return path.map((position: Position) => {
-            console.log('In the loop of positions')
             return this.tiles[position.row][position.col];
         })
     }
@@ -96,9 +113,9 @@ export class Board
     toTile() {
         return (position: Position) => this.tiles[position.row][position.col];
     }
-    private validPositions() {
+    private invalidPosition() {
         return (position: Position) => {
-            return this.isValid(position);
+            return !this.isValid(position);
         }
     }
 

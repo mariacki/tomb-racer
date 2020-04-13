@@ -5,6 +5,8 @@ import { Tiles, configure } from './game';
 import { CreateGame, PlayerData, Movement, Position } from './game/contract/dto';
 import CannotStartGame from './game/errors/CannotStartGame';
 
+
+
 const board = [
     [Tiles.startingPoint(), Tiles.startingPoint(), Tiles.startingPoint()],
     [Tiles.path(),          Tiles.spikes(),        Tiles.path()],

@@ -1,9 +1,16 @@
 import GameError from "./GameError";
-import ErrorType from "./ErrorType";
+import { 
+    ErrorType,
+    InvalidPath as IInvalidPath
+} from 'tr-common/events';
+import { Position } from 'tr-common/data_types';
 
-export default class InvalidPath extends GameError
+export default class InvalidPath extends GameError implements IInvalidPath
 {
-    constructor(message: string) {
-        super(ErrorType.INVALID_PATH, message);
+    invalidSteps: Position[];
+
+    constructor(gameId: string, invalidPath: Position[], message: string) {
+        super(ErrorType.INVALID_PATH, gameId, message);
+        this.invalidSteps = invalidPath;
     }
 }

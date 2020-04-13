@@ -1,12 +1,15 @@
 import GameError from './GameError';
-import ErrorType from './ErrorType';
+import { 
+    ErrorType,
+    UserNotFoundInGame
+} from 'tr-common/events';
 
-export default class UserNotFound extends GameError
+export default class UserNotFound extends GameError implements UserNotFoundInGame
 {
-    userId: string;
+    searchedUser: string;
 
     constructor(userId: string) {
         super(ErrorType.USER_NOT_FOUND, "Could not found users");
-        this.userId = userId;
+        this.searchedUser = userId;
     }
 }

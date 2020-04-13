@@ -9,7 +9,6 @@ import {
 
 import {
     ValidationError,
-    ErrorType,
     GameNotFound, 
 } from './../errors';
 
@@ -30,6 +29,7 @@ import { contract } from '..';
 import { EventDispatcher } from '../contract/Events';
 import Movement from '../contract/dto/Movement';
 import { GameState, GameList } from '../contract/dto/GameState';
+import { GameNameDuplicated, ErrorType } from 'tr-common/events';
 
 export class DefaultGameService implements GameService
 {
@@ -67,7 +67,7 @@ export class DefaultGameService implements GameService
         }
 
         if (this.gameRepository.hasGameWithName(data.gameName)) {
-            throw new ValidationError(ErrorType.FIELD_NOT_UNIQUE, "gameName");
+            throw this.gameDuplicated(data.gameName);
         }
 
         const newGame = new Game(
@@ -78,6 +78,16 @@ export class DefaultGameService implements GameService
 
         this.gameRepository.add(newGame)
         this.eventDispatcher.dispatch(new GameCreatedEvent(newGame));
+    }
+
+    private gameDuplicated(name: string): GameNameDuplicated {
+        return {
+            isError: true,
+            type: ErrorType.FIELD_NOT_UNIQUE,
+            origin: undefined,
+            message: "Game with this name already exists.",
+            gameName: name
+        }
     }
 
     addPlayer(addPlayerRequest: DTO.PlayerData) {
