@@ -1,8 +1,5 @@
-import CreateGame from './dto/CreateGame';
-import { PlayerData } from './dto';
-import { Tile } from '../model/tile/Tile';
-import Movement from './dto/Movement';
-import { GameState, GameList } from './dto/GameState';
+import { CreateGame, PlayerData, Movement, GameList } from '.';
+import { Tile, Game as GameState } from 'tr-common';
 
 export type boardDefinition = (row: number, col: number) => Tile;
 

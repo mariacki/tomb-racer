@@ -1,21 +1,15 @@
-import * as contract from '../contract'
-import { Game, Player} from './../model';
+import { PlayerJoined, EventType, Player } from 'tr-common';
 
-export default class PlayerJoinedEvent extends contract.events.Event
+export class PlayerJoinedEvent implements PlayerJoined
 {
-    constructor(player: Player, gameId: string) {
-        super(
-            contract.events.EventType.PLAYER_JOINED,
-            {
-                gameId,
-                player: {
-                    userId: player.userId,
-                    userName: player.userName,
-                    hp: 100, 
-                    position: player.position,
-                    inventory: []
-                } 
-            }
-        )
-    }
+    isError: boolean = false;
+    type: EventType = EventType.PLAYER_JOINED;
+    origin: string;
+
+    player: Player;
+
+    constructor (gameId: string, player: Player) {
+        this.origin = gameId;
+        this.player = player;
+    }   
 }

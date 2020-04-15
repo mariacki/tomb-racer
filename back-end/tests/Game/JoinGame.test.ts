@@ -1,9 +1,11 @@
 import 'mocha';
 import assert from 'assert';
-import { contract, Tiles } from './../../src/game';
+import { Tiles } from './../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { NumberOfStartingPointsExceeded } from '../../src/game/errors';
 import { ErrorType } from 'tr-common/events';
+import { CreateGame } from '../../src/game';
+import { EventType } from 'tr-common';
 
 describe('Joining Game', () => {
     const ctx = new GameTestContext();
@@ -25,7 +27,7 @@ describe('Joining Game', () => {
 
         it ('cannot be added if there is not enough starting point on the board', () => {
             ctx.gameService.createGame(
-                new contract.DTO.CreateGame("Some name"), 
+                new  CreateGame("Some name"), 
                 defaultBoard
             );
         
@@ -42,7 +44,7 @@ describe('Joining Game', () => {
         
         it ('has basic data', () => {
             const player = UserExample.first;
-            const game = new contract.DTO.CreateGame("Some game name");
+            const game = new  CreateGame("Some game name");
             ctx.gameService.createGame(game, defaultBoard);
 
             ctx.gameService.addPlayer(player);
@@ -57,7 +59,7 @@ describe('Joining Game', () => {
         })
 
         it ('is placed at a first free starting point', () => {
-            const game = new contract.DTO.CreateGame("Some game");
+            const game = new  CreateGame("Some game");
             ctx.gameService.createGame(game, defaultBoard);
 
             ctx.gameService.addPlayer(UserExample.first);
@@ -72,29 +74,13 @@ describe('Joining Game', () => {
 
         it ('should be passed in an event', () => {
             const player = UserExample.first;
-            const game = new contract.DTO.CreateGame("Some game name");
+            const game = new  CreateGame("Some game name");
             ctx.gameService.createGame(game, defaultBoard);
 
             ctx.gameService.addPlayer(player);
 
             const event = ctx.eventDispatcher.dispatchedEvents[1];
-
-            assert.deepEqual(event, {
-                type: contract.events.EventType.PLAYER_JOINED,
-                data: {
-                    gameId: player.gameId,
-                    player: {
-                        userId: player.userId,
-                        userName: player.userName,
-                        hp: 100, 
-                        inventory: [],
-                        position: {
-                            row: 0,
-                            col: 0
-                        }
-                    }
-                }
-            })
+            assert.equal(event.type, EventType.PLAYER_JOINED)
         })
 
     })

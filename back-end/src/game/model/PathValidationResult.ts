@@ -1,6 +1,6 @@
 import { Position } from 'tr-common/data_types'; 
 
-export default class PathValidationResult {
+export class PathValidationResult {
     isValid: boolean;
     invalidPath: Position[];
     message: string;

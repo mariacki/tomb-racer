@@ -1,14 +1,17 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-const GameNotFound_1 = __importDefault(require("./GameNotFound"));
-exports.GameNotFound = GameNotFound_1.default;
-const ValidationError_1 = __importDefault(require("./ValidationError"));
-exports.ValidationError = ValidationError_1.default;
-const ErrorType_1 = __importDefault(require("./ErrorType"));
-exports.ErrorType = ErrorType_1.default;
-const NumberOfStartingPointsExceeded_1 = __importDefault(require("./NumberOfStartingPointsExceeded"));
-exports.NumberOfStartingPointsExceeded = NumberOfStartingPointsExceeded_1.default;
+__export(require("./CannotStartGame"));
+__export(require("./GameError"));
+__export(require("./GameNotFound"));
+__export(require("./GameStartedTwice"));
+__export(require("./GameNotStarted"));
+__export(require("./IncorrectPlayerAction"));
+__export(require("./InvalidBoard"));
+__export(require("./InvalidPath"));
+__export(require("./NumberOfStartingPointsExceeded"));
+__export(require("./UserNotFound"));
+__export(require("./ValidationError"));
 //# sourceMappingURL=index.js.map

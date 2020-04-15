@@ -8,5 +8,5 @@ class Context {
         this.repository = repository;
     }
 }
-exports.default = Context;
+exports.Context = Context;
 //# sourceMappingURL=Context.js.map

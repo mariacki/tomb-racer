@@ -1,26 +1,27 @@
-import {configure, contract, Tiles} from '../../src/game';
+import {configure} from '../../src/game';
 import { GameRepositorySpy } from './spy/GameRepositorySpy';
 import { IdProviderMock } from './mock/IdProviderMock';
 import { EventDispatcherMock } from './mock/EventDispatcherMock';
-import Context  from '../../src/game/contract/Context';
+import { Context, GameService, EventDispatcher, CreateGame, PlayerData, randomize } from './../../src/game/contract'
 import { boardDefinition } from '../../src/game/contract';
+import { Tiles } from '../../src/game/model/tile'
 
 export const UserExample = {
-    first: new contract.DTO.PlayerData("id1", "user-id-1", "username-1"),
-    second: new contract.DTO.PlayerData("id1", "user-id-2", "username-2"),
-    third: new contract.DTO.PlayerData("id1", "user-id-3", "username-3"),
-    invalidGameId: new contract.DTO.PlayerData("non-existing", "user-id-invalid", "username-invalid")
+    first: new  PlayerData("id1", "user-id-1", "username-1"),
+    second: new  PlayerData("id1", "user-id-2", "username-2"),
+    third: new  PlayerData("id1", "user-id-3", "username-3"),
+    invalidGameId: new  PlayerData("non-existing", "user-id-invalid", "username-invalid")
 }
 
 export class GameTestContext {
-    gameService: contract.GameService;
+    gameService: GameService;
     gameRepositorySpy: GameRepositorySpy;
     idProvider: IdProviderMock;
     eventDispatcher: EventDispatcherMock;
 
     randomResult: number = 0;
 
-    randomizer: contract.randomize = (start: number, end: number) => {
+    randomizer: randomize = (start: number, end: number) => {
         return this.randomResult;
     }
     
@@ -44,7 +45,7 @@ export class GameTestContext {
     }
 
     startGame(board: boardDefinition[][] = this.defaultBoard()) {
-        const gameDef = new contract.DTO.CreateGame("Some Game");
+        const gameDef = new CreateGame("Some Game");
         this.gameService.createGame(gameDef, board);
         this.gameService.addPlayer(UserExample.first);
         this.gameService.addPlayer(UserExample.second);

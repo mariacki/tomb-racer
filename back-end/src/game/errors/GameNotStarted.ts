@@ -1,9 +1,7 @@
-import { 
-    ErrorType,
-} from 'tr-common/events';
-import GameError from './GameError';
+import { ErrorType } from 'tr-common'
+import { GameError } from '.';
 
-export default class GameNotStarted extends GameError 
+export class GameNotStarted extends GameError 
 {
     constructor(gameId: string) {
         super(

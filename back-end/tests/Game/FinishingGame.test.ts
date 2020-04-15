@@ -1,9 +1,10 @@
 import 'mocha';
 import assert from 'assert';
-import { contract, Tiles } from './../../src/game';
+import { Tiles } from './../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { Movement, Position } from '../../src/game/contract/dto';
-import { EventType } from '../../src/game/contract/Events';
+import { EventType } from 'tr-common';
+import * as contract from '../../src/game/contract';
 
 describe('Finishing game', () => {
     const board = [
@@ -27,10 +28,10 @@ describe('Finishing game', () => {
         ctx.gameService.executeMovement(movement);
 
         const game = ctx.gameRepositorySpy.lastPersistedGame;
-        const event = ctx.eventDispatcher.eventsByType.get(EventType.GAME_FINISHED)[0];
+        const event: any = ctx.eventDispatcher.eventsByType.get(EventType.GAME_FINISHED)[0];
 
         assert.equal(game.state, "FINISHED")
-        assert.equal(event.data.gameId, UserExample.first.gameId);
-        assert.equal(event.data.winner, UserExample.first.userId);
+        assert.equal(event.origin, UserExample.first.gameId);
+        assert.equal(event.userId, UserExample.first.userId);
     })
 })

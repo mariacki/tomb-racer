@@ -1,6 +1,6 @@
-import Position from "./Position";
+import { Position } from 'tr-common';
 
-export default class Movement
+export class Movement
 {
     userId: string;
     gameId: string;

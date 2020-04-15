@@ -1,15 +1,12 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ErrorType_1 = __importDefault(require("./ErrorType"));
-const GameError_1 = __importDefault(require("./GameError"));
-class NumberOfStartingPointsExceeded extends GameError_1.default {
-    constructor(maxNumberOfPlayers) {
-        super(ErrorType_1.default.NUMBER_OF_STARTING_POINTS_EXCEEDED, "Number of starting points exceeded");
+const tr_common_1 = require("tr-common");
+const _1 = require(".");
+class NumberOfStartingPointsExceeded extends _1.GameError {
+    constructor(maxNumberOfPlayers, gameId) {
+        super(tr_common_1.ErrorType.NUMBER_OF_STARTING_POINTS_EXCEEDED, gameId, "Number of starting points exceeded");
         this.maxNumberOfPlayers = maxNumberOfPlayers;
     }
 }
-exports.default = NumberOfStartingPointsExceeded;
+exports.NumberOfStartingPointsExceeded = NumberOfStartingPointsExceeded;
 //# sourceMappingURL=NumberOfStartingPointsExceeded.js.map

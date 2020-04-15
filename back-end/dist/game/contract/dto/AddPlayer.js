@@ -7,5 +7,5 @@ class PlayerData {
         this.userName = userName;
     }
 }
-exports.default = PlayerData;
+exports.PlayerData = PlayerData;
 //# sourceMappingURL=AddPlayer.js.map

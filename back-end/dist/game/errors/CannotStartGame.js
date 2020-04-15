@@ -1,13 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const GameError_1 = __importDefault(require("./GameError"));
-const ErrorType_1 = __importDefault(require("./ErrorType"));
-class CannotStartGame extends GameError_1.default {
+const tr_common_1 = require("tr-common");
+const _1 = require(".");
+class CannotStartGame extends _1.GameError {
     constructor(reason) {
-        super(ErrorType_1.default.CANNOT_START_GAME, "Cannot Start Game");
+        super(tr_common_1.ErrorType.CANNOT_START_GAME, undefined, "Cannot start game");
         this.reason = reason;
     }
 }

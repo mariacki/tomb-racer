@@ -7,5 +7,5 @@ class Movement {
         this.path = path;
     }
 }
-exports.default = Movement;
+exports.Movement = Movement;
 //# sourceMappingURL=Movement.js.map

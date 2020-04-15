@@ -1,10 +1,7 @@
-import GameError from './GameError';
-import { 
-    ErrorType,
-    UserNotFoundInGame
-} from 'tr-common/events';
+import { GameError } from '.';
+import { ErrorType, UserNotFoundInGame } from 'tr-common';
 
-export default class UserNotFound extends GameError implements UserNotFoundInGame
+export class UserNotFound extends GameError implements UserNotFoundInGame
 {
     searchedUser: string;
 

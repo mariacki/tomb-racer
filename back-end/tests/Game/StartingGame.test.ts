@@ -1,9 +1,11 @@
 import 'mocha';
 import assert from 'assert';
-import { contract, Tiles } from '../../src/game';
+import { CreateGame } from '../../src/game/contract/dto';
+import { Tiles } from '../../src/game/model/tile'
 import { GameTestContext, UserExample } from './GameTestContext';
-import { EventType } from '../../src/game/contract/Events';
-import { UserNotFoundInGame, CannotStartGame, ErrorType } from 'tr-common/events';
+import { EventType, Turn } from 'tr-common';
+import { ErrorType } from 'tr-common/events';
+import { TurnStartedEvent } from '../../src/game/events';
 
 describe('Starting the game', () => {
     const ctx = new GameTestContext();
@@ -23,7 +25,7 @@ describe('Starting the game', () => {
     })
 
     it ('cannot be done by the user that is not in the game', () => {
-        const gameDef = new contract.DTO.CreateGame("Some Game");
+        const gameDef = new CreateGame("Some Game");
         ctx.gameService.createGame(gameDef, defaultBoard);
 
         assert.throws(() => {
@@ -37,7 +39,7 @@ describe('Starting the game', () => {
     }), 
 
     it ('cannot be done by the same user twice', () => {
-        const gameDef = new contract.DTO.CreateGame("Some game");
+        const gameDef = new CreateGame("Some game");
         ctx.gameService.createGame(gameDef, defaultBoard); 
 
         ctx.gameService.addPlayer(UserExample.first);
@@ -54,7 +56,7 @@ describe('Starting the game', () => {
     })
 
     it ('only can be done when all player request start the game', () => {
-        const gameDef = new contract.DTO.CreateGame("some-game");
+        const gameDef = new CreateGame("some-game");
         ctx.gameService.createGame(gameDef, defaultBoard);
         ctx.gameService.addPlayer(UserExample.first);
         ctx.gameService.addPlayer(UserExample.second);
@@ -83,23 +85,23 @@ describe('Starting the game', () => {
         ctx.startGame();
 
         const events = ctx.eventDispatcher.dispatchedEvents;
-        assert.equal(events[4].type, EventType.GAME_STARTED);
-        assert.equal(events[4].data.gameId, "id1")
+        assert.equal(events[4].type, EventType.NEXT_TURN);
+        assert.equal(events[4].origin, "id1")
     })
 
     it ('sets turn to the current user', () => {
         ctx.randomResult = 5
-        const expectedTurn = {
-            userId: UserExample.first.userId,
-            actionPoints: 3, 
+        const expectedTurn: Turn = {
+            currentlyPlaying: UserExample.first.userId,
             stepPoints: ctx.randomResult
         }
+        
         ctx.startGame();
         
         const game = ctx.gameRepositorySpy.persistedGames[0];
-        const event = ctx.eventDispatcher.dispatchedEvents[4];
-
-        assert.deepEqual(game.currentTurn, expectedTurn);
-        assert.deepEqual(event.data.turn, expectedTurn);
+        const event: any = ctx.eventDispatcher.eventsByType.get(EventType.NEXT_TURN)[0];
+        
+        assert.deepEqual(game.currentTurn.currentlyPlaying, UserExample.first.userId);
+        assert.deepEqual(event.turn, expectedTurn);
     })
 })

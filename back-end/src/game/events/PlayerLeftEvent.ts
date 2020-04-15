@@ -1,11 +1,15 @@
-import { Event, EventType } from './../contract/Events';
+import { PlayerLeft, EventType } from 'tr-common';
 
-export default class PlayerLeftEvent extends Event
+export class PlayerLeftEvent implements PlayerLeft
 {
+    isError: boolean = false;
+    type: EventType = EventType.PLAYER_LEFT;
+    origin: string;
+    
+    userId: string;
+
     constructor(userId: string, gameId: string) {
-        super(EventType.PLAYER_LEFT, {
-            gameId,
-            userId
-        });
+        this.origin = gameId;
+        this.userId = userId;   
     }
 }

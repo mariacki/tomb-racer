@@ -1,14 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-const CreateGame_1 = __importDefault(require("./CreateGame"));
-exports.CreateGame = CreateGame_1.default;
-const AddPlayer_1 = __importDefault(require("./AddPlayer"));
-exports.PlayerData = AddPlayer_1.default;
-const Movement_1 = __importDefault(require("./Movement"));
-exports.Movement = Movement_1.default;
-const Position_1 = __importDefault(require("./Position"));
-exports.Position = Position_1.default;
+__export(require("./AddPlayer"));
+__export(require("./CreateGame"));
+__export(require("./Movement"));
+__export(require("./Position"));
 //# sourceMappingURL=index.js.map

@@ -1,12 +1,14 @@
 import 'mocha';
 import assert from 'assert';
-import { contract, Tiles } from './../../src/game';
+import { Tiles } from './../../src/game/model/tile';
 import { GameTestContext } from './GameTestContext';
+import { CreateGame } from '../../src/game/contract'
 import { 
     GameNameDuplicated, 
     ErrorType,
     MinNumberOfStartingPointsNotReached
 } from 'tr-common/events';
+import { EventType } from 'tr-common';
 
 describe('New Game', () => {
     const ctx = new GameTestContext();
@@ -23,8 +25,8 @@ describe('New Game', () => {
     
     describe('Validation', () => {    
         it('shoudl not create game if name is not unique', () => {
-            const firstGame = new contract.DTO.CreateGame("a name");
-            const secondGame = new contract.DTO.CreateGame("a name");
+            const firstGame = new  CreateGame("a name");
+            const secondGame = new  CreateGame("a name");
 
             assert.throws(() => {
                 ctx.gameService.createGame(firstGame, validBoard);
@@ -39,7 +41,7 @@ describe('New Game', () => {
         })
 
         it ('cannot be created with board without at least two starting points', () => {
-            const gameDef = new contract.DTO.CreateGame("Some game");
+            const gameDef = new  CreateGame("Some game");
 
             assert.throws(() => {
                 ctx.gameService.createGame(gameDef, [[Tiles.startingPoint()]])
@@ -55,7 +57,7 @@ describe('New Game', () => {
 
     describe('Newly Created Game', () => {
         it ('has unique id', () => {
-            const someGame = new contract.DTO.CreateGame('Game name');
+            const someGame = new  CreateGame('Game name');
 
             ctx.gameService.createGame(someGame, validBoard);
 
@@ -64,7 +66,7 @@ describe('New Game', () => {
         })
 
         it ('has empty player list', () => {
-            const someGame = new contract.DTO.CreateGame("Game name");
+            const someGame = new  CreateGame("Game name");
 
             ctx.gameService.createGame(someGame, validBoard);
 
@@ -73,7 +75,7 @@ describe('New Game', () => {
         })
 
         it ('has WAITING FOR PLAYERS state', () => {
-            const someGame = new contract.DTO.CreateGame("Game name");
+            const someGame = new  CreateGame("Game name");
 
             ctx.gameService.createGame(someGame, validBoard);
 
@@ -82,14 +84,13 @@ describe('New Game', () => {
         })
 
         it ('dispatches the GAME_CREATED event', () => {
-            const someGame = new contract.DTO.CreateGame("Game name");
+            const someGame = new  CreateGame("Game name");
             const expectedEvent = {
-                type: contract.events.EventType.GAME_CREATED,
-                data: {
-                    gameId: "id1",
-                    gameName: "Game name",
-                    numberOfPlayers: 0
-                }
+                isError: false,
+                type: EventType.GAME_CREATED,
+                origin: "id1",
+                gameName: "Game name",
+                numberOfPlayers: 0
             }
 
             ctx.gameService.createGame(someGame, validBoard);

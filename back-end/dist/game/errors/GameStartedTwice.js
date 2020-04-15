@@ -1,15 +1,12 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ErrorType_1 = __importDefault(require("./ErrorType"));
-const GameError_1 = __importDefault(require("./GameError"));
-class GameStartedTwice extends GameError_1.default {
-    constructor(userId) {
-        super(ErrorType_1.default.GAME_STARTED_TWICE, "Game started twice by a single user");
+const tr_common_1 = require("tr-common");
+const _1 = require(".");
+class GameStartedTwice extends _1.GameError {
+    constructor(userId, gameId) {
+        super(tr_common_1.ErrorType.GAME_STARTED_TWICE, gameId, "Game started twice by a single user");
         this.userId = userId;
     }
 }
-exports.default = GameStartedTwice;
+exports.GameStartedTwice = GameStartedTwice;
 //# sourceMappingURL=GameStartedTwice.js.map

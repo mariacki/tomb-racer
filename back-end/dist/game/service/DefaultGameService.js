@@ -3,11 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("./../errors");
-const events_1 = require("./../events");
-const model_1 = require("./../model");
-const Board_1 = require("../model/Board");
-const PlayerLeftEvent_1 = __importDefault(require("../events/PlayerLeftEvent"));
+const errors_1 = require("../errors");
+const tr_common_1 = require("tr-common");
+const model_1 = require("../model");
+const events_1 = require("../events");
 const CannotStartGame_1 = __importDefault(require("../errors/CannotStartGame"));
 class DefaultGameService {
     constructor(context) {
@@ -31,19 +30,19 @@ class DefaultGameService {
     }
     createGame(data, board) {
         if (data.gameName == "") {
-            throw new errors_1.ValidationError(errors_1.ErrorType.FIELD_REQUIRED, "gameName");
+            throw new errors_1.ValidationError(tr_common_1.ErrorType.FIELD_REQUIRED, "gameName");
         }
         if (this.gameRepository.hasGameWithName(data.gameName)) {
             throw this.gameDuplicated(data.gameName);
         }
-        const newGame = new model_1.Game(this.idProvider.newId(), data.gameName, new Board_1.Board(board));
+        const newGame = new model_1.Game(this.idProvider.newId(), data.gameName, new model_1.Board(board));
         this.gameRepository.add(newGame);
         this.eventDispatcher.dispatch(new events_1.GameCreatedEvent(newGame));
     }
     gameDuplicated(name) {
         return {
             isError: true,
-            type: errors_1.ErrorType.FIELD_NOT_UNIQUE,
+            type: tr_common_1.ErrorType.FIELD_NOT_UNIQUE,
             origin: undefined,
             message: "Game with this name already exists.",
             gameName: name
@@ -57,7 +56,7 @@ class DefaultGameService {
         const player = new model_1.Player(addPlayerRequest.userId, addPlayerRequest.userName);
         game.addPlayer(player);
         this.gameRepository.persist(game);
-        this.eventDispatcher.dispatch(new events_1.PlayerJoinedEvent(player, game.id));
+        this.eventDispatcher.dispatch(new events_1.PlayerJoinedEvent(game.id, player));
     }
     removePlayer(removePlayer) {
         const game = this.gameRepository.findById(removePlayer.gameId);
@@ -66,7 +65,7 @@ class DefaultGameService {
         }
         game.removePlayer(removePlayer.userId);
         this.gameRepository.persist(game);
-        this.eventDispatcher.dispatch(new PlayerLeftEvent_1.default(removePlayer.userId, game.id));
+        this.eventDispatcher.dispatch(new events_1.PlayerLeftEvent(removePlayer.userId, game.id));
     }
     startRequest(player) {
         try {

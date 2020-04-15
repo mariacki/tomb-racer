@@ -1,11 +1,7 @@
-import { 
-    ErrorType,
-    MinNumberOfStartingPointsNotReached
-} from 'tr-common/events';
+import { ErrorType, MinNumberOfStartingPointsNotReached } from 'tr-common';
+import { GameError } from '.';
 
-import GameError from './GameError';
-
-export default class InvalidBoard extends GameError implements MinNumberOfStartingPointsNotReached
+export class InvalidBoard extends GameError implements MinNumberOfStartingPointsNotReached
 {
     minNumberOfStartingPoints: number = 2;
     

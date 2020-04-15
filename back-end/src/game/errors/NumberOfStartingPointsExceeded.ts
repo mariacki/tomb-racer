@@ -1,10 +1,7 @@
-import { 
-    ErrorType,
-    StartingPointsExceeded
-} from 'tr-common/events';
-import GameError from './GameError';
+import { ErrorType, StartingPointsExceeded } from 'tr-common';
+import { GameError } from '.';
 
-export default class NumberOfStartingPointsExceeded extends GameError implements StartingPointsExceeded
+export class NumberOfStartingPointsExceeded extends GameError implements StartingPointsExceeded
 {
     maxNumberOfPlayers: number;
 

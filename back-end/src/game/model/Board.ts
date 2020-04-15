@@ -1,28 +1,28 @@
-import Position from '../contract/dto/Position';
-import {Tile, TileType} from './tile/Tile'
-import { boardDefinition } from '../contract'
-import { NumberOfStartingPointsExceeded } from '../errors';
-import InvalidBoard from '../errors/InvalidBoard';
-import InvalidPath from '../errors/InvalidPath';
-import { TileState } from '../contract/dto/GameState';
-import PathValidationResult from './PathValidationResult';
+import { Position } from '../contract';
+import { Tile } from './tile';
+import { TileType, Tile as TileState, Board as BoardState } from 'tr-common';
+import { InvalidBoard } from '../errors'
+import { PathValidationResult } from './PathValidationResult';
+import { TilePosition } from './tile/TilePosition';
 
 class StartingPoint
 {
     isFree: boolean = true;
-    pos: Position;
+    pos: TilePosition;
 
-    constructor(pos: Position) {
+    constructor(pos: TilePosition) {
         this.pos = pos;
     }
 }
 
-export class Board
+export type BoardDefinition = (row: number, col: number) => Tile
+
+export class Board implements BoardState
 {
     tiles: Tile[][] = [];
     startingPoints: StartingPoint[] = [];
 
-    constructor(definition: boardDefinition[][]) {
+    constructor(definition: BoardDefinition[][]) {
         this.createTiles(definition);
         this.findStartingPoints();
 
@@ -42,7 +42,7 @@ export class Board
         return freeStartingPoints.length > 0;
     }
 
-    nextFreePosition(): Position {
+    nextFreePosition(): TilePosition {
         const isFree = (startingPoint: StartingPoint) => startingPoint.isFree;
         const freeStartingPoints = this.startingPoints.filter(isFree);
 
@@ -52,7 +52,7 @@ export class Board
         return startingPoint.pos;
     }
 
-    validatePath(path: Position[], playerPosition: Position, expectedLength: number): PathValidationResult {
+    validatePath(path: TilePosition[], playerPosition: TilePosition, expectedLength: number): PathValidationResult {
         const invalidPositions = path.filter(this.invalidPosition());
 
         if (invalidPositions.length) {
@@ -87,7 +87,7 @@ export class Board
         return this.validateAdjacency([playerPosition, ...path]);
     }
 
-    private validateAdjacency(path: Position[]): PathValidationResult {
+    private validateAdjacency(path: TilePosition[]): PathValidationResult {
         for (let i = 1; i < path.length; i++) {
             const prev = path[i - 1];
             const current = path[i];
@@ -124,9 +124,9 @@ export class Board
         return tile.isWalkable();
     }
 
-    private createTiles(definitions: boardDefinition[][]) {
-        this.tiles = definitions.map((rowDefs: boardDefinition[], row) => {
-            return [...rowDefs.map((def: boardDefinition, col) => { return def(row, col)})]
+    private createTiles(definitions: BoardDefinition[][]) {
+        this.tiles = definitions.map((rowDefs: BoardDefinition[], row) => {
+            return [...rowDefs.map((def: BoardDefinition, col) => { return def(row, col)})]
         })
     }
 
@@ -152,8 +152,8 @@ export class Board
     }
 
     toTileList(): TileState[][] {
-        return this.tiles.map((tilesRow) => {
-            return tilesRow.map((tile) => { return {type: tile.type.toString()}})
-        })
+        return this.tiles.map((row: Tile[]) => {
+            return row.map((t: Tile) => {return {type: t.type}})
+        });
     }
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"PathValidationResult.js","sourceRoot":"","sources":["../../../src/game/model/PathValidationResult.ts"],"names":[],"mappings":";;AAEA,MAAa,oBAAoB;IAK7B,YAAY,OAAgB,EAAE,WAAuB,EAAE,OAAe;QAClE,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;QACvB,IAAI,CAAC,WAAW,GAAG,WAAW,CAAC;QAC/B,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;IAC3B,CAAC;CACJ;AAVD,oDAUC"}

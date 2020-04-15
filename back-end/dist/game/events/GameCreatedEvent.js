@@ -1,21 +1,14 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const contract = __importStar(require("./../contract"));
-class GameCreatedEvent extends contract.events.Event {
+const tr_common_1 = require("tr-common");
+class GameCreatedEvent {
     constructor(game) {
-        super(contract.events.EventType.GAME_CREATED, {
-            gameId: game.id,
-            gameName: game.name,
-            numberOfPlayers: game.players.length
-        });
+        this.isError = false;
+        this.type = tr_common_1.EventType.GAME_CREATED;
+        this.origin = game.id;
+        this.gameName = game.name;
+        this.numberOfPlayers = game.players.length;
     }
 }
-exports.default = GameCreatedEvent;
+exports.GameCreatedEvent = GameCreatedEvent;
 //# sourceMappingURL=GameCreatedEvent.js.map

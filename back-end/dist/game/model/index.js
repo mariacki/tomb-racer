@@ -1,10 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-const Game_1 = __importDefault(require("./Game"));
-exports.Game = Game_1.default;
-const Player_1 = __importDefault(require("./Player"));
-exports.Player = Player_1.default;
+__export(require("./Player"));
+__export(require("./Game"));
+__export(require("./Board"));
+__export(require("./GameTurn"));
 //# sourceMappingURL=index.js.map

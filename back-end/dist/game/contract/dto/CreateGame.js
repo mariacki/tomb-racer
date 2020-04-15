@@ -5,5 +5,5 @@ class CreateGame {
         this.gameName = gameName;
     }
 }
-exports.default = CreateGame;
+exports.CreateGame = CreateGame;
 //# sourceMappingURL=CreateGame.js.map

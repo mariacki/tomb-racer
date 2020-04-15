@@ -1,10 +1,10 @@
 import 'mocha';
 import assert from 'assert';
-import { contract, Tiles } from '../../src/game';
+import { Tiles } from '../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
-import { EventType } from '../../src/game/contract/Events';
+import { EventType, ErrorType } from 'tr-common';
 import { GameNotFound } from '../../src/game/errors';
-import { ErrorType } from 'tr-common/events';
+import { CreateGame } from '../../src/game/contract';
 
 describe('Leaving the game', () => {
     const ctx = new GameTestContext();
@@ -14,19 +14,19 @@ describe('Leaving the game', () => {
     
     describe('Leaving the game in general', () => {
         it ('does not allow to player to leave if game does not exists', () => {
-            ctx.gameService.createGame(new contract.DTO.CreateGame("First Game"), defaultBoard);
+            ctx.gameService.createGame(new CreateGame("First Game"), defaultBoard);
             
             assert.throws(() => {
                 ctx.gameService.removePlayer(UserExample.invalidGameId);
             }, (err: GameNotFound) => {
-                assert.equal(err.type, ErrorType.GAME_NOT_FOUND);
-                assert.equal(err.gameId, "non-existing")
+                assert.equal(err.type, ErrorType.GAME_NOT_FOUND);111
+                assert.equal(err.origin, "non-existing")
                 return true;
             })
         })
 
         it ('removes player from the list', () => {
-            const gameDef = new contract.DTO.CreateGame("Some Name");
+            const gameDef = new  CreateGame("Some Name");
             ctx.gameService.createGame(gameDef, defaultBoard);
             ctx.gameService.addPlayer(UserExample.first);
             ctx.gameService.addPlayer(UserExample.second);
@@ -39,7 +39,7 @@ describe('Leaving the game', () => {
         })
 
         it ('sends PLAYER LEFT event', () => {
-            const gameDef = new contract.DTO.CreateGame("Some Game");
+            const gameDef = new  CreateGame("Some Game");
             ctx.gameService.createGame(gameDef, defaultBoard);
             ctx.gameService.addPlayer(UserExample.first);
 
@@ -48,11 +48,10 @@ describe('Leaving the game', () => {
             const event = ctx.eventDispatcher.dispatchedEvents[2];
 
             assert.deepEqual(event, {
+                isError: false,
                 type: EventType.PLAYER_LEFT,
-                data: {
-                    gameId: "id1",
-                    userId: UserExample.first.userId
-                }
+                origin: "id1",
+                userId: UserExample.first.userId
             })
         })
     })

@@ -1,17 +1,14 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const GameError_1 = __importDefault(require("./GameError"));
-const ErrorType_1 = __importDefault(require("./ErrorType"));
-class IncorrectPlayerAction extends GameError_1.default {
-    constructor(gameId, userThatShouldPlay, userThatTriedToPlay) {
-        super(ErrorType_1.default.INCORRECT_PLAYER_ACTION, "Inorrect Player Action");
+const _1 = require(".");
+const tr_common_1 = require("tr-common");
+class IncorrectPlayerAction extends _1.GameError {
+    constructor(gameId, playerExecutedAction, playerThatShouldExecuteAction) {
+        super(tr_common_1.ErrorType.INCORRECT_PLAYER_ACTION, undefined, "Inorrect Player Action");
         this.gameId = gameId;
-        this.userThatShouldPlay = userThatShouldPlay;
-        this.userThatTriedToPlay = userThatTriedToPlay;
+        this.playerExecutedAction = playerExecutedAction;
+        this.playerThatShouldExecuteAction = playerThatShouldExecuteAction;
     }
 }
-exports.default = IncorrectPlayerAction;
+exports.IncorrectPlayerAction = IncorrectPlayerAction;
 //# sourceMappingURL=IncorrectPlayerAction.js.map

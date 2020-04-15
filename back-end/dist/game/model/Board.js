@@ -1,11 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Tile_1 = require("./tile/Tile");
+const tr_common_1 = require("tr-common");
 const errors_1 = require("../errors");
-const InvalidPath_1 = __importDefault(require("../errors/InvalidPath"));
+const PathValidationResult_1 = require("./PathValidationResult");
 class StartingPoint {
     constructor(pos) {
         this.isFree = true;
@@ -22,58 +19,57 @@ class Board {
     }
     assertEnoughStartingPoints() {
         if (this.startingPoints.length < 2) {
-            throw MinNumberOf;
+            throw new errors_1.InvalidBoard();
         }
+    }
+    hasFreePositions() {
+        const isFree = (startingPoint) => startingPoint.isFree;
+        const freeStartingPoints = this.startingPoints.filter(isFree);
+        return freeStartingPoints.length > 0;
     }
     nextFreePosition() {
         const isFree = (startingPoint) => startingPoint.isFree;
         const freeStartingPoints = this.startingPoints.filter(isFree);
-        if (freeStartingPoints.length == 0) {
-            throw new errors_1.NumberOfStartingPointsExceeded(this.startingPoints.length);
-        }
         const startingPoint = freeStartingPoints.shift();
         startingPoint.isFree = false;
         return startingPoint.pos;
     }
     validatePath(path, playerPosition, expectedLength) {
-        const validPositions = path.filter(this.validPositions());
-        if (validPositions.length != path.length) {
-            throw new InvalidPath_1.default("Path contains invalid positions");
+        const invalidPositions = path.filter(this.invalidPosition());
+        if (invalidPositions.length) {
+            return new PathValidationResult_1.PathValidationResult(false, invalidPositions, "Paths goes through walls.");
         }
-        if (validPositions.length != expectedLength) {
-            throw new InvalidPath_1.default(`Path should have ${expectedLength} positons, given had: ${validPositions.length} positions`);
+        if (path.length != expectedLength) {
+            return new PathValidationResult_1.PathValidationResult(false, path, "Path has invalid length");
         }
         const pathFirst = path[0];
         if ((pathFirst.row == playerPosition.row) &&
             (pathFirst.col == playerPosition.col)) {
-            throw new InvalidPath_1.default("Path cannot start at player position");
+            return new PathValidationResult_1.PathValidationResult(false, [pathFirst], "Path starts at the player position");
         }
-        this.validateAdjacency([playerPosition, ...path]);
-    }
-    throwAdjacencyError(current, prev) {
-        throw new InvalidPath_1.default(`Path element: ${current.toString()} is not adjacent to ${prev.toString()}`);
+        return this.validateAdjacency([playerPosition, ...path]);
     }
     validateAdjacency(path) {
         for (let i = 1; i < path.length; i++) {
             const prev = path[i - 1];
             const current = path[i];
             if (!current.isAdjacentTo(prev)) {
-                this.throwAdjacencyError(current, prev);
+                return new PathValidationResult_1.PathValidationResult(false, [prev, current], "Path steps are not adjacent");
             }
         }
+        return new PathValidationResult_1.PathValidationResult(true, [], "Path OK");
     }
     getTilesOfPath(path) {
         return path.map((position) => {
-            console.log('In the loop of positions');
             return this.tiles[position.row][position.col];
         });
     }
     toTile() {
         return (position) => this.tiles[position.row][position.col];
     }
-    validPositions() {
+    invalidPosition() {
         return (position) => {
-            return this.isValid(position);
+            return !this.isValid(position);
         };
     }
     isValid(position) {
@@ -96,15 +92,13 @@ class Board {
         return tiles.filter(this.isStartingPoint());
     }
     isStartingPoint() {
-        return (tile) => tile.type === Tile_1.TileType.STARTING_POINT;
+        return (tile) => tile.type === tr_common_1.TileType.STARTING_POINT;
     }
     toStartingPoint() {
         return (tile) => new StartingPoint(tile.position);
     }
     toTileList() {
-        return this.tiles.map((tilesRow) => {
-            return tilesRow.map((tile) => { return { type: tile.type.toString() }; });
-        });
+        return this.tiles;
     }
 }
 exports.Board = Board;

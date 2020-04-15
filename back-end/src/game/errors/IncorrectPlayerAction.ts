@@ -1,10 +1,10 @@
-import GameError from "./GameError";
+import { GameError } from '.';
 import { 
     ErrorType,
     IncorretPlayerAction as IIncorretPlayerAction
-} from 'tr-common/events';
+} from 'tr-common';
 
-export default class IncorrectPlayerAction extends GameError implements IIncorretPlayerAction 
+export class IncorrectPlayerAction extends GameError implements IIncorretPlayerAction 
 {
     gameId: string;
     playerExecutedAction: string;

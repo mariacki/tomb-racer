@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Events_1 = require("./../contract/Events");
-class PlayerLeftEvent extends Events_1.Event {
+const tr_common_1 = require("tr-common");
+class PlayerLeftEvent {
     constructor(userId, gameId) {
-        super(Events_1.EventType.PLAYER_LEFT, {
-            gameId,
-            userId
-        });
+        this.isError = false;
+        this.type = tr_common_1.EventType.PLAYER_LEFT;
+        this.origin = gameId;
+        this.userId = userId;
     }
 }
-exports.default = PlayerLeftEvent;
+exports.PlayerLeftEvent = PlayerLeftEvent;
 //# sourceMappingURL=PlayerLeftEvent.js.map

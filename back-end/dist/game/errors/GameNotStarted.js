@@ -1,15 +1,11 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ErrorType_1 = __importDefault(require("./ErrorType"));
-const GameError_1 = __importDefault(require("./GameError"));
-class GameNotStarted extends GameError_1.default {
+const tr_common_1 = require("tr-common");
+const _1 = require(".");
+class GameNotStarted extends _1.GameError {
     constructor(gameId) {
-        super(ErrorType_1.default.GAME_NOT_STARTED_YET, "Game not started yet");
-        this.gameId = gameId;
+        super(tr_common_1.ErrorType.GAME_NOT_STARTED_YET, gameId, "Game not started yet");
     }
 }
-exports.default = GameNotStarted;
+exports.GameNotStarted = GameNotStarted;
 //# sourceMappingURL=GameNotStarted.js.map

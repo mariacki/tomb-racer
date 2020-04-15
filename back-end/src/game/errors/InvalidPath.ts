@@ -1,11 +1,7 @@
-import GameError from "./GameError";
-import { 
-    ErrorType,
-    InvalidPath as IInvalidPath
-} from 'tr-common/events';
-import { Position } from 'tr-common/data_types';
+import { GameError } from ".";
+import { Position, ErrorType, InvalidPath as IInvalidPath } from 'tr-common';
 
-export default class InvalidPath extends GameError implements IInvalidPath
+export class InvalidPath extends GameError implements IInvalidPath
 {
     invalidSteps: Position[];
 

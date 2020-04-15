@@ -1,7 +1,7 @@
 import { ErrorType, ErrorEvent } from 'tr-common/events';
-import { GameId } from 'tr-common/data_types';
 
-export default class GameError extends Error implements ErrorEvent
+
+export class GameError extends Error implements ErrorEvent
 {
     type: ErrorType;
     isError: boolean;

@@ -8,5 +8,5 @@ class Player {
         this.userName = userName;
     }
 }
-exports.default = Player;
+exports.Player = Player;
 //# sourceMappingURL=Player.js.map

@@ -1,14 +1,12 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ErrorType_1 = __importDefault(require("./ErrorType"));
-const GameError_1 = __importDefault(require("./GameError"));
-class InvalidBoard extends GameError_1.default {
+const tr_common_1 = require("tr-common");
+const _1 = require(".");
+class InvalidBoard extends _1.GameError {
     constructor() {
-        super(ErrorType_1.default.INVALID_BOARD, "Given board is invalid.");
+        super(tr_common_1.ErrorType.INVALID_BOARD, undefined, "Board does not have at least 2 stargin points");
+        this.minNumberOfStartingPoints = 2;
     }
 }
-exports.default = InvalidBoard;
+exports.InvalidBoard = InvalidBoard;
 //# sourceMappingURL=InvalidBoard.js.map
