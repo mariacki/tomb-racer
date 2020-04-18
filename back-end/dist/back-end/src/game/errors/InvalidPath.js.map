@@ -1,1 +1,0 @@
-{"version":3,"file":"InvalidPath.js","sourceRoot":"","sources":["../../../../../src/game/errors/InvalidPath.ts"],"names":[],"mappings":";;;;;AAAA,4DAAoC;AACpC,4DAAoC;AAEpC,MAAqB,WAAY,SAAQ,mBAAS;IAE9C,YAAY,OAAe;QACvB,KAAK,CAAC,mBAAS,CAAC,YAAY,EAAE,OAAO,CAAC,CAAC;IAC3C,CAAC;CACJ;AALD,8BAKC"}

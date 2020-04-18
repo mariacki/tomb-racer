@@ -8,11 +8,13 @@ export class GameCreatedEvent implements GameCreated
     origin: string;
     gameName: string;
     numberOfPlayers: number;
+    gameId: string
 
     constructor(game: Game) {
         this.isError = false;
         this.type = EventType.GAME_CREATED;
-        this.origin = game.id;
+        this.origin = undefined;
+        this.gameId = game.id;
         this.gameName = game.name;
         this.numberOfPlayers = game.players.length;
     }

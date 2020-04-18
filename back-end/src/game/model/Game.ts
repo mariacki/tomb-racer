@@ -152,7 +152,6 @@ export class Game
     }
 
     private start(env: Context) {
-        console.log("Game started");
         this.state = State.STARTED;
         this.currentTurn = new GameTurn(this.players[0].userId, env.rnd);
     }

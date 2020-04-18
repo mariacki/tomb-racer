@@ -1,1 +1,0 @@
-{"version":3,"file":"InvalidBoard.js","sourceRoot":"","sources":["../../../src/game/errors/InvalidBoard.ts"],"names":[],"mappings":";;AAAA,yCAA2E;AAC3E,wBAA8B;AAE9B,MAAa,YAAa,SAAQ,YAAS;IAIvC;QACI,KAAK,CACD,qBAAS,CAAC,aAAa,EACvB,SAAS,EACT,+CAA+C,CAClD,CAAC;QAPN,8BAAyB,GAAW,CAAC,CAAC;IAQtC,CAAC;CACJ;AAXD,oCAWC"}

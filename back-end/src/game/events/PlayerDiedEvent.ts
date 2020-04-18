@@ -4,7 +4,7 @@ import { Player } from "../model";
 export class PlayerDiedEvent implements PlayerDied
 {
     isError: boolean = false;
-    type: EventType = EventType.PLAYER_MOVED;
+    type: EventType = EventType.PLAYER_DIED;
     origin: string;
 
     userId: string;

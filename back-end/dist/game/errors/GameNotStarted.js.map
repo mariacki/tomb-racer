@@ -1,1 +1,0 @@
-{"version":3,"file":"GameNotStarted.js","sourceRoot":"","sources":["../../../src/game/errors/GameNotStarted.ts"],"names":[],"mappings":";;AAAA,yCAAqC;AACrC,wBAA8B;AAE9B,MAAa,cAAe,SAAQ,YAAS;IAEzC,YAAY,MAAc;QACtB,KAAK,CACD,qBAAS,CAAC,oBAAoB,EAC9B,MAAM,EACN,sBAAsB,CACzB,CAAC;IACN,CAAC;CACJ;AATD,wCASC"}

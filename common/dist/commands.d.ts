@@ -20,15 +20,9 @@ export interface User {
     name: string;
 }
 export interface JoinGame extends Command {
-    gameId: GameId;
-    userId: UserId;
-}
-export interface StartGame extends Command {
-    userId: UserId;
+    gameId: string;
 }
 export interface MovePlayer extends Command {
-    gameId: GameId;
-    userId: UserId;
     path: Position[];
 }
 export interface LeaveGame extends Command {

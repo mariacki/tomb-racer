@@ -1,1 +1,0 @@
-{"version":3,"file":"GameStartedTwice.js","sourceRoot":"","sources":["../../../src/game/errors/GameStartedTwice.ts"],"names":[],"mappings":";;AAAA,yCAAsE;AACtE,wBAA8B;AAE9B,MAAa,gBAAiB,SAAQ,YAAS;IAI3C,YAAY,MAAc,EAAE,MAAc;QACtC,KAAK,CACD,qBAAS,CAAC,kBAAkB,EAC5B,MAAM,EACN,qCAAqC,CACxC,CAAC;QACF,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACzB,CAAC;CACJ;AAZD,4CAYC"}

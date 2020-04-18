@@ -1,1 +1,0 @@
-{"version":3,"file":"GameNotFound.js","sourceRoot":"","sources":["../../../src/game/errors/GameNotFound.ts"],"names":[],"mappings":";;;;;AAAA,yCAEmB;AACnB,4DAAoC;AAEpC,MAAa,YAAa,SAAQ,mBAAS;IAIvC,YAAY,MAAc;QACtB,KAAK,CAAC,qBAAS,CAAC,cAAc,EAAE,SAAS,EAAE,sBAAsB,CAAC,CAAA;QAClE,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACzB,CAAC;CACJ;AARD,oCAQC"}

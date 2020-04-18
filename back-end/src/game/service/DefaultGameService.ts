@@ -1,7 +1,7 @@
 import { GameService, GameRepository, IdProvider, EventDispatcher, Context, GameList, Movement } from '../contract';
 import * as DTO from '../contract/dto';
 import { ValidationError, GameNotFound } from '../errors';
-import { Game as GameState, ErrorType, GameNameDuplicated } from 'tr-common';
+import { Game as GameState, ErrorType, GameNameDuplicated, GameInfo } from 'tr-common';
 import { Game, Board, BoardDefinition, Player } from '../model';
 import { GameCreatedEvent, PlayerJoinedEvent, PlayerLeftEvent } from '../events'
 import { CannotStartGame } from '../errors/CannotStartGame';
@@ -24,18 +24,16 @@ export class DefaultGameService implements GameService
         return this.gameRepository.findById(gameId).getState();    
     }
 
-    gameList(): GameList {
-        return {
-            games: this.gameRepository.findAll().map(game => {
-                return {
-                    gameId: game.id,
-                    gameName: game.name
-                }
-            })
-        }
+    gameList(): GameInfo[] {
+        return this.gameRepository.findAll().map(game => {
+            return {
+                id: game.id,
+                name: game.name
+            }
+        })
     }
 
-    createGame(data: DTO.CreateGame, board: BoardDefinition[][]): void {
+    createGame(data: DTO.CreateGame, board: BoardDefinition[][]): string {
 
         if (data.gameName == "") {
             throw new ValidationError(ErrorType.FIELD_REQUIRED, "gameName");
@@ -53,6 +51,7 @@ export class DefaultGameService implements GameService
         
         this.gameRepository.add(newGame)
         this.eventDispatcher.dispatch(new GameCreatedEvent(newGame));
+        return newGame.id;
     }
 
     private gameDuplicated(name: string): GameNameDuplicated {

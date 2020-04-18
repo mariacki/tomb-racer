@@ -1,15 +1,5 @@
-import {Game, Types}  from 'phaser';
+import { Client } from  './src/Client';
+import { GameController} from './src/GameController';
 
-const config: Types.Core.GameConfig = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    scene: {
-
-    }
-}
-
-const game = new Phaser.Game({
-
-});
-
+const client: Client = new Client("ws://localhost:8080");
+const controller: GameController = new GameController(client);

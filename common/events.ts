@@ -46,12 +46,24 @@ export interface Event
 export interface GameCreated extends Event
 {
     gameName: string,
+    gameId: string,
     numberOfPlayers: number
 }
 
 export interface GameFinished extends Event
 {
     userId: string   
+}
+
+export interface GameInfo {
+    id: string, 
+    name: string
+}
+
+export interface SuccessfullLogin extends Event
+{
+    games: GameInfo[],
+    userId: string;
 }
 
 export interface TurnStarted extends Event

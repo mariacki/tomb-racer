@@ -8,7 +8,6 @@ export class TurnStartedEvent implements TurnStarted {
     turn: Turn;
 
     constructor(gameId: string, turn: Turn) {
-        console.log("In event", turn);
         this.origin = gameId;
         this.turn = turn;    
     }

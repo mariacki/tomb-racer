@@ -1,1 +1,0 @@
-{"version":3,"file":"UserNotFound.js","sourceRoot":"","sources":["../../../../../src/game/errors/UserNotFound.ts"],"names":[],"mappings":";;;;;AAAA,4DAAoC;AACpC,4DAAoC;AAEpC,MAAqB,YAAa,SAAQ,mBAAS;IAI/C,YAAY,MAAc;QACtB,KAAK,CAAC,mBAAS,CAAC,cAAc,EAAE,uBAAuB,CAAC,CAAC;QACzD,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACzB,CAAC;CACJ;AARD,+BAQC"}
