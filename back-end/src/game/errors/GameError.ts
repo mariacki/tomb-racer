@@ -1,11 +1,20 @@
-import ErrorType from './ErrorType';
+import { ErrorType, ErrorEvent } from 'tr-common/events';
 
-export default class GameError extends Error
+
+export class GameError extends Error implements ErrorEvent
 {
     type: ErrorType;
-
-    constructor(type: ErrorType, message: string) {
+    isError: boolean;
+    origin: string | undefined;
+    
+    constructor(
+        type: ErrorType, 
+        origin: string = undefined, 
+        message = ""
+    ) {
         super(message);
         this.type = type;
-    }
+        this.isError = true;
+        this.origin = origin;
+    } 
 }

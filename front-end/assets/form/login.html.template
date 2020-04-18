@@ -1,0 +1,10 @@
+<div class="login-form rounded">
+    <div class="login-header rounded">
+        Logowanie
+    </div>
+    <div class="login-content">
+        <label for="login">Ksywka</label><br>
+        <input type="text" name="login", id="txt-login"><br>
+        <button id="submit-login" name="submit-login">Wejdź</button>
+    </div>
+</div>

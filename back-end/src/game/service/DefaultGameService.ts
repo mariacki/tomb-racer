@@ -1,35 +1,10 @@
-import {
-    GameService,
-    GameRepository,
-    IdProvider,
-    DTO,
-    events,
-    boardDefinition
-} from '../contract'
-
-import {
-    ValidationError,
-    ErrorType,
-    GameNotFound, 
-} from './../errors';
-
-import {
-    GameCreatedEvent,
-    PlayerJoinedEvent
-} from './../events';
-
-import {
-    Game, Player
-} from './../model';
-
-import { Board } from '../model/Board';
-import PlayerLeftEvent from '../events/PlayerLeftEvent';
-import CannotStartGame from '../errors/CannotStartGame';
-import Context  from '../contract/Context';
-import { contract } from '..';
-import { EventDispatcher } from '../contract/Events';
-import Movement from '../contract/dto/Movement';
-import { GameState, GameList } from '../contract/dto/GameState';
+import { GameService, GameRepository, IdProvider, EventDispatcher, Context, GameList, Movement } from '../contract';
+import * as DTO from '../contract/dto';
+import { ValidationError, GameNotFound } from '../errors';
+import { Game as GameState, ErrorType, GameNameDuplicated, GameInfo } from 'tr-common';
+import { Game, Board, BoardDefinition, Player } from '../model';
+import { GameCreatedEvent, PlayerJoinedEvent, PlayerLeftEvent } from '../events'
+import { CannotStartGame } from '../errors/CannotStartGame';
 
 export class DefaultGameService implements GameService
 {
@@ -49,25 +24,23 @@ export class DefaultGameService implements GameService
         return this.gameRepository.findById(gameId).getState();    
     }
 
-    gameList(): GameList {
-        return {
-            games: this.gameRepository.findAll().map(game => {
-                return {
-                    gameId: game.id,
-                    gameName: game.name
-                }
-            })
-        }
+    gameList(): GameInfo[] {
+        return this.gameRepository.findAll().map(game => {
+            return {
+                id: game.id,
+                name: game.name
+            }
+        })
     }
 
-    createGame(data: DTO.CreateGame, board: boardDefinition[][]): void {
+    createGame(data: DTO.CreateGame, board: BoardDefinition[][]): string {
 
         if (data.gameName == "") {
             throw new ValidationError(ErrorType.FIELD_REQUIRED, "gameName");
         }
 
         if (this.gameRepository.hasGameWithName(data.gameName)) {
-            throw new ValidationError(ErrorType.FIELD_NOT_UNIQUE, "gameName");
+            throw this.gameDuplicated(data.gameName);
         }
 
         const newGame = new Game(
@@ -75,9 +48,20 @@ export class DefaultGameService implements GameService
             data.gameName,
             new Board(board)
         )
-
+        
         this.gameRepository.add(newGame)
         this.eventDispatcher.dispatch(new GameCreatedEvent(newGame));
+        return newGame.id;
+    }
+
+    private gameDuplicated(name: string): GameNameDuplicated {
+        return {
+            isError: true,
+            type: ErrorType.FIELD_NOT_UNIQUE,
+            origin: undefined,
+            message: "Game with this name already exists.",
+            gameName: name
+        }
     }
 
     addPlayer(addPlayerRequest: DTO.PlayerData) {
@@ -95,7 +79,7 @@ export class DefaultGameService implements GameService
         game.addPlayer(player);
 
         this.gameRepository.persist(game);
-        this.eventDispatcher.dispatch(new PlayerJoinedEvent(player, game.id))
+        this.eventDispatcher.dispatch(new PlayerJoinedEvent(game.id, player))
     }
 
     removePlayer(removePlayer: DTO.PlayerData): void {

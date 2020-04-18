@@ -1,0 +1,35 @@
+* {
+    box-sizing: border-box;
+}
+
+.rounded {
+    border-radius: 10px;
+}
+
+.login-form {
+    width: 400px;
+    background-color: white;
+    color: black;
+    padding: 0px;
+}
+
+.login-header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: chocolate;
+    padding: 10px;
+}
+
+.login-content {
+    padding: 10px;
+}
+
+.login-content input {
+    width: 100%;
+}
+
+.login-content button {
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+}

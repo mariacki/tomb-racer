@@ -1,7 +1,6 @@
-import { EventDispatcher } from './Events';
-import { IdProvider, GameRepository, randomize } from './.';
+import { EventDispatcher, IdProvider, GameRepository, randomize } from '.';
 
-export default class Context
+export class Context
 {
     eventDispatcher: EventDispatcher;
     idProvider: IdProvider;

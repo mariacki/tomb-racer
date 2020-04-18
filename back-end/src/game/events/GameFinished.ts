@@ -1,11 +1,16 @@
-import { Event, EventType } from "../contract/Events";
-import { Player } from "../model";
+import { GameFinished, EventType } from 'tr-common';
 
-export default class GameFinished extends Event {
-    constructor(gameId: string, winner: Player) {
-        super(EventType.GAME_FINISHED, {
-            gameId,
-            winner: winner.userId
-        })
+export class GameFinishedEvent implements GameFinished {
+    
+    isError: boolean;
+    type: EventType;
+    origin: string;
+    userId: string;
+
+    constructor(gameId: string, userId: string) {
+        this.isError = false;
+        this.type = EventType.GAME_FINISHED;
+        this.origin = gameId;
+        this.userId = userId;
     }
 }

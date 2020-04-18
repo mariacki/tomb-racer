@@ -1,1 +1,0 @@
-{"version":3,"file":"Movement.js","sourceRoot":"","sources":["../../../../../../src/game/contract/dto/Movement.ts"],"names":[],"mappings":";;AAEA,MAAqB,QAAQ;IAMzB,YACI,MAAc,EACd,MAAc,EACd,IAAgB;QAEhB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;QACrB,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IACrB,CAAC;CACJ;AAfD,2BAeC"}

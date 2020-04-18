@@ -1,1 +1,0 @@
-{"version":3,"file":"PlayerDied.js","sourceRoot":"","sources":["../../../../../src/game/events/PlayerDied.ts"],"names":[],"mappings":";;AAAA,+CAAsD;AAGtD,MAAqB,UAAW,SAAQ,cAAK;IAEzC,YAAY,MAAc,EAAE,MAAc;QACtC,KAAK,CAAC,kBAAS,CAAC,WAAW,EAAE;YACzB,MAAM;YACN,MAAM,EAAE,MAAM,CAAC,MAAM;YACrB,OAAO,EAAE,MAAM,CAAC,QAAQ;SAC3B,CAAC,CAAA;IACN,CAAC;CACJ;AATD,6BASC"}

@@ -1,7 +1,4 @@
-import Game from './Game';
-import Player from './Player';
-
-export {
-    Game,
-    Player,
-}
+export * from './Player';
+export * from './Game';
+export * from './Board';
+export * from './GameTurn';

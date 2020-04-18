@@ -1,7 +1,7 @@
-import ErrorType from './ErrorType';
-import GameError from './GameError';
+import { GameError } from '.';
+import { ErrorType } from 'tr-common';
 
-export default class ValidationError extends GameError
+export class ValidationError extends GameError
 {
     field: string;
     

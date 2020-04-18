@@ -1,1 +1,0 @@
-{"version":3,"file":"PlayerLeftEvent.js","sourceRoot":"","sources":["../../../../../src/game/events/PlayerLeftEvent.ts"],"names":[],"mappings":";;AAAA,iDAAwD;AAExD,MAAqB,eAAgB,SAAQ,cAAK;IAE9C,YAAY,MAAc,EAAE,MAAc;QACtC,KAAK,CAAC,kBAAS,CAAC,WAAW,EAAE;YACzB,MAAM;YACN,MAAM;SACT,CAAC,CAAC;IACP,CAAC;CACJ;AARD,kCAQC"}

@@ -1,4 +1,4 @@
-export default class CreateGame
+export class CreateGame
 {
     gameName: string;
 

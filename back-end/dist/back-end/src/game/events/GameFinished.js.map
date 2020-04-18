@@ -1,1 +1,0 @@
-{"version":3,"file":"GameFinished.js","sourceRoot":"","sources":["../../../../../src/game/events/GameFinished.ts"],"names":[],"mappings":";;AAAA,+CAAsD;AAGtD,MAAqB,YAAa,SAAQ,cAAK;IAC3C,YAAY,MAAc,EAAE,MAAc;QACtC,KAAK,CAAC,kBAAS,CAAC,aAAa,EAAE;YAC3B,MAAM;YACN,MAAM,EAAE,MAAM,CAAC,MAAM;SACxB,CAAC,CAAA;IACN,CAAC;CACJ;AAPD,+BAOC"}

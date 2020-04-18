@@ -1,1 +1,0 @@
-{"version":3,"file":"GameStartedEvent.js","sourceRoot":"","sources":["../../../../../src/game/events/GameStartedEvent.ts"],"names":[],"mappings":";;AAAA,iDAAwD;AAGxD,MAAqB,gBAAiB,SAAQ,cAAK;IAE/C,YAAY,MAAc,EAAE,IAAU;QAClC,KAAK,CAAC,kBAAS,CAAC,YAAY,EAAE;YAC1B,MAAM;YACN,IAAI;SACP,CAAC,CAAC;IACP,CAAC;CACJ;AARD,mCAQC"}

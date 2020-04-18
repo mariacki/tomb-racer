@@ -1,1 +1,0 @@
-{"version":3,"file":"PlayerMoved.js","sourceRoot":"","sources":["../../../src/game/events/PlayerMoved.ts"],"names":[],"mappings":";;AAAA,+CAAqD;AAIrD,MAAqB,WAAY,SAAQ,cAAK;IAE1C,YACI,MAAc,EACd,MAAc,EACd,IAAgB;QAEhB,KAAK,CAAC,kBAAS,CAAC,YAAY,EAAE;YAC1B,MAAM;YACN,MAAM,EAAE,MAAM,CAAC,MAAM;YACrB,QAAQ,EAAE,MAAM,CAAC,QAAQ;YACzB,IAAI;SACP,CAAC,CAAA;IACN,CAAC;CACJ;AAdD,8BAcC"}

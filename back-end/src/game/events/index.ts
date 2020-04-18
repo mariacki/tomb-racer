@@ -1,7 +1,9 @@
-import GameCreatedEvent from './GameCreatedEvent';
-import PlayerJoinedEvent from './PlayerJoinedEvent';
-
-export {
-    GameCreatedEvent,
-    PlayerJoinedEvent
-}
+export * from './GameCreatedEvent';
+export * from './GameFinished';
+export * from './TurnStartedEvent';
+export * from './PlayerDiedEvent';
+export * from './PlayerHitEvent';
+export * from './PlayerJoinedEvent';
+export * from './PlayerLeftEvent';
+export * from './PlayerMovedEvent';
+export * from './PlayerHitEvent';

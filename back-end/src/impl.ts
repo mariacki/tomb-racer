@@ -1,55 +1,50 @@
-import Context from "./game/contract/Context";
-import { EventDispatcher, Event, EventType } from './game/contract/Events';
-import { IdProvider, GameRepository, randomize } from './game/contract';
-import { GameInMemoryRepository } from "./repository/GameInMemoryRepository";
+import * as Game from './game';
 import rnd from './rnd';
+import { EventDispatcher } from './event_dispatcher';
+import { Channels } from './channel';
 import uuid from 'uuid';
+import { GameInMemoryRepository } from './repository/GameInMemoryRepository';
+import { UserConnection } from './server';
+import { Event } from 'tr-common';
 import WebSocket from 'ws';
 
-class WsEventDispatcher implements EventDispatcher {
-    
-    channels: Map<String, WebSocket[]>;
+export class WebSocketUserConnection implements UserConnection
+{
+    id: string;
+    userName: string;
+    gameId: string;
+    conn: WebSocket;
 
-    constructor(channels: Map<String, WebSocket[]>) {
-        this.channels = channels;
+    constructor(conn: WebSocket) {
+        this.id = uuid.v4();
+        this.conn = conn;
     }
-    
-    dispatch(event: Event): void {
-        if (event.type == EventType.GAME_CREATED) {
-            this.channels.set(event.data.gameId, []);
 
-            this.channels.get("lounge").forEach((ws) => {
-                ws.send(JSON.stringify(event));
-            });
-
-        
-        }
-
-        const gameId = event.data.gameId;
-        const channel = this.channels.get(gameId);
-
-        channel.forEach((ws: WebSocket) => {
-            ws.send(JSON.stringify(event))
-        })
+    send(message: Event): void {
+        console.log("Output", message);
+        const messageString = JSON.stringify(message);
+        this.conn.send(messageString);
     }
 }
 
-class UuidIdProvider implements IdProvider
+class UuidIdProvider implements Game.IdProvider
 {
     newId(): string {
         return uuid.v4();
     }
 }
 
-export default class WebSocketContext implements Context
+export class AppContext implements Game.Context
 {
-    eventDispatcher: EventDispatcher;
-    idProvider: IdProvider;
-    rnd: randomize;
-    repository: GameRepository;
-    
-    constructor(channels: Map<String, WebSocket[]>) {
-        this.eventDispatcher = new WsEventDispatcher(channels);
+    eventDispatcher: Game.EventDispatcher;
+    idProvider: Game.IdProvider;
+    rnd: Game.randomize;
+    repository: Game.GameRepository;
+
+    constructor(
+        channels: Channels
+    ) {
+        this.eventDispatcher = new EventDispatcher(channels);
         this.idProvider = new UuidIdProvider();
         this.rnd = rnd;
         this.repository = new GameInMemoryRepository();

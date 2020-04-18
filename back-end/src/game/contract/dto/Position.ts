@@ -1,4 +1,4 @@
-export default class Position
+export class Position
 {
     row: number;
     col: number;
@@ -9,17 +9,5 @@ export default class Position
         this.col = col;
     }
 
-    isAdjacentTo(other: Position): boolean {
-        return (
-                (this.row == other.row && this.col != other.col) ||
-                (this.row != other.row && this.col == other.col) 
-            ) && (
-                (Math.abs(this.row - other.row) <= 1) &&
-                (Math.abs(this.col - other.col) <= 1) 
-            )
-    }
 
-    toString(): string {
-        return `(${this.row}, ${this.col})`
-    }
 }

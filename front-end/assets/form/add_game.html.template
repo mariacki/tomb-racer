@@ -1,0 +1,4 @@
+<div class="add-game">
+    <input type="text" name="game-name"> 
+    <button name="add">Dodaj grę</button>
+</div>

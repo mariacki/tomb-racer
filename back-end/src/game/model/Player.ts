@@ -1,12 +1,13 @@
-import { Position } from "../contract/dto";
+import { TilePosition } from './tile';
+import { Player as PlayerState } from 'tr-common';
 
-export default class Player {
+export class Player implements PlayerState{
     userId: string;
     userName: string;
     hp: number = 100;
     inventory: Array<any> = [];
-    position: Position
-    startedOn: Position
+    position: TilePosition
+    startedOn: TilePosition
 
     constructor(
         userId: string,
