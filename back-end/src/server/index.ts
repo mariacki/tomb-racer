@@ -4,12 +4,14 @@ import { Http2ServerRequest } from 'http2';
 import { SuccessfullLogin } from 'tr-common';
 
 import { board } from './board';
+import { userInfo } from 'os';
 
 export interface ChannelManager
 {
     createChannel(name: string): void;
     removeChannel(name: string): void;
     addUserToChannel(channelName: string, user: UserConnection): void;
+    removeUser(channelName: string, userId: string): void;
 }
 
 export interface UserConnection
@@ -38,6 +40,24 @@ export class Server
         channelManager: ChannelManager    
     ): Server {
         return new Server(gameService, channelManager);
+    }
+
+    connectionLost(caller: UserConnection)
+    {
+        if (caller.gameId) {
+            const playerData = new PlayerData(
+                caller.gameId,
+                caller.id,
+                caller.userName
+            ); 
+
+            this.gameService.removePlayer(playerData);
+            this.channelManager.removeUser(caller.gameId, caller.id);
+        }
+
+        if (caller.userName) {
+            this.channelManager.removeUser("lobby", caller.id);
+        }
     }
 
     handleMesage(caller: UserConnection, event: Command)

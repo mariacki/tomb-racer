@@ -6,6 +6,7 @@ const spikes = require('./../../../assets/img/spikes.png');
 const tile = require('./../../../assets/img/tile.png');
 const wall = require('./../../../assets/img/wall.png');
 const player = require('./../../../assets/img/player.png');
+const bg = require('./../../../assets/img/background.png');
 
 const TILE_SIZE = 32;
 const BOARD_OFFSET_X = 16;
@@ -44,9 +45,13 @@ export class GameScene extends Phaser.Scene
         this.load.image('wall', wall);
         this.load.image('spikes', spikes);
         this.load.image('player', player);
+        this.load.image('bg', bg);
     }
 
     create() {
+
+        //set up background
+        const bg = this.add.image(400, 300, "bg");
 
         //set up board;
         const board = this.gameController.state.game.board;

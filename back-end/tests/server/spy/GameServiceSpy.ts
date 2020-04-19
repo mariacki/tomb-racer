@@ -21,6 +21,7 @@ export class GameServiceSpy implements GameService
     startRequests: PlayerData[] = [];
     movedPlayers: Movement[] = [];
     newGameId: "id1";
+    removedPlayers: PlayerData[] = [];
 
     createGame(data: CreateGame, board: boardDefinition[][]): string {
         this.createdGames.push(data);
@@ -31,7 +32,7 @@ export class GameServiceSpy implements GameService
         this.addedPlayers.push(player);
     }
     removePlayer(player: PlayerData): void {
-        throw new Error("Method not implemented.");
+        this.removedPlayers.push(player);
     }
     startRequest(player: PlayerData): void {
         this.startRequests.push(player);

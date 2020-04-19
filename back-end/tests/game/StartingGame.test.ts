@@ -5,7 +5,6 @@ import { Tiles } from '../../src/game/model/tile'
 import { GameTestContext, UserExample } from './GameTestContext';
 import { EventType, Turn } from 'tr-common';
 import { ErrorType } from 'tr-common/events';
-import { TurnStartedEvent } from '../../src/game/events';
 
 describe('Starting the game', () => {
     const ctx = new GameTestContext();

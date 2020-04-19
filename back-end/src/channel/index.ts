@@ -14,6 +14,13 @@ class Channel
     addUser(user: UserConnection) {
         this.connections.push(user);
     }
+
+    remove(userId: string)
+    {
+        this.connections = this.connections.filter((user) => {
+            return user.id != userId;
+        })
+    }
 }
 
 export class Channels implements ChannelManager, ChannelNotifier
@@ -41,5 +48,10 @@ export class Channels implements ChannelManager, ChannelNotifier
             console.log('Undefined channel ' + channelName) 
         }
         this.channels.get(channelName).notifyAll(message);
+    }
+
+    removeUser(channelName: string, userId: string) 
+    {
+        this.channels.get(channelName).remove(userId);
     }
 }

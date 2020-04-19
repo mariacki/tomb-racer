@@ -11,16 +11,16 @@ export class GameInMemoryRepository implements GameRepository
         return gamesWithName.length > 0;
     }
 
-    add(game: Game): void {
-        this.games.push(game);
-    }
-
     findById(gameId: string): Game {
         return this.games.filter(this.byId(gameId))[0];
     }
 
     persist(game: Game): void {
-        
+        const index = this.games.findIndex(aGame => aGame.id === game.id); 
+
+        if (index < 0) {
+            this.games.push(game);
+        }
     }
 
     findAll(): Game[] {

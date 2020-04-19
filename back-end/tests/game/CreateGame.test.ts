@@ -15,13 +15,6 @@ describe('New Game', () => {
     const validBoard = [[Tiles.startingPoint(), Tiles.startingPoint()]];
 
     beforeEach(ctx.initializer());
-
-    const validationError = (type: string, field: string) => {
-        return (error: Error) => {
-            assert.deepEqual(error, {type, field});
-            return true;
-        }
-    }
     
     describe('Validation', () => {    
         it('shoudl not create game if name is not unique', () => {
@@ -32,6 +25,7 @@ describe('New Game', () => {
                 ctx.gameService.createGame(firstGame, validBoard);
                 ctx.gameService.createGame(secondGame, validBoard)
             }, (error: GameNameDuplicated) => {
+                console.log(error);
                 assert.equal(error.isError, true);
                 assert.equal(error.gameName, firstGame.gameName);
                 assert.equal(error.origin, undefined);
@@ -61,7 +55,7 @@ describe('New Game', () => {
 
             ctx.gameService.createGame(someGame, validBoard);
 
-            const game = ctx.gameRepositorySpy.addedGames[0];
+            const game = ctx.gameRepositorySpy.addedGames[0].getState();
             assert.equal(game.id, ctx.idProvider.ids[0]);
         })
 
@@ -70,17 +64,8 @@ describe('New Game', () => {
 
             ctx.gameService.createGame(someGame, validBoard);
 
-            const game = ctx.gameRepositorySpy.addedGames[0];
+            const game = ctx.gameRepositorySpy.addedGames[0].getState();
             assert.deepEqual(game.players, []);
-        })
-
-        it ('has WAITING FOR PLAYERS state', () => {
-            const someGame = new  CreateGame("Game name");
-
-            ctx.gameService.createGame(someGame, validBoard);
-
-            const game = ctx.gameRepositorySpy.addedGames[0];
-            assert.equal(game.state, "WAITING FOR PLAYERS");
         })
 
         it ('dispatches the GAME_CREATED event', () => {

@@ -52,6 +52,14 @@ export class Board implements BoardState
         return startingPoint.pos;
     }
 
+    freeStartingPoint(pos: Position): void
+    {
+        this.startingPoints.filter((s) => {
+            return s.pos.col == pos.col && 
+                s.pos.row == pos.row
+        })[0].isFree = true;
+    }
+
     validatePath(path: TilePosition[], playerPosition: TilePosition, expectedLength: number): PathValidationResult {
         const invalidPositions = path.filter(this.invalidPosition());
 

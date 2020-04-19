@@ -86,10 +86,10 @@ describe('Moving Player', () => {
 
         ctx.gameService.executeMovement(movement);
 
-        const game = ctx.gameRepositorySpy.lastPersistedGame;
+        const game = ctx.gameRepositorySpy.lastPersistedGame.getState();
         const player = game.players[0];
         const event: any = ctx.eventDispatcher.eventsByType.get(EventType.PLAYER_MOVED)[0]
-        assert.deepEqual(player.position,  new TilePosition(0, 1));
+        assert.deepEqual(player.position,  {row: 0, col: 1});
         assert.equal(event.userId, UserExample.first.userId);
         assert.deepEqual(event.pathUsed, path);
     })
@@ -114,10 +114,8 @@ describe('Moving Player', () => {
 
         ctx.gameService.executeMovement(movement);
 
-        const game = ctx.gameRepositorySpy.lastPersistedGame;
         const event: any = ctx.eventDispatcher.eventsByType.get(EventType.PLAYER_HIT)[0];
-        assert.equal(game.players[0].hp, 80);
-        assert.equal(event.origin, game.id)
+        assert.equal(event.origin, ctx.idProvider.ids[0])
         assert.equal(event.hpTaken, 20);
         assert.equal(event.currentHp, 80);
     })

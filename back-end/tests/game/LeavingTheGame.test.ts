@@ -2,7 +2,7 @@ import 'mocha';
 import assert from 'assert';
 import { Tiles } from '../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
-import { EventType, ErrorType } from 'tr-common';
+import { EventType, ErrorType, PlayerJoined } from 'tr-common';
 import { GameNotFound } from '../../src/game/errors';
 import { CreateGame } from '../../src/game/contract';
 
@@ -33,7 +33,7 @@ describe('Leaving the game', () => {
 
             ctx.gameService.removePlayer(UserExample.first);
 
-            const players = ctx.gameRepositorySpy.persistedGames[0].players;
+            const players = ctx.gameRepositorySpy.persistedGames[0].getState().players;
 
             assert.equal(players.length, 1);
         })
@@ -53,6 +53,21 @@ describe('Leaving the game', () => {
                 origin: "id1",
                 userId: UserExample.first.userId
             })
+        })
+
+        it ('reuses the starting ponts', () => {
+            const gameDef = new CreateGame("Some Game");
+            ctx.gameService.createGame(gameDef, defaultBoard);
+            ctx.gameService.addPlayer(UserExample.first);
+            ctx.gameService.addPlayer(UserExample.second);
+
+            ctx.gameService.removePlayer(UserExample.first);
+            ctx.gameService.addPlayer(UserExample.third);
+
+            const event = <PlayerJoined>ctx.eventDispatcher.eventsByType.get(EventType.PLAYER_JOINED)[2];
+
+            assert.equal(event.player.position.row, 0);
+            assert.equal(event.player.position.col, 0);
         })
     })
 })

@@ -4,8 +4,7 @@ import { GameServiceSpy } from './spy/GameServiceSpy';
 import { ChannelManagerSpy } from './spy/ChannelManagerSpy';
 import { Server } from '../../src/server';
 import { UserConnectionSpy } from './spy/UserConnectionSpy';
-import { Game, CreateGame, JoinGame, CommandType, ErrorEvent, EventType, ErrorType, GameJoined, Login, MovePlayer, Command }  from 'tr-common';
-import { boardDefinition } from '../../src/game';
+import { CreateGame, JoinGame, CommandType, EventType, GameJoined, Login, MovePlayer, Command }  from 'tr-common';
 
 describe('Server', () => {
     let gameServiceSpy: GameServiceSpy;
@@ -211,5 +210,73 @@ describe('Server', () => {
             assert.deepEqual(serviceCall.path, []);
         })
     })
-        
+
+    describe('Connection lost', () => {
+        it ('calls the game service to remove the player', () => {
+            const user = new UserConnectionSpy();
+            user.id = "some-user-id";
+            user.gameId = "some-game-id";
+            user.userName = "some-user-name";
+            
+            server.connectionLost(user);
+            
+            const serviceCall = gameServiceSpy.removedPlayers[0];
+
+            assert.equal(serviceCall.userId, user.id);
+            assert.equal(serviceCall.gameId, user.gameId);
+            assert.equal(serviceCall.userName, user.userName);
+        }),
+
+        it ('removes user connection from game channel', () => {
+            const user = new UserConnectionSpy();
+            user.id = "some-user-id";
+            user.gameId = "some-game-id";
+            user.userName = "some-user-name";
+
+
+            server.connectionLost(user);
+            
+            const serviceCall = channelManagerSpy.removedUsers[0];
+            
+            assert.equal(serviceCall.channelName, "some-game-id");
+            assert.equal(serviceCall.userId, user.id);
+        })
+
+        it ('removes user connection from lobby channel', () => {
+            const user = new UserConnectionSpy();
+            user.id = "some-user-id";
+            user.gameId = "some-game-id";
+            user.userName = "some-user-name";
+
+            server.connectionLost(user);
+
+            const serviceCall = channelManagerSpy.removedUsers[1];
+
+            assert.equal(serviceCall.channelName, "lobby");
+            assert.equal(serviceCall.userId, user.id);
+        })
+
+        it ('does not remove user from game channel when not in game', () => {
+            const user = new UserConnectionSpy();
+            user.id = "some-user-id";
+            user.userName = "some-user-name";
+
+            server.connectionLost(user);
+
+            const calls = channelManagerSpy.removedUsers;
+
+            assert.equal(calls.length, 1);
+            assert.equal(calls[0].channelName, "lobby");
+        })
+
+        it ('does not remove user form lobby channel when not logged in', () => {
+            const user = new UserConnectionSpy();
+
+            server.connectionLost(user);
+
+            const calls = channelManagerSpy.removedUsers;
+
+            assert.equal(calls.length, 0);
+        })
+    })    
 })

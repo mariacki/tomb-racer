@@ -1,0 +1,12 @@
+Front end:
+
+1. Configure front web socket via env variables. DONE
+2. Refactor the game scene in a way that it takes commands from Game Controller.
+3. Refactor the GameList scene so it handles more than 10 games at once.
+
+Back end: 
+1. Refactor board creation model - loading from files.
+2. Refactor path validation - create separate validator for each path aspect.
+3. Refactor model classes - looks like they have to many responsibilities.
+4. BUG - step points are not reusable. DONE
+5. Refactor tests so they only use publicly avialable methods not mess with internals DONE

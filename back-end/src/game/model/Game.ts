@@ -1,7 +1,7 @@
 import { Player, Board, GameTurn } from '.';
 import { NumberOfStartingPointsExceeded, GameStartedTwice, GameNotStarted, IncorrectPlayerAction, InvalidPath, UserNotFound } from '../errors';
 import { TurnStartedEvent, PlayerMovedEvent, PlayerDiedEvent, GameFinishedEvent } from '../events';
-import { Context, Movement, randomize  } from '../contract';
+import { Context, Movement } from '../contract';
 import { Game as GameState, TileType } from 'tr-common';
 import { TilePosition, Tile } from './tile';
 
@@ -15,7 +15,7 @@ export class Game
 {
     id: string
     name: string
-    players: Array<Player> = [];
+    players: Player[] = [];
     state: string;
     board: Board
     gameStartRequests: Set<String> = new Set();
@@ -46,8 +46,11 @@ export class Game
         this.players.push(player);
     }
 
-    removePlayer(userId: string) {
-        this.players = this.players.filter(this.doesNotHaveId(userId));
+    removePlayer(userId: string)
+    {
+        const removedPlayer = this.getPlayer(userId);
+        this.players = this.players.filter(this.doesNotHaveId(userId));  
+        this.board.freeStartingPoint(removedPlayer.startedOn);      
     }
 
     startRequest(userId: string, env: Context) {
@@ -75,8 +78,6 @@ export class Game
        }
     }
     
-    
-
     movment(movement: Movement, env: Context) {    
         this.assertGameStarted();
         this.assertCurrentTurn(movement);
@@ -92,9 +93,8 @@ export class Game
         });
         
         
-        if (player.hp <= 0) {
-            player.position = player.startedOn;
-            player.hp = 100;
+        if (player.hadDied()) {
+            player.restore();
             env.eventDispatcher.dispatch(new PlayerDiedEvent(this.id, player))
         } else {
             player.position = lastPosition;

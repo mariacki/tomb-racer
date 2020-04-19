@@ -22,4 +22,8 @@ webSocketServer.on("connection", (connection) => {
         const command = JSON.parse(data.toString());
         handler.handleMesage(user, command);
     })
+
+    connection.on('close', () => {
+        handler.connectionLost(user);
+    })
 })

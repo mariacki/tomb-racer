@@ -49,11 +49,10 @@ describe('Joining Game', () => {
 
             ctx.gameService.addPlayer(player);
             
-            const updatedGame = ctx.gameRepositorySpy.persistedGames[0];
+            const updatedGame = ctx.gameRepositorySpy.persistedGames[0].getState();
             const newPlayer = updatedGame.players[0];
             
             assert.equal(newPlayer.hp, 100);
-            assert.deepEqual(newPlayer.inventory, []);
             assert.equal(newPlayer.userId, player.userId);
             assert.equal(newPlayer.userName, player.userName);
         })
@@ -65,8 +64,10 @@ describe('Joining Game', () => {
             ctx.gameService.addPlayer(UserExample.first);
             ctx.gameService.addPlayer(UserExample.second);
 
-            const firstPlayer = ctx.gameRepositorySpy.persistedGames[1].players[0];
-            const secondPlayer = ctx.gameRepositorySpy.persistedGames[1].players[1];
+            const gameState = ctx.gameRepositorySpy.persistedGames[1];
+
+            const firstPlayer = gameState.players[0];
+            const secondPlayer = gameState.players[1];
 
             assert.deepEqual(firstPlayer.position, {row: 0, col: 0});
             assert.deepEqual(secondPlayer.position, {row: 0, col: 1});

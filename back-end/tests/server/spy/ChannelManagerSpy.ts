@@ -9,6 +9,11 @@ export class ChannelManagerSpy implements ChannelManager
         user: UserConnection
     }[] = [];
 
+    removedUsers: {
+        channelName: string,
+        userId: string
+    }[] = [];
+
     createChannel(name: string): void
     {
         this.createdChannels.push(name);
@@ -23,5 +28,9 @@ export class ChannelManagerSpy implements ChannelManager
         this.usersInChannels.push({
             channelName, user
         });
+    }
+
+    removeUser(channelName: string, userId: string): void {
+        this.removedUsers.push({channelName, userId});
     }
 }

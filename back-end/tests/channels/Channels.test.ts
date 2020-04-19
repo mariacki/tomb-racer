@@ -45,4 +45,18 @@ describe('Channels', () => {
         assert.equal(userA.receivedMessages.length, 1);
         assert.equal(userB.receivedMessages.length, 0);
     })
+
+    it ('removes user from channel', () => {
+        const user = new UserConnectionSpy();
+        const channel = "channel-a";
+        const channels = new Channels();
+
+        channels.createChannel(channel);
+
+        channels.addUserToChannel(channel, user);
+        channels.removeUser(channel, user.id);
+
+        channels.send(channel, event);
+        assert.equal(user.receivedMessages.length, 0);
+    })
 })

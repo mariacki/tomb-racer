@@ -16,4 +16,14 @@ export class Player implements PlayerState{
         this.userId = userId;
         this.userName = userName;
     }
+
+    hadDied(): boolean 
+    {
+        return this.hp <= 0;
+    }
+
+    restore() {
+        this.position = this.startedOn;
+        this.hp = 100;
+    }
 }
