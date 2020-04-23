@@ -6,8 +6,9 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "@types/node": "^13.11.1",
+    "@types/node": "^13.13.1",
     "phaser": "^3.22.0",
+    "src": "^1.1.2",
     "tr-common": "file:../common"
   }
 }
