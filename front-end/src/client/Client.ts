@@ -38,7 +38,7 @@ export class Client
         return this.instance;
     }
 
-    addEventListener(eventType: EventType, listener: Function)
+    on(eventType: EventType, listener: Function)
     {
         if (!this.listeners.has(eventType)) {
             this.listeners.set(eventType, [])

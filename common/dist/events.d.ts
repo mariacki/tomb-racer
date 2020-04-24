@@ -10,7 +10,8 @@ export declare enum EventType {
     PLAYER_HIT = "PLAYER-HIT",
     NEXT_TURN = "NEXT-TURN",
     PLAYER_DIED = "PLAYER-DIED",
-    GAME_FINISHED = "GAME-FINISHED"
+    GAME_FINISHED = "GAME-FINISHED",
+    GAME_REMOVED = "GAME-REMOVED"
 }
 export declare enum ErrorType {
     FIELD_REQUIRED = "FIELD REQUIRED",
@@ -35,6 +36,9 @@ export interface GameCreated extends Event {
     gameName: string;
     gameId: string;
     numberOfPlayers: number;
+}
+export interface GameRemoved extends Event {
+    gameId: string;
 }
 export interface GameFinished extends Event {
     userId: string;

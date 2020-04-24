@@ -12,4 +12,5 @@ export interface GameService
     executeMovement(movement: Movement): void;
     gameState(gameId: string): GameState
     gameList(): GameInfo[]
+    removeGame(gameId: string): void;
 }

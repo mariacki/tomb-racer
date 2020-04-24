@@ -103,4 +103,19 @@ describe('Starting the game', () => {
         assert.deepEqual(game.currentTurn.currentlyPlaying, UserExample.first.userId);
         assert.deepEqual(event.turn, expectedTurn);
     })
+
+    it ('does not have any effect on game already started', () => {
+        const gameDef = new CreateGame("Some Game");
+        ctx.gameService.createGame(gameDef, defaultBoard);
+        ctx.gameService.addPlayer(UserExample.first);
+        ctx.gameService.addPlayer(UserExample.second);
+
+        ctx.gameService.startRequest(UserExample.first);
+        ctx.gameService.startRequest(UserExample.second);
+
+        ctx.gameService.addPlayer(UserExample.third);
+        ctx.gameService.startRequest(UserExample.third);
+
+        assert.equal(ctx.eventDispatcher.eventsByType.get(EventType.NEXT_TURN).length, 1);
+    })
 })

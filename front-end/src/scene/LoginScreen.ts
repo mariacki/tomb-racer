@@ -127,7 +127,7 @@ export class LoginScreen extends Phaser.Scene
             return;
         }
 
-        this.backend.addEventListener(EventType.LOGIN_SUCCESS,(event: SuccessfullLogin) => {
+        this.backend.on(EventType.LOGIN_SUCCESS,(event: SuccessfullLogin) => {
             this.scene.start("lobby", {
                 games: event.games,
                 userId: event.userId

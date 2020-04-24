@@ -143,12 +143,16 @@ export class Game
         );
 
         if (!result.isValid) {
+            console.log(result);
             throw new InvalidPath(this.id, result.invalidPath, result.message);
         }
     }
 
-    private shouldStart(): boolean {
-        return this.players.length == this.gameStartRequests.size;
+    private shouldStart(): boolean 
+    {
+        if (this.state === State.STARTED) return;
+
+        return this.players.length === this.gameStartRequests.size;
     }
 
     private start(env: Context) {

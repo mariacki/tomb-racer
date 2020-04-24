@@ -85,10 +85,12 @@ export class GUI extends Phaser.Scene
 
         actionsElement.setAlpha(0.2);
 
-        this.backend.addEventListener(EventType.NEXT_TURN, (event: TurnStarted) => {
+        this.backend.on(EventType.NEXT_TURN, (event: TurnStarted) => {
             const player = this.state.game.players.filter(p => p.userId === event.turn.currentlyPlaying)[0];
             this.turnInfoText.text = player.userName;
             movesLeftValue.text = event.turn.stepPoints.toString();
+            actionsElement.removeInteractive();
+            actionsElement.setAlpha(0.2);
         })
 
         const emiter = this.scene.get('board').events;
@@ -104,7 +106,12 @@ export class GUI extends Phaser.Scene
             actionsElement.setInteractive();
             actionsElement.on('pointerhover', () => actionsElement.setAlpha(0.9));
             actionsElement.on('pointerout', () => actionsElement.clearAlpha());
-            actionsElement.on('pointerdown', () => this.sendMovement(path));
+            actionsElement.on('pointerdown', () =>  {
+                this.sendMovement(path)
+                actionsElement.removeInteractive();
+                actionsElement.removeAllListeners();
+                actionsElement.setAlpha(0.2);
+            });
         });
     }
 

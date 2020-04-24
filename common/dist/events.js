@@ -13,6 +13,7 @@ var EventType;
     EventType["NEXT_TURN"] = "NEXT-TURN";
     EventType["PLAYER_DIED"] = "PLAYER-DIED";
     EventType["GAME_FINISHED"] = "GAME-FINISHED";
+    EventType["GAME_REMOVED"] = "GAME-REMOVED";
 })(EventType = exports.EventType || (exports.EventType = {}));
 var ErrorType;
 (function (ErrorType) {

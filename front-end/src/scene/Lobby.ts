@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
-import { CreateGame, GameInfo, GameCreated, Game, CommandType, JoinGame, GameJoined, EventType } from 'tr-common';
+import { CreateGame, GameInfo, GameCreated, Game, CommandType, JoinGame, GameJoined, EventType, GameRemoved } from 'tr-common';
 import { Client } from '../../src/client/Client';
 import { CENTER_X, CENTER_Y, COMMON_TEXT_STYLE, INPUT_STYLE} from './consts';
 import { TextInput, TextInputConfig } from '../ui/InputText';
-
 
 const bg = require('../../assets/img/background.png');
 
@@ -38,7 +37,12 @@ export class Lobby extends Phaser.Scene
             this.createdGames.unshift({id: event.gameId, name: event.gameName}); 
         }
 
-        this.backend.addEventListener(EventType.GAME_CREATED, onGameCreated)
+        this.backend.on(EventType.GAME_CREATED, onGameCreated);
+        this.backend.on(EventType.GAME_REMOVED, (event: GameRemoved) => {
+            this.createdGames = this.createdGames.filter((game) => game.id !== event.gameId);
+
+            console.info(this.createdGames);
+        });
     }
 
     preload()
@@ -140,7 +144,7 @@ export class Lobby extends Phaser.Scene
             });
         }
 
-        this.backend.addEventListener(EventType.GAME_JOINED, onGameJoined)
+        this.backend.on(EventType.GAME_JOINED, onGameJoined)
 
         const command: JoinGame = {
             type: CommandType.JOIN_GAME,
@@ -152,6 +156,12 @@ export class Lobby extends Phaser.Scene
 
     update()
     {
+        for (let gameDisplay of this.gameDisplays)
+        {
+            gameDisplay.display.text = "";
+            gameDisplay.gameId = undefined;
+        }
+
         let i = 0;
         while (i < Math.min(this.createdGames.length, GAMES_ON_PAGE)) {
             const game = this.createdGames[i];

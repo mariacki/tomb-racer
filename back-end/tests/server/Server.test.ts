@@ -278,5 +278,28 @@ describe('Server', () => {
 
             assert.equal(calls.length, 0);
         })
+
+        it ('removes game if no users left', () => {
+            const user = new UserConnectionSpy();
+            user.id = "some-user-id";
+            user.gameId = "some-game-id";
+
+            server.connectionLost(user);
+
+            const call = gameServiceSpy.removedGames[0];
+
+            assert.equal(call, user.gameId);
+        })
+
+        it ('only removes the game when connection has gameId', () => {
+            const user = new UserConnectionSpy();
+            user.id = "some-user-id";
+
+            server.connectionLost(user);
+
+            const length = gameServiceSpy.removedGames.length;
+
+            assert.equal(length, 0);
+        })
     })    
 })

@@ -22,6 +22,7 @@ export class GameServiceSpy implements GameService
     movedPlayers: Movement[] = [];
     newGameId: "id1";
     removedPlayers: PlayerData[] = [];
+    removedGames: string[] = [];
 
     createGame(data: CreateGame, board: boardDefinition[][]): string {
         this.createdGames.push(data);
@@ -47,5 +48,9 @@ export class GameServiceSpy implements GameService
     
     gameList(): GameInfo[] {
         return this.gameListExample;
+    }
+
+    removeGame(gameId: string): void {
+        this.removedGames.push(gameId);
     }
 }

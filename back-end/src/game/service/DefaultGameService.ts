@@ -8,6 +8,7 @@ import { GameService, PlayerData, Movement } from "../contract";
 import { MovementService } from "./MovementService";
 import { Game, GameInfo, CreateGame } from "tr-common";
 import { BoardDefinition } from "../model";
+import { RemoveGameService } from "./RemoveGameService";
 
 export class DefaultGameService implements GameService
 {
@@ -18,6 +19,7 @@ export class DefaultGameService implements GameService
     private removePlayerService: RemovePlayerService
     private startGameService: StartGameService
     private movementService: MovementService
+    private removeGameService: RemoveGameService
 
     constructor(
         gameListService: GameListService,
@@ -26,7 +28,8 @@ export class DefaultGameService implements GameService
         addPlayerService: AddPlayerService,
         removePlayerService: RemovePlayerService,
         startGameService: StartGameService,
-        movementService: MovementService
+        movementService: MovementService, 
+        removeGameService: RemoveGameService
     ) {
         this.gameListService = gameListService;
         this.gameStateService = gameStateService;
@@ -35,33 +38,46 @@ export class DefaultGameService implements GameService
         this.removePlayerService = removePlayerService;
         this.startGameService = startGameService;
         this.movementService = movementService;
+        this.removeGameService = removeGameService;
     }
 
-    gameState(gameId: string): Game {
+    gameState(gameId: string): Game 
+    {
         return this.gameStateService.gameState(gameId);    
     }
 
-    gameList(): GameInfo[] {
+    gameList(): GameInfo[] 
+    {
         return this.gameListService.gameList();
     }
 
-    createGame(data: CreateGame, board: BoardDefinition[][]): string {
+    createGame(data: CreateGame, board: BoardDefinition[][]): string 
+    {
         return this.createGameService.createGame(data, board);
     }
 
-    addPlayer(addPlayerRequest: PlayerData) {
+    addPlayer(addPlayerRequest: PlayerData) 
+    {
         this.addPlayerService.addPlayer(addPlayerRequest);
     }
 
-    removePlayer(removePlayer: PlayerData): void {
+    removePlayer(removePlayer: PlayerData): void 
+    {
         this.removePlayerService.removePlayer(removePlayer);
     }
 
-    startRequest(player: PlayerData): void {
+    startRequest(player: PlayerData): void
+    {
         this.startGameService.startRequest(player);
     }
 
-    executeMovement(movement: Movement): void {
+    executeMovement(movement: Movement): void
+    {
         this.movementService.executeMovement(movement);
+    }
+
+    removeGame(gameId: string): void 
+    {   
+        this.removeGameService.removeGame(gameId);
     }
 }

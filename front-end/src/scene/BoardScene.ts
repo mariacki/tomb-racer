@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import { Position, TileType, Tile, Game, Player, PlayerJoined, EventType, TurnStarted } from 'tr-common';
+import Phaser, { Scene } from 'phaser';
+import { Position, TileType, Tile, Game, Player, PlayerJoined, EventType, TurnStarted, PlayerMoved, PlayerDied, PlayerHit, PlayerLeft } from 'tr-common';
 import { Client } from '../client/Client';
 
 export const TILE_SIZE = 32;
@@ -34,6 +34,7 @@ export class BoardScene extends Phaser.Scene
         this.createBoard();
         this.setUpPlayerSprites();
         this.setUpEvents();
+        this.players.get(this.state.userId).markAsPlayer();
     }
 
     addPlayer(player: Player)
@@ -74,11 +75,12 @@ export class BoardScene extends Phaser.Scene
 
     private setUpEvents()
     {
-        const onPlayerJoined = (event: PlayerJoined) => this.onPlayerJoined(event);
-        this.backend.addEventListener(EventType.PLAYER_JOINED, onPlayerJoined);
-
-        const onNextTurn = (event: TurnStarted) => this.onTurnStarted(event);
-        this.backend.addEventListener(EventType.NEXT_TURN, onNextTurn);        
+        this.backend.on(EventType.PLAYER_JOINED, (event: PlayerJoined) => this.onPlayerJoined(event));
+        this.backend.on(EventType.NEXT_TURN, (event: TurnStarted) => this.onTurnStarted(event));        
+        this.backend.on(EventType.PLAYER_MOVED, (event: PlayerMoved) => this.onPlayerMoved(event));
+        this.backend.on(EventType.PLAYER_DIED, (event: PlayerDied) => this.onPlayerDied(event));
+        this.backend.on(EventType.PLAYER_HIT, (event: PlayerHit) => this.onPlayerHit(event));
+        this.backend.on(EventType.PLAYER_LEFT, (event: PlayerLeft) => this.onPlayerLeft(event));
     }
 
     private onPlayerJoined(event: PlayerJoined)
@@ -89,20 +91,51 @@ export class BoardScene extends Phaser.Scene
 
     private onTurnStarted(event: TurnStarted)
     {
+        this.board.clearCurrentPath();
+
         if (this.state.userId === event.turn.currentlyPlaying) {
             const player = this.players.get(event.turn.currentlyPlaying);
             this.board.activatePathSelection(player.getBoardPosition(), event.turn.stepPoints);
         }
+    }
+
+    private onPlayerMoved(event: PlayerMoved)
+    {
+        const player = this.players.get(event.userId);
+
+        player.movePath(event.pathUsed);
+    }
+
+    private onPlayerDied(event: PlayerDied)
+    {
+        const player = this.players.get(event.userId);
+
+        player.movePath([event.movedTo]);
+        player.setHp(event.hp, 100);
+    }
+
+    private onPlayerHit(event: PlayerHit)
+    {
+        
+        this.players.get(event.userId).setHp(event.currentHp, event.hpTaken);
+    }
+
+    private onPlayerLeft(event: PlayerLeft)
+    {
+        const player = this.players.get(event.userId);
+        player.destroy();
+
+        this.players.delete(event.userId);
     }
 }
 
 class PathElement
 {
     readonly position: Position;
-    readonly dot: Phaser.GameObjects.Graphics;
+    readonly dot: Phaser.GameObjects.Sprite;
 
     constructor(
-        graphics: Phaser.GameObjects.Graphics,
+        scene: Phaser.Scene,
         position: Position,
         boardX: number,
         boardY: number,
@@ -111,8 +144,11 @@ class PathElement
         const dotX = boardX + position.col * size;
         const dotY = boardY + position.row * size;
 
-        this.dot = graphics.fillCircle(dotX, dotY, 10);
-        this.dot.depth = 1000;
+        this.dot = scene.add.sprite(dotX, dotY, 'player');
+        this.dot.setAlpha(0.4);
+
+        //this.dot = graphics.fillCircle(dotX, dotY, 10);
+        //this.dot.depth = 1000;
         this.position = position;
     }
 }
@@ -127,7 +163,6 @@ class BoardTiles
     private y: number;
     private tileSize: number;
     private scene: Phaser.Scene;
-    private graphics: Phaser.GameObjects.Graphics;
 
     constructor(
         scene: Phaser.Scene,
@@ -141,18 +176,7 @@ class BoardTiles
         this.tiles = tiles;
         this.scene = scene;
         this.tileSize = tileSize;
-        this.setUpGraphics(scene);
         this.createTileSrpites(scene);
-    }
-
-    private setUpGraphics(scene: Phaser.Scene)
-    {
-        this.graphics = scene.add.graphics({
-            fillStyle: {
-                color: 0xFF0000,
-                alpha: 1
-            }
-        })
     }
 
     private createTileSrpites(scene: Phaser.Scene)
@@ -167,7 +191,7 @@ class BoardTiles
         })
 
         const textures: Map<TileType, string> = new Map([
-            [TileType.FINISH_POINT, ""],
+            [TileType.FINISH_POINT, "finish"],
             [TileType.PATH, "path"],
             [TileType.SPIKES, "spikes"],
             [TileType.STARTING_POINT, "path"],
@@ -258,38 +282,30 @@ class BoardTiles
     {
         this.clearCurrentAdjacents();
 
-        moves -= 1;
-        this.scene.events.emit('path-elem-selected', moves);
-
-        if (moves === 0) {
-            this.scene.events.emit('path-selection-completed', this.currentPath.map((e) => e.position));
-            this.clearCurrentPath();
-            return;
-        }
-
-        this.activatePathSelection(position, moves);
-
-        
-
         this.currentPath.push(new PathElement(
-            this.graphics,
+            this.scene,
             position,
             this.x,
             this.y,
             this.tileSize
         ));
-    }
 
-    private clearCurrentPath()
-    {
-        for (let pathElement of this.currentPath)
-        {
-            pathElement.dot.destroy();
+        moves -= 1;
+        this.scene.events.emit('path-elem-selected', moves);
+
+        if (moves === 0) {
+            this.scene.events.emit('path-selection-completed', this.currentPath.map((e) => e.position));
+            return;
         }
 
-        this.currentPath = [];
+        this.activatePathSelection(position, moves);
     }
 
+    clearCurrentPath()
+    {
+        this.currentPath.forEach(elem => elem.dot.destroy())
+        this.currentPath = [];
+    }
 
     private clearCurrentAdjacents()
     {
@@ -310,6 +326,11 @@ class PlayerSprite
     private sprite: Phaser.GameObjects.Sprite;
     private displayId: number;
     private data: Player;
+    private size: number;
+    private boardX: number;
+    private boardY: number;
+    private scene: Scene;
+
 
     constructor(
         scene: Phaser.Scene, 
@@ -321,19 +342,23 @@ class PlayerSprite
         texture: string 
     ) {
         const textStyle = {
-            fontSize: '20px',
+            fontSize: '15px',
             color: '#000000',
-            fixedWidth: TILE_SIZE / 2,
+            fixedWidth: TILE_SIZE,
             align: "center",
             backgroundColor: '#FFFFFF'
         }
         const x = boardX + player.position.col * size;
         const y = boardY + player.position.row * size;
         
-        this.text = scene.add.text(x - size / 4, y - 1.2 * size, displayId.toString(), textStyle);
+        this.text = scene.add.text(x - size / 2, y - 1.2 * size, player.hp.toString(), textStyle);
         this.sprite = scene.add.sprite(x, y, texture);
         this.displayId = displayId;
         this.data = player;
+        this.size = size;
+        this.boardX = boardX;
+        this.boardY = boardY;
+        this.scene = scene;
     }
 
     markAsPlayer()
@@ -345,5 +370,67 @@ class PlayerSprite
     getBoardPosition(): Position
     {
         return this.data.position;
+    }
+
+    movePath(path: Position[])
+    {
+        const last = path[path.length - 1];
+        const timeline = this.scene.tweens.createTimeline();
+        this.data.position = last;
+        for (let pos of path) {
+            timeline.add({
+                targets: [this.sprite, this.text],
+                x: this.boardX + pos.col * this.size,
+                y: this.boardY + pos.row * this.size,
+                ease: 'Power1',
+                duration: 200
+            })
+        }
+
+        timeline.play();
+
+        timeline.on('complete', () => {
+            console.log('COmpleted', this.sprite.x, this.sprite.y);
+            this.text.x = this.sprite.x - this.size / 2
+            this.text.y = this.sprite.y - 1.2 * this.size;
+            
+        });
+    }
+
+    setHp(hp: Number, hpTaken: number)
+    {
+        let value = hpTaken;
+        let color = '#00FF00';
+        if (this.data.hp > hp) {
+            value = -1* hpTaken;
+            color = '#FF0000';
+        }
+        const hpTakenText = this.scene.add.text(
+            this.sprite.x + Phaser.Math.Between(0, 50), 
+            this.sprite.y + Phaser.Math.Between(-150, 50), 
+            value.toString(), {
+            color,
+            fontSize: '50px'
+        });
+        
+        const hpTakenTween = this.scene.tweens.addCounter({
+            from: 0,
+            to: 20,
+            duration: 3000,
+            onUpdate() {
+                hpTakenText.alpha -= 0.02;
+            },
+            onComplete() {
+                hpTakenText.destroy()
+            }
+        })
+
+        this.text.text = hp.toString();
+    }
+
+    destroy()
+    {
+        this.text.destroy();
+        this.sprite.destroy();
     }
 }

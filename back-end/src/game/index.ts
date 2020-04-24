@@ -7,6 +7,7 @@ import { AddPlayerService } from './service/AddPlayerService';
 import { RemovePlayerService } from './service/RemovePlayer';
 import { StartGameService } from './service/StartGameService';
 import { MovementService } from './service/MovementService';
+import { RemoveGameService } from './service/RemoveGameService';
 
 
 export * from './contract';
@@ -23,6 +24,7 @@ export const configure = (
         new RemovePlayerService(ctx.repository, ctx.eventDispatcher),
         new StartGameService(ctx.repository, ctx),
         new MovementService(ctx.repository, ctx),
+        new RemoveGameService(ctx.repository, ctx.eventDispatcher)
     )
 }
 

@@ -35,4 +35,8 @@ export class GameInMemoryRepository implements GameRepository
         return (game: Game) => { 
             return game.id == gameId };
     }
+
+    remove(gameId: string): void {
+        this.games = this.games.filter((game: Game) => game.id != gameId);
+    }
 }

@@ -6,4 +6,5 @@ export interface GameRepository
     findById(gameId: string): Game;
     persist(game: Game): void;
     findAll(): Game[];
+    remove(gameId: string): void;
 }

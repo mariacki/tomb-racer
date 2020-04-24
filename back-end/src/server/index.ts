@@ -53,6 +53,10 @@ export class Server
 
             this.gameService.removePlayer(playerData);
             this.channelManager.removeUser(caller.gameId, caller.id);
+
+            if (this.gameService.gameState(caller.gameId).players.length === 0) {
+                this.gameService.removeGame(caller.gameId);
+            }
         }
 
         if (caller.userName) {

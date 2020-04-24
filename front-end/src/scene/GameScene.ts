@@ -11,6 +11,7 @@ const player = require('../../assets/img/player.png');
 const spikes = require('../../assets/img/spikes.png');
 const tile = require('../../assets/img/tile.png');
 const wall = require('../../assets/img/wall.png');
+const finish = require('../../assets/img/finish.png');
 
 const TILE_SIZE = 32;
 const BOARD_X = TILE_SIZE / 2;
@@ -41,6 +42,7 @@ export class GameScene extends Phaser.Scene
         });
         this.load.image("path", tile);
         this.load.image("wall", wall);
+        this.load.image("finish", finish);
     }
 
     create()
