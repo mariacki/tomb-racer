@@ -6,3 +6,4 @@ front-end/dist
 common/dist
 
 ./front-end/.env.local
+front-end/.cache
