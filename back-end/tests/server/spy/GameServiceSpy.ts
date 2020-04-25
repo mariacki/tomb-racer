@@ -1,5 +1,5 @@
 import { GameService, PlayerData, Movement,  GameList, CreateGame, boardDefinition } from  './../../../src/game';
-import { Game, GameInfo } from 'tr-common';
+import { Game, GameInfo } from '../../../../common';
 
 export class GameServiceSpy implements GameService
 {
@@ -42,7 +42,7 @@ export class GameServiceSpy implements GameService
         this.movedPlayers.push(movement)
     }
 
-    gameState(gameId: string): import("tr-common").Game {
+    gameState(gameId: string): Game {
         return this.gameStateExample;
     }
     

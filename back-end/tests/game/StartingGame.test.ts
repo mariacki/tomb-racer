@@ -3,8 +3,7 @@ import assert from 'assert';
 import { CreateGame } from '../../src/game/contract/dto';
 import { Tiles } from '../../src/game/model/tile'
 import { GameTestContext, UserExample } from './GameTestContext';
-import { EventType, Turn } from 'tr-common';
-import { ErrorType } from 'tr-common/events';
+import { ErrorType, EventType, Turn } from '../../../common';
 
 describe('Starting the game', () => {
     const ctx = new GameTestContext();

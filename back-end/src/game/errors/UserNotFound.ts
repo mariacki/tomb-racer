@@ -1,5 +1,5 @@
 import { GameError } from '.';
-import { ErrorType, UserNotFoundInGame } from 'tr-common';
+import { ErrorType, UserNotFoundInGame } from '../../../../common';
 
 export class UserNotFound extends GameError implements UserNotFoundInGame
 {

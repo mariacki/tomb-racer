@@ -1,4 +1,4 @@
-import { ErrorType, ErrorEvent } from 'tr-common/events';
+import { ErrorType, ErrorEvent } from '../../../../common';
 
 
 export class GameError extends Error implements ErrorEvent

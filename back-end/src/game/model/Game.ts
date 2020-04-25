@@ -22,7 +22,7 @@ import {
 } from '../events';
 
 import { Context, Movement, PlayerData } from '../contract';
-import { Game as GameState, TileType, Event, Position } from 'tr-common';
+import { Game as GameState, TileType, Event, Position } from '../../../../common';
 import { PlayerFactory } from './PlayerFactory';
 import { Path } from './Path';
 import { PlayerCollection } from './PlayerCollection';
@@ -150,6 +150,8 @@ export class Game
         const player = this.players.getByUserId(movement.userId);
         const length = this.currentTurn.stepPoints;
         const path = new Path(movement.path, this.board, length);
+
+        
         
         events.push(...path.executeWalk(player, this));
         

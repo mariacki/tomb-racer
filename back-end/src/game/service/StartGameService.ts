@@ -1,7 +1,7 @@
 import { GameRepository, PlayerData, EventDispatcher, randomize } from "../contract";
 import { CannotStartGame } from "../errors";
 import { RepositoryService } from "./RepositoryService";
-import { Event } from 'tr-common';
+import { Event } from '../../../../common';
 
 export class StartGameService extends RepositoryService
 {

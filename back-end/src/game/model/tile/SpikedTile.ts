@@ -1,4 +1,4 @@
-import { TileType, Event } from 'tr-common';
+import { TileType, Event } from '../../../../../common';
 import { Player, Game } from '../../model';
 import { Tile } from './Tile';
 import { TilePosition } from './TilePosition';

@@ -3,9 +3,8 @@ import assert from 'assert';
 import { Tiles } from './../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { NumberOfStartingPointsExceeded } from '../../src/game/errors';
-import { ErrorType } from 'tr-common/events';
 import { CreateGame } from '../../src/game';
-import { EventType } from 'tr-common';
+import { EventType, ErrorType } from '../../../common';
 
 describe('Joining Game', () => {
     const ctx = new GameTestContext();

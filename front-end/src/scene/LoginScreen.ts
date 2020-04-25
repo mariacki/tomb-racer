@@ -1,6 +1,6 @@
 import Phaser, { Scenes } from 'phaser';
 import { Client } from '../client/Client';
-import { Login, CommandType, SuccessfullLogin, EventType } from 'tr-common';
+import { Login, CommandType, SuccessfullLogin, EventType } from '../../../common';
 import { TextInput, TextInputConfig } from '../ui/InputText';
 import { CENTER_X, CENTER_Y, COMMON_TEXT_STYLE, INPUT_STYLE } from './consts';
 

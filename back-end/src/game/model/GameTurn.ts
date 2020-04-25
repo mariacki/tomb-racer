@@ -1,5 +1,5 @@
 import { randomize } from '../contract';
-import { Turn } from 'tr-common';
+import { Turn } from '../../../../common';
 
 const CUBE_START = 1;
 const CUBE_END = 6;

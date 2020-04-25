@@ -19,7 +19,9 @@ export enum EventType {
     NEXT_TURN = "NEXT-TURN",
     PLAYER_DIED = "PLAYER-DIED",
     GAME_FINISHED = "GAME-FINISHED", 
-    GAME_REMOVED = "GAME-REMOVED"
+    GAME_REMOVED = "GAME-REMOVED",
+    BOARD_CHANGED = "BOARD-CHANGED",
+    ITEM_PICKED = "ITEM-PICKED"
 }
 
 export enum ErrorType {
@@ -37,11 +39,18 @@ export enum ErrorType {
     PATH_LENGHT_INCORRECT = "PATH LENGTH INCORRECT"
 }
 
+
+
 export interface Event
 {
     isError: boolean,
     type: EventType | ErrorType, 
     origin: GameId | undefined,
+}
+
+export interface ItemPicked extends Event
+{
+    item: string;
 }
 
 export interface GameCreated extends Event

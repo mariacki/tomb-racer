@@ -1,4 +1,4 @@
-import { PlayerLeft, EventType } from 'tr-common';
+import { PlayerLeft, EventType } from '../../../../common';
 
 export class PlayerLeftEvent implements PlayerLeft
 {

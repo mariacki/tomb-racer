@@ -1,5 +1,5 @@
 import { ChannelNotifier } from '../../../src/event_dispatcher';
-import { Event } from 'tr-common';
+import { Event } from '../../../../common';
 
 export class ChannelNotifierSpy implements ChannelNotifier
 {

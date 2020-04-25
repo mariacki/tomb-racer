@@ -1,5 +1,5 @@
 import { GameError } from ".";
-import { Position, ErrorType, InvalidPath as IInvalidPath } from 'tr-common';
+import { Position, ErrorType, InvalidPath as IInvalidPath } from '../../../../common';
 
 export class InvalidPath extends GameError implements IInvalidPath
 {

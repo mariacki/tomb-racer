@@ -2,8 +2,7 @@ import 'mocha';
 import assert from 'assert';
 import { Tiles, TilePosition } from '../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
-import { EventType, Position } from 'tr-common'
-import { ErrorType, InvalidPath } from 'tr-common';
+import { ErrorType, InvalidPath, EventType, Position} from '../../../common';
 import { Movement, CreateGame } from '../../src/game/contract';
 
 describe('Moving Player', () => {

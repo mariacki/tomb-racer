@@ -1,5 +1,5 @@
 import { TilePosition } from './tile';
-import { Player as PlayerState, Event } from 'tr-common';
+import { Player as PlayerState, Event } from '../../../../common';
 import { Board } from './Board';
 import { Path } from './Path';
 import { InvalidPath } from '../errors';

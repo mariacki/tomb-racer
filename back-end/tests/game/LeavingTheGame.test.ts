@@ -2,7 +2,7 @@ import 'mocha';
 import assert from 'assert';
 import { Tiles } from '../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
-import { EventType, ErrorType, PlayerJoined } from 'tr-common';
+import { EventType, ErrorType, PlayerJoined } from '../../../common';
 import { GameNotFound } from '../../src/game/errors';
 import { CreateGame } from '../../src/game/contract';
 

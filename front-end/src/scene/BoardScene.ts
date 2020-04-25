@@ -1,5 +1,5 @@
 import Phaser, { Scene } from 'phaser';
-import { Position, TileType, Tile, Game, Player, PlayerJoined, EventType, TurnStarted, PlayerMoved, PlayerDied, PlayerHit, PlayerLeft } from 'tr-common';
+import { Position, TileType, Tile, Game, Player, PlayerJoined, EventType, TurnStarted, PlayerMoved, PlayerDied, PlayerHit, PlayerLeft } from '../../../common';
 import { Client } from '../client/Client';
 
 export const TILE_SIZE = 32;
@@ -81,6 +81,9 @@ export class BoardScene extends Phaser.Scene
         this.backend.on(EventType.PLAYER_DIED, (event: PlayerDied) => this.onPlayerDied(event));
         this.backend.on(EventType.PLAYER_HIT, (event: PlayerHit) => this.onPlayerHit(event));
         this.backend.on(EventType.PLAYER_LEFT, (event: PlayerLeft) => this.onPlayerLeft(event));
+        this.backend.on(EventType.BOARD_CHANGED, (event: any) => {
+            this.board.replaceTile(event.position, event.tileType);
+        })
     }
 
     private onPlayerJoined(event: PlayerJoined)
@@ -179,6 +182,19 @@ class BoardTiles
         this.createTileSrpites(scene);
     }
 
+    replaceTile(position: Position, type: any)
+    {
+        console.debug("Replacing: ", position);
+        this.tiles[position.row][position.col].type = TileType.PATH;
+        this.tileSprites[position.row][position.col].destroy();
+        this.tileSprites[position.row][position.col] = this.scene.add.sprite(
+            this.x + position.col * this.tileSize,
+            this.y + position.row * this.tileSize,
+            "path"
+        );
+        this.tileSprites[position.row][position.col].depth = 0;
+    }
+
     private createTileSrpites(scene: Phaser.Scene)
     {
         const tiles = this.tiles;
@@ -195,7 +211,15 @@ class BoardTiles
             [TileType.PATH, "path"],
             [TileType.SPIKES, "spikes"],
             [TileType.STARTING_POINT, "path"],
-            [TileType.WALL, "wall"]
+            [TileType.WALL, "wall"],
+            [TileType.HOLE_ONE, "h1"],
+            [TileType.HOLE_TWO, "h2"],
+            [TileType.HOLE_THREE, "h3"],
+            [TileType.HOLE_FOUR, "h4"],
+            [TileType.KEY_ONE, "k1"],
+            [TileType.KEY_TWO, "k2"],
+            [TileType.KEY_THREE, "k3"],
+            [TileType.KEY_FOUR, "k4"]
         ])
 
         for (let i = 0; i < tiles.length; i++) {
@@ -257,14 +281,7 @@ class BoardTiles
     private isWalkable(position: Position): boolean
     {
         const tile = this.tiles[position.row][position.col];
-        const walkables = [
-            TileType.FINISH_POINT,
-            TileType.PATH,
-            TileType.SPIKES,
-            TileType.STARTING_POINT
-        ]
-
-        return walkables.includes(tile.type);
+        return tile.type !== TileType.WALL;
     }
 
     private enableClicks(position: Position, moves: number)
@@ -330,6 +347,7 @@ class PlayerSprite
     private boardX: number;
     private boardY: number;
     private scene: Scene;
+    private colors = ['#f8007e', '#f80000', '#00fff9', '#3b5d21', ]
 
 
     constructor(
@@ -341,18 +359,20 @@ class PlayerSprite
         displayId: number, 
         texture: string 
     ) {
+        console.log('color ', this.colors[displayId-1]);
         const textStyle = {
             fontSize: '15px',
             color: '#000000',
-            fixedWidth: TILE_SIZE,
             align: "center",
-            backgroundColor: '#FFFFFF'
+            backgroundColor: this.colors[displayId-1]
         }
         const x = boardX + player.position.col * size;
         const y = boardY + player.position.row * size;
-        
-        this.text = scene.add.text(x - size / 2, y - 1.2 * size, player.hp.toString(), textStyle);
+        const text = `${player.userName} (${player.hp})`;
+
+        this.text = scene.add.text(x - size / 2, y - 1.2 * size, text, textStyle);
         this.sprite = scene.add.sprite(x, y, texture);
+        this.sprite.depth = 10000;
         this.displayId = displayId;
         this.data = player;
         this.size = size;
@@ -425,7 +445,7 @@ class PlayerSprite
             }
         })
 
-        this.text.text = hp.toString();
+        this.text.text = `${this.data.userName} (${hp})`;
     }
 
     destroy()

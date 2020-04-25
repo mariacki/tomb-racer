@@ -1,4 +1,4 @@
-import { TileType, Tile as ITile, Event } from 'tr-common'
+import { TileType, Tile as ITile, Event } from '../../../../../common'
 import { Player, Board, Game } from '../../model';
 import { Context } from '../../contract';
 import { TilePosition } from './TilePosition';
@@ -15,11 +15,9 @@ export class Tile implements ITile
     }
 
     isWalkable(): boolean {
-        return this.type == TileType.PATH ||
-            this.type == TileType.STARTING_POINT ||
-            this.type == TileType.FINISH_POINT;
+        return this.type != TileType.WALL;
     }
 
     onWalkThrough(player: Player, game: Game): Event[] { return [] }
-    onPlaced(player: Player, board: Board, context: Context) {}
+    onPlaced(player: Player, game: Game): Event[] { return [] }
 }

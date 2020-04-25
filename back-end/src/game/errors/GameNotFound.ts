@@ -1,6 +1,6 @@
 import { 
     ErrorType,
-} from 'tr-common';
+} from '../../../../common';
 import { GameError } from './GameError';
 
 export class GameNotFound extends GameError

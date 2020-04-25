@@ -5,7 +5,7 @@ import { Channels } from './channel';
 import uuid from 'uuid';
 import { GameInMemoryRepository } from './repository/GameInMemoryRepository';
 import { UserConnection } from './server';
-import { Event } from 'tr-common';
+import { Event } from '../../common';
 import WebSocket from 'ws';
 
 export class WebSocketUserConnection implements UserConnection

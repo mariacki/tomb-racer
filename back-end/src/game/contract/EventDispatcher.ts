@@ -1,4 +1,4 @@
-import { Event } from 'tr-common';
+import { Event } from '../../../../common/events';
 
 export interface EventDispatcher
 {

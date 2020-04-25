@@ -2,7 +2,7 @@ import { Tile } from './Tile';
 import { SipikedTile } from './SpikedTile';
 
 import { TilePosition as Position } from './TilePosition';
-import { TileType } from 'tr-common';
+import { TileType } from '../../../../../common';
 
 export const Tiles = {
     startingPoint() {

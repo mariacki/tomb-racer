@@ -2,7 +2,7 @@ import { GameError } from '.';
 import { 
     ErrorType,
     IncorretPlayerAction as IIncorretPlayerAction
-} from 'tr-common';
+} from '../../../../common';
 
 export class IncorrectPlayerAction extends GameError implements IIncorretPlayerAction 
 {

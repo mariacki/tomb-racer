@@ -2,7 +2,7 @@ import 'mocha';
 import assert from 'assert';
 import { ChannelNotifierSpy } from './spy/ChannelNotifierSpy';
 import { EventDispatcher } from '../../src/event_dispatcher';
-import { Event, EventType } from 'tr-common';
+import { Event, EventType } from '../../../common';
 
 describe('Event Dispatcher', () => {
     let channelNotifier: ChannelNotifierSpy;

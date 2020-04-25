@@ -1,7 +1,7 @@
 import { GameRepository, CreateGame, IdProvider } from "../contract";
 import { BoardDefinition, Game, Board } from "../model";
 import { ValidationError } from "../errors";
-import { GameNameDuplicated, ErrorType } from "tr-common";
+import { GameNameDuplicated, ErrorType } from "../../../../common";
 import { EventDispatcher } from "../contract";
 import { GameCreatedEvent } from "../events";
 import { RepositoryService } from "./RepositoryService";

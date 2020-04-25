@@ -1,4 +1,4 @@
-import { Position, Event } from 'tr-common'; 
+import { Position, Event } from '../../../../common'; 
 import { Board } from './Board';
 import { TilePosition, Tile } from './tile';
 import { InvalidPath } from '../errors';
@@ -33,6 +33,7 @@ export class Path
         })
 
         player.position = this.positions[this.positions.length - 1];
+        events.push(...this.board.getTile(player.position).onPlaced(player, game));
 
         return events;
     }

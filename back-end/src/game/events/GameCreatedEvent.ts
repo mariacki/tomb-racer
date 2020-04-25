@@ -1,5 +1,5 @@
 import { Game } from '../model';
-import { EventType, GameCreated } from 'tr-common';
+import { EventType, GameCreated } from '../../../../common';
 
 export class GameCreatedEvent implements GameCreated 
 {

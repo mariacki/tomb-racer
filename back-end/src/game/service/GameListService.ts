@@ -1,5 +1,5 @@
 import { RepositoryService } from "./RepositoryService";
-import { GameInfo } from "tr-common";
+import { GameInfo } from "../../../../common";
 import { GameRepository } from "../contract";
 
 export class GameListService extends RepositoryService

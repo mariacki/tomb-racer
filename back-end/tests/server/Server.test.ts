@@ -4,7 +4,7 @@ import { GameServiceSpy } from './spy/GameServiceSpy';
 import { ChannelManagerSpy } from './spy/ChannelManagerSpy';
 import { Server } from '../../src/server';
 import { UserConnectionSpy } from './spy/UserConnectionSpy';
-import { CreateGame, JoinGame, CommandType, EventType, GameJoined, Login, MovePlayer, Command }  from 'tr-common';
+import { CreateGame, JoinGame, CommandType, EventType, GameJoined, Login, MovePlayer, Command }  from '../../../common';
 
 describe('Server', () => {
     let gameServiceSpy: GameServiceSpy;

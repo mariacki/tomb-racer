@@ -1,4 +1,4 @@
-import { TurnStarted, Turn, EventType } from "tr-common";
+import { TurnStarted, Turn, EventType } from "../../../../common";
 
 export class TurnStartedEvent implements TurnStarted {
     
