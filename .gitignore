@@ -9,3 +9,5 @@ common/dist
 front-end/.cache
 back-end/.nyc_output/
 dist
+node_modules/
+node_modules
