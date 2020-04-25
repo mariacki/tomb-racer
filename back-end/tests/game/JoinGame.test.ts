@@ -3,9 +3,8 @@ import assert from 'assert';
 import { Tiles } from './../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { NumberOfStartingPointsExceeded } from '../../src/game/errors';
-import { ErrorType } from 'tr-common/events';
 import { CreateGame } from '../../src/game';
-import { EventType } from 'tr-common';
+import { EventType, ErrorType } from '../../../common';
 
 describe('Joining Game', () => {
     const ctx = new GameTestContext();
@@ -64,7 +63,7 @@ describe('Joining Game', () => {
             ctx.gameService.addPlayer(UserExample.first);
             ctx.gameService.addPlayer(UserExample.second);
 
-            const gameState = ctx.gameRepositorySpy.persistedGames[1];
+            const gameState = ctx.gameRepositorySpy.persistedGames[1].getState();
 
             const firstPlayer = gameState.players[0];
             const secondPlayer = gameState.players[1];

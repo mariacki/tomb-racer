@@ -1,4 +1,4 @@
-import { Position } from 'tr-common';
+import { Position } from '../../../../../common';
 
 export class TilePosition implements Position
 {
@@ -23,4 +23,14 @@ export class TilePosition implements Position
                 (Math.abs(this.col - other.col) <= 1) 
             )
     }
+
+    equals(other: Position)
+    {
+        return ( 
+            (this.row === other.row) && 
+            (this.col === other.col)
+        );
+    }
+
+    
 }

@@ -1,4 +1,4 @@
-import { PlayerDied, EventType, Position } from "tr-common";
+import { PlayerDied, EventType, Position } from "../../../../common";
 import { Player } from "../model";
 
 export class PlayerDiedEvent implements PlayerDied

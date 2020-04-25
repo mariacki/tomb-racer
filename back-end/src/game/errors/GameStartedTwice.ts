@@ -1,4 +1,4 @@
-import { ErrorType, GameStartedTwiceBySinglePlayer } from 'tr-common';
+import { ErrorType, GameStartedTwiceBySinglePlayer } from '../../../../common/events';
 import { GameError } from '.';
 
 export class GameStartedTwice extends GameError implements GameStartedTwiceBySinglePlayer

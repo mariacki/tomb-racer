@@ -1,4 +1,4 @@
-import { PlayerHit, EventType } from "tr-common";
+import { PlayerHit, EventType } from "../../../../common";
 
 export class PlayerHitEvent implements PlayerHit
 {

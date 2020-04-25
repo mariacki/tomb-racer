@@ -1,5 +1,5 @@
 import { Game } from '../model';
-import { EventType, GameCreated } from 'tr-common';
+import { EventType, GameCreated } from '../../../../common';
 
 export class GameCreatedEvent implements GameCreated 
 {
@@ -16,6 +16,6 @@ export class GameCreatedEvent implements GameCreated
         this.origin = undefined;
         this.gameId = game.id;
         this.gameName = game.name;
-        this.numberOfPlayers = game.players.length;
+        this.numberOfPlayers = game.players.size();
     }
 }

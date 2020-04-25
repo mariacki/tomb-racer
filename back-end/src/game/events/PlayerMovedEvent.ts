@@ -1,4 +1,4 @@
-import { PlayerMoved, EventType } from "tr-common"
+import { PlayerMoved, EventType } from "../../../../common"
 import { Player } from "../model";
 import { Position } from "../contract";
 

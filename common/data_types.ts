@@ -3,7 +3,20 @@ export enum TileType {
     WALL = "WALL",
     STARTING_POINT = "STARTING_POINT",
     SPIKES = "SPIKES", 
-    FINISH_POINT = "FINISH_POINT"
+    FINISH_POINT = "FINISH_POINT",
+    
+    KEY_ONE = "K1",
+    KEY_TWO = "K2",
+    KEY_THREE = "K3",
+    KEY_FOUR = "K4",
+
+    HOLE_ONE = "H1",
+    HOLE_TWO = "H2",
+    HOLE_THREE = "H3",
+    HOLE_FOUR = "H4",
+
+    KILL_RADNOM = "K1",
+    KILL_ALL = "K2",
 }
 
 export interface Player {

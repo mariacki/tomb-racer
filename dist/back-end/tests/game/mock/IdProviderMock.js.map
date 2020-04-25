@@ -1,0 +1,1 @@
+{"version":3,"file":"IdProviderMock.js","sourceRoot":"","sources":["../../../../../back-end/tests/game/mock/IdProviderMock.ts"],"names":[],"mappings":";;AAEA,MAAa,cAAc;IAA3B;QAEI,QAAG,GAAkB,CAAC,KAAK,EAAE,KAAK,EAAE,KAAK,CAAC,CAAA;QAC1C,QAAG,GAAW,CAAC,CAAC;IAIpB,CAAC;IAHG,KAAK;QACD,OAAO,IAAI,CAAC,GAAG,CAAC,IAAI,CAAC,GAAG,EAAE,CAAC,CAAC;IAChC,CAAC;CACJ;AAPD,wCAOC"}

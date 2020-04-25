@@ -2,7 +2,7 @@ import 'mocha';
 import assert from 'assert';
 import { GameTestContext } from './GameTestContext';
 import { Tiles, CreateGame } from '../../src/game';
-import { EventType, GameRemoved } from 'tr-common';
+import { EventType, GameRemoved } from '../../../common';
 
 describe('Removing the came', () => {
     let ctx = new GameTestContext();

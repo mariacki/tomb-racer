@@ -1,5 +1,5 @@
 import { GameError } from '.';
-import { ErrorType } from 'tr-common';
+import { ErrorType } from '../../../../common';
 
 export class ValidationError extends GameError
 {

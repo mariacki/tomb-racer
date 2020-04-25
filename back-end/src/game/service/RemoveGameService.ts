@@ -1,5 +1,5 @@
 import { GameRepository, EventDispatcher } from "../contract";
-import { EventType, GameRemoved } from "tr-common";
+import { EventType, GameRemoved } from "../../../../common";
 
 export class RemoveGameService
 {

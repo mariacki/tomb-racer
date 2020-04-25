@@ -18,12 +18,9 @@ export class RemovePlayerService extends RepositoryService
     removePlayer(request: PlayerData)
     {
         const game = this.findGame(request.gameId);
-        
-        game.removePlayer(request.userId);
+        const events = game.removePlayer(request.userId);
 
         this.gameRepository.persist(game);
-        this.event.dispatch(
-            new PlayerLeftEvent(request.userId, request.gameId)
-        );
+        events.forEach(event => this.event.dispatch(event));
     }
 }

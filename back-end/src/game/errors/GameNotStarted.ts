@@ -1,4 +1,4 @@
-import { ErrorType } from 'tr-common'
+import { ErrorType } from '../../../../common'
 import { GameError } from '.';
 
 export class GameNotStarted extends GameError 

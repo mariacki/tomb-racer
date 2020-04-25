@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { CreateGame, GameInfo, GameCreated, Game, CommandType, JoinGame, GameJoined, EventType, GameRemoved } from 'tr-common';
+import { CreateGame, GameInfo, GameCreated, Game, CommandType, JoinGame, GameJoined, EventType, GameRemoved } from '../../../common';
 import { Client } from '../../src/client/Client';
 import { CENTER_X, CENTER_Y, COMMON_TEXT_STYLE, INPUT_STYLE} from './consts';
 import { TextInput, TextInputConfig } from '../ui/InputText';

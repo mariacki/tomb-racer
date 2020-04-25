@@ -1,4 +1,4 @@
-import { Event } from "tr-common";
+import { Event } from "../../../common";
 import { EventDispatcher as IEventDispatcher } from '../game';
 
 export interface ChannelNotifier

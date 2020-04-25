@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { Turn, EventType, TurnStarted, MovePlayer, CommandType, Position } from 'tr-common';
+import { Turn, EventType, TurnStarted, MovePlayer, CommandType, Position, ItemPicked } from '../../../common';
 import { Client } from '../client/Client';
 import { State } from './BoardScene';
 
@@ -91,6 +91,10 @@ export class GUI extends Phaser.Scene
             movesLeftValue.text = event.turn.stepPoints.toString();
             actionsElement.removeInteractive();
             actionsElement.setAlpha(0.2);
+        })
+
+        this.backend.on(EventType.ITEM_PICKED, (event: ItemPicked) => {
+            this.add.sprite(actionsElement.x, actionsElement.y + 50, event.item)
         })
 
         const emiter = this.scene.get('board').events;

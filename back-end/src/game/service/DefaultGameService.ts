@@ -6,7 +6,7 @@ import { RemovePlayerService } from "./RemovePlayer";
 import { StartGameService } from "./StartGameService";
 import { GameService, PlayerData, Movement } from "../contract";
 import { MovementService } from "./MovementService";
-import { Game, GameInfo, CreateGame } from "tr-common";
+import { Game, GameInfo, CreateGame } from "../../../../common";
 import { BoardDefinition } from "../model";
 import { RemoveGameService } from "./RemoveGameService";
 

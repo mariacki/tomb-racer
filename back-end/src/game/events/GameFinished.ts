@@ -1,4 +1,4 @@
-import { GameFinished, EventType } from 'tr-common';
+import { GameFinished, EventType } from '../../../../common';
 
 export class GameFinishedEvent implements GameFinished {
     

@@ -1,4 +1,4 @@
-import { ErrorType, MinNumberOfStartingPointsNotReached } from 'tr-common';
+import { ErrorType, MinNumberOfStartingPointsNotReached } from '../../../../common/events';
 import { GameError } from '.';
 
 export class InvalidBoard extends GameError implements MinNumberOfStartingPointsNotReached

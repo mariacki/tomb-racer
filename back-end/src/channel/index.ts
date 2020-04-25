@@ -1,7 +1,7 @@
 import { ChannelManager } from "../server";
 import { ChannelNotifier } from "../event_dispatcher";
 import { UserConnection } from "../server";
-import { Event } from "tr-common";
+import { Event } from "../../../common";
 
 class Channel 
 {

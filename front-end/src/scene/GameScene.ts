@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { CENTER_X, CENTER_Y } from './consts';
-import { Game, Tile, TileType, Position, GameJoined, Player, PlayerJoined, CommandType, TurnStarted, Turn } from 'tr-common';
+import { Game, Tile, TileType, Position, GameJoined, Player, PlayerJoined, CommandType, TurnStarted, Turn, EventType, GameFinished } from '../../../common';
 import { Client } from '../client/Client';
 import { BoardScene } from './BoardScene';
 import { Interface } from 'readline';
@@ -12,6 +12,18 @@ const spikes = require('../../assets/img/spikes.png');
 const tile = require('../../assets/img/tile.png');
 const wall = require('../../assets/img/wall.png');
 const finish = require('../../assets/img/finish.png');
+
+const h1 = require('../../assets/img/hole1.png');
+const h2 = require('../../assets/img/hole2.png');
+const h3 = require('../../assets/img/hole3.png');
+const h4 = require('../../assets/img/hole4.png');
+
+const k1 = require('../../assets/img/key1.png');
+const k2 = require('../../assets/img/key2.png');
+const k3 = require('../../assets/img/key3.png');
+const k4 = require('../../assets/img/key4.png');
+
+const kill_all = require('../../assets/img/kill_all.png');
 
 const TILE_SIZE = 32;
 const BOARD_X = TILE_SIZE / 2;
@@ -43,6 +55,16 @@ export class GameScene extends Phaser.Scene
         this.load.image("path", tile);
         this.load.image("wall", wall);
         this.load.image("finish", finish);
+
+        this.load.image("k1", k1);
+        this.load.image("k2", k2);
+        this.load.image("k3", k3);
+        this.load.image("k4", k4);
+
+        this.load.image("h1", h1);
+        this.load.image("h2", h2);
+        this.load.image("h3", h3);
+        this.load.image("h4", h4);
     }
 
     create()
@@ -52,6 +74,12 @@ export class GameScene extends Phaser.Scene
         this.setUpInterface();
         this.setUpGraphics();
         this.setUpStartButton();
+
+        this.backend.on(EventType.GAME_FINISHED, (event: GameFinished) => {
+            const winner = this.state.players.filter((p) => p.userId == event.userId)[0];
+
+            alert('The winner is ' + winner.userName);
+        })
     }
 
     private setUpBoard()
@@ -89,33 +117,9 @@ export class GameScene extends Phaser.Scene
 
     private setUpStartButton()
     {
-        const graphics = this.add.graphics({
-            fillStyle: {
-                color: 0xFFFFFF,
-                alpha: 0.7
-            }
-        })
-        const rect = graphics.fillRect(0, 0, 800, 600);
+        alert('Naciśnij ok aby rozpocząć!');
 
-        const text = "CLICK TO START";
-        const startButton = this.add.text(0,0, text, {
-            backgroundColor: '#FF0000',
-            color: '#000000',
-            fixedWidth: 400,
-            fixedHeight: 50,
-            align: "center",
-            fontSize: '40px'
-        })
-
-        startButton.x = CENTER_X - startButton.width / 2;
-        startButton.y = CENTER_Y - startButton.height / 2;
-        startButton.setInteractive();
-        startButton.on('pointerdown', () => {
-            rect.destroy();
-            startButton.destroy();
-            graphics.destroy();
-            this.requestGameStart();
-        })
+        this.requestGameStart();
     }
 
     private requestGameStart()

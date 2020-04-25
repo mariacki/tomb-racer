@@ -1,5 +1,5 @@
 import { CreateGame, PlayerData, Movement, GameList } from '.';
-import { Tile, Game as GameState, GameInfo } from 'tr-common';
+import { Tile, Game as GameState, GameInfo } from '../../../../common';
 
 export type boardDefinition = (row: number, col: number) => Tile;
 

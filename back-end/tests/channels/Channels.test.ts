@@ -2,7 +2,7 @@ import 'mocha';
 import assert from 'assert';
 import { Channels } from '../../src/channel';
 import { UserConnectionSpy } from '../server/spy/UserConnectionSpy';
-import { Event, EventType } from 'tr-common';
+import { Event, EventType } from '../../../common';
 
 
 

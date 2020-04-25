@@ -1,10 +1,8 @@
 import { GameService, PlayerData, Movement, Tiles } from '../game';
-import { Command, Event, CreateGame, JoinGame, EventType, CommandType, Login, Game, MovePlayer } from 'tr-common';
-import { Http2ServerRequest } from 'http2';
-import { SuccessfullLogin } from 'tr-common';
+import { Command, Event, CreateGame, JoinGame, EventType, CommandType, Login, Game, MovePlayer } from '../../../common';
+import { SuccessfullLogin } from '../../../common';
 
-import { board } from './board';
-import { userInfo } from 'os';
+import  board  from './board';
 
 export interface ChannelManager
 {
@@ -93,7 +91,7 @@ export class Server
 
     handleCreateGameCommand(caller: UserConnection, command: CreateGame)
     {
-        const gameId = this.gameService.createGame(command, board);
+        const gameId = this.gameService.createGame(command, board());
         this.channelManager.createChannel(gameId);
     }
 

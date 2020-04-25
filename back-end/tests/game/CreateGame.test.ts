@@ -7,8 +7,8 @@ import {
     GameNameDuplicated, 
     ErrorType,
     MinNumberOfStartingPointsNotReached
-} from 'tr-common/events';
-import { EventType, GameCreated } from 'tr-common';
+} from '../../../common';
+import { EventType, GameCreated } from '../../../common';
 
 describe('New Game', () => {
     const ctx = new GameTestContext();

@@ -16,7 +16,19 @@ export class MovementService extends RepositoryService
     executeMovement(movement: Movement)
     {
         const game = super.findGame(movement.gameId);
-        game.movment(movement, this.context)
+        
+        const events = [];
+        
+        events.push(...game.executeMovement(movement, this.context))
+       
+        if (game.canBeFinished())
+        {
+            events.push(...game.finish());
+        } else {
+            events.push(...game.startNextTurn(this.context.rnd(1, 6)));
+        }
+
+        events.forEach((event) => this.context.eventDispatcher.dispatch(event));
         super.persistGame(game);
     }
 }

@@ -1,4 +1,4 @@
-import { Position } from 'tr-common/data_types'; 
+import { Position } from '../../../../common'; 
 
 export class PathValidationResult {
     isValid: boolean;

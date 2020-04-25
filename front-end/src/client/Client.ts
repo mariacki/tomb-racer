@@ -11,7 +11,7 @@ import {
     PlayerHit, 
     PlayerDied, 
     GameFinished
-} from 'tr-common';
+} from '../../../common';
 
 
 export class Client

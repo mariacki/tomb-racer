@@ -3,7 +3,7 @@ import assert from 'assert';
 import { Tiles } from '../../src/game/model/tile';
 import { GameTestContext, UserExample } from './GameTestContext';
 import { Movement, Position } from '../../src/game/contract/dto';
-import { EventType } from 'tr-common';
+import { EventType } from '../../../common';
 import * as contract from '../../src/game/contract';
 
 describe('Finishing game', () => {

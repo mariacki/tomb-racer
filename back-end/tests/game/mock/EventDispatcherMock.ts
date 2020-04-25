@@ -1,5 +1,5 @@
 import { EventDispatcher } from '../../../src/game';
-import { Event } from 'tr-common';
+import { Event } from '../../../../common';
 
 
 export class EventDispatcherMock implements EventDispatcher

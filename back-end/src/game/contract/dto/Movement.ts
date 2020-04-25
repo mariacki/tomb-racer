@@ -1,4 +1,4 @@
-import { Position } from 'tr-common';
+import { Position } from '../../../../../common';
 
 export class Movement
 {

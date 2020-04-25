@@ -1,4 +1,4 @@
-import { PlayerJoined, EventType, Player } from 'tr-common';
+import { PlayerJoined, EventType, Player } from '../../../../common';
 
 export class PlayerJoinedEvent implements PlayerJoined
 {

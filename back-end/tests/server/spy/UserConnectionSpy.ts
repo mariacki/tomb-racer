@@ -1,5 +1,5 @@
 import { UserConnection } from '../../../src/server';
-import { Event } from 'tr-common';
+import { Event } from '../../../../common';
 
 export class UserConnectionSpy implements UserConnection {
     receivedMessages: Event[] = [];

@@ -1,9 +1,31 @@
-import { Player, Board, GameTurn } from '.';
-import { NumberOfStartingPointsExceeded, GameStartedTwice, GameNotStarted, IncorrectPlayerAction, InvalidPath, UserNotFound } from '../errors';
-import { TurnStartedEvent, PlayerMovedEvent, PlayerDiedEvent, GameFinishedEvent } from '../events';
-import { Context, Movement } from '../contract';
-import { Game as GameState, TileType } from 'tr-common';
-import { TilePosition, Tile } from './tile';
+import { 
+    Player, 
+    Board, 
+    GameTurn 
+} from '.';
+
+import { 
+    NumberOfStartingPointsExceeded, 
+    GameStartedTwice, 
+    GameNotStarted, 
+    IncorrectPlayerAction, 
+    UserNotFound 
+} from '../errors';
+
+import { 
+    TurnStartedEvent, 
+    PlayerMovedEvent, 
+    PlayerDiedEvent, 
+    GameFinishedEvent, 
+    PlayerJoinedEvent, 
+    PlayerLeftEvent 
+} from '../events';
+
+import { Context, Movement, PlayerData } from '../contract';
+import { Game as GameState, TileType, Event, Position } from '../../../../common';
+import { PlayerFactory } from './PlayerFactory';
+import { Path } from './Path';
+import { PlayerCollection } from './PlayerCollection';
 
 enum State {
     WAITING_FOR_USERS = "WAITING FOR PLAYERS",
@@ -15,12 +37,12 @@ export class Game
 {
     id: string
     name: string
-    players: Player[] = [];
+    players: PlayerCollection = new PlayerCollection();
     state: string;
     board: Board
     gameStartRequests: Set<String> = new Set();
     currentTurn: GameTurn;
-    currentPlayerIdx = 0;
+    currentPlayerIdx = -1;
 
     constructor(
         id: string,
@@ -33,38 +55,79 @@ export class Game
         this.state = State.WAITING_FOR_USERS;
     }
 
-    addPlayer(player: Player) {
-        if (!this.board.hasFreePositions()) {
-            throw new NumberOfStartingPointsExceeded(
-                this.board.startingPoints.length, 
-                this.id
-            );
-        }
-
-        player.position = this.board.nextFreePosition();
-        player.startedOn = player.position;
-        this.players.push(player);
-    }
-
-    removePlayer(userId: string)
+    addPlayer(playerData: PlayerData): Event[] 
     {
-        const removedPlayer = this.getPlayer(userId);
-        this.players = this.players.filter(this.doesNotHaveId(userId));  
-        this.board.freeStartingPoint(removedPlayer.startedOn);      
+        this.assertStartingPointsLeft();
+        const playerPosition = this.board.reserveStartingPoint();
+        const player = PlayerFactory.create(playerData, playerPosition);
+        this.players.push(player);
+
+        return [new PlayerJoinedEvent(this.id, player)]        
     }
 
-    startRequest(userId: string, env: Context) {
-        this.assertPlayerExists(userId);
-
-        if (this.gameStartRequests.has(userId)) {
-            throw new GameStartedTwice(userId, this.id);
+    private assertStartingPointsLeft()
+    {
+        if (!this.board.hasFreeStartingPoints())
+        {
+            throw new NumberOfStartingPointsExceeded(
+                this.board.numberOfStartingPoints(), 
+                this.id
+            )
         }
+    }
+
+    removePlayer(userId: string): Event[]
+    {
+        const removedPlayer = this.players.getByUserId(userId);
+        
+        this.players.removeHavingId(userId);  
+        this.board.freeStartingPoint(removedPlayer.startedOn);
+        
+        return [new PlayerLeftEvent(userId, this.id)]
+    }
+
+    addStartRequest(userId: string)
+    {
+        this.assertPlayerExists(userId);
+        this.assertNoStartRequestFrom(userId);
 
         this.gameStartRequests.add(userId);
+    }
 
-        if (this.shouldStart()) {
-            this.start(env);
-            env.eventDispatcher.dispatch(new TurnStartedEvent(this.id, this.currentTurn));
+    isReadyToStart(): boolean
+    {
+        if (this.state === State.STARTED) return;
+
+        return this.gameStartRequests.size === this.players.size();
+    }
+
+    start(diceRoll: number): Event[]
+    {
+        this.state = State.STARTED;
+        return this.startNextTurn(diceRoll);
+    }
+
+    startNextTurn(diceRoll: number): Event[]
+    {        
+        const player = this.nextPlayer();
+        this.currentTurn = new GameTurn(player.userId, diceRoll)
+        
+        return [new TurnStartedEvent(this.id, this.currentTurn)];
+    }
+
+    private nextPlayer(): Player
+    {        
+        const shouldRewind = ++this.currentPlayerIdx == this.players.size();
+        this.currentPlayerIdx = shouldRewind ? 0 : this.currentPlayerIdx;
+
+        return this.players.getByIndex(this.currentPlayerIdx);
+    }
+        
+    private assertNoStartRequestFrom(userId: string)
+    {
+        if (this.gameStartRequests.has(userId))
+        {
+            throw new GameStartedTwice(userId, this.id); 
         }
     }
 
@@ -72,60 +135,61 @@ export class Game
        return {
            id: this.id,
            name: this.name,
-           players: this.players,
+           players: this.players.getAll(),
            currentTurn: this.currentTurn ? this.currentTurn : {},
            board: this.board.toTileList()
        }
     }
     
-    movment(movement: Movement, env: Context) {    
+    executeMovement(movement: Movement, env: Context): Event[]
+    {    
         this.assertGameStarted();
         this.assertCurrentTurn(movement);
 
-        const path = movement.path.map(position => TilePosition.fromDto(position))
+        const events: Event[] = [];
+        const player = this.players.getByUserId(movement.userId);
+        const length = this.currentTurn.stepPoints;
+        const path = new Path(movement.path, this.board, length);
 
-        this.assertValidPath(path);
-        const lastPosition = path[movement.path.length - 1];
-        const player = this.getPlayer(movement.userId);
-
-        this.board.getTilesOfPath(movement.path).forEach((tile: Tile) => {
-            tile.onWalkThrough(player, env, this);
-        });
         
+        
+        events.push(...path.executeWalk(player, this));
         
         if (player.hadDied()) {
             player.restore();
-            env.eventDispatcher.dispatch(new PlayerDiedEvent(this.id, player))
-        } else {
-            player.position = lastPosition;
-            env.eventDispatcher.dispatch(new PlayerMovedEvent(this.id, player.userId, movement.path));
+            return [...events, new PlayerDiedEvent(this.id, player)]
+        } 
 
-            if (this.board.tiles[lastPosition.row][lastPosition.col].type == TileType.FINISH_POINT) {
-                this.state = State.FINISHED;
-                env.eventDispatcher.dispatch(new GameFinishedEvent(this.id, player.userId));
-                return;
-            }
-        }
+        events.push(new PlayerMovedEvent(this.id, player.userId, movement.path));
 
-        this.nextTurn(env);
+        return events;
     }
 
-    private nextTurn(env: Context) {
-        this.currentPlayerIdx++;
-        if (this.currentPlayerIdx == this.players.length) {
-            this.currentPlayerIdx = 0;
-        }        
-        this.currentTurn = new GameTurn(this.players[this.currentPlayerIdx].userId, env.rnd)
-        env.eventDispatcher.dispatch(new TurnStartedEvent(this.id, this.currentTurn));
+    canBeFinished(): boolean
+    {
+        const lastPlayerPosition = this.players.getByIndex(this.currentPlayerIdx).position;
+        const tile = this.board.getTile(lastPlayerPosition);
+
+        return tile.type === TileType.FINISH_POINT;
     }
 
-    private assertGameStarted() {
+    finish(): Event[]
+    {
+        this.state = State.FINISHED;
+        const winner = this.players.getByIndex(this.currentPlayerIdx);
+
+        return [new GameFinishedEvent(this.id, winner.userId)]
+    }
+
+    private assertGameStarted() 
+    {
         if (this.state != State.STARTED) {
             throw new GameNotStarted(this.id);
         }
     }
 
-    private assertCurrentTurn(movement: Movement) {
+    private assertCurrentTurn(movement: Movement)
+    {
         if (this.currentTurn.currentlyPlaying != movement.userId) {
             throw new IncorrectPlayerAction(
                 this.id,
@@ -135,46 +199,10 @@ export class Game
         }
     }
 
-    private assertValidPath(path: TilePosition[]) {
-        const result = this.board.validatePath(
-            path, 
-            this.players[this.currentPlayerIdx].position,
-            this.currentTurn.stepPoints
-        );
-
-        if (!result.isValid) {
-            console.log(result);
-            throw new InvalidPath(this.id, result.invalidPath, result.message);
-        }
-    }
-
-    private shouldStart(): boolean 
+    private assertPlayerExists(userId: string)
     {
-        if (this.state === State.STARTED) return;
-
-        return this.players.length === this.gameStartRequests.size;
-    }
-
-    private start(env: Context) {
-        this.state = State.STARTED;
-        this.currentTurn = new GameTurn(this.players[0].userId, env.rnd);
-    }
-
-    private assertPlayerExists(userId: string) {
-        if (!this.getPlayer(userId)) {
+        if (!this.players.has(userId)) {
             throw new UserNotFound(userId);
         }
-    }
-
-    private getPlayer(userId: string): Player {
-        return this.players.filter(this.withUserId(userId))[0];
-    }
-
-    private withUserId(userId: string) {
-        return (player: Player) => player.userId == userId; 
-    }
-
-    private doesNotHaveId(userId: string) {
-        return (player: Player) => player.userId !== userId;
     }
 }

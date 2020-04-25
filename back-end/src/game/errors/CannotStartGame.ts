@@ -1,4 +1,4 @@
-import { ErrorType, ErrorEvent,  CannotStartGame as ICannotStartGame } from 'tr-common';
+import { ErrorType, ErrorEvent,  CannotStartGame as ICannotStartGame } from '../../../../common';
 import { GameError } from './GameError';
  
 export class CannotStartGame extends GameError implements ICannotStartGame 
