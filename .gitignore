@@ -8,3 +8,4 @@ common/dist
 ./front-end/.env.local
 front-end/.cache
 back-end/.nyc_output/
+dist/
