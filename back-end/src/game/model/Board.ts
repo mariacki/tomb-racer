@@ -22,34 +22,48 @@ export class Board implements BoardState
     tiles: Tile[][] = [];
     startingPoints: StartingPoint[] = [];
 
-    constructor(definition: BoardDefinition[][]) {
+    constructor(definition: BoardDefinition[][])
+    {
         this.createTiles(definition);
         this.findStartingPoints();
 
         this.assertEnoughStartingPoints();
     }
 
-    private assertEnoughStartingPoints() {
+    private assertEnoughStartingPoints()
+    {
         if (this.startingPoints.length < 2) {
             throw new InvalidBoard();
         }
     }
 
-    hasFreePositions() {
-        const isFree = (startingPoint: StartingPoint) => startingPoint.isFree;
-        const freeStartingPoints = this.startingPoints.filter(isFree);
-
-        return freeStartingPoints.length > 0;
+    hasFreeStartingPoints(): boolean
+    {
+        return this.getFreStartingPoints().length > 0;
     }
 
-    nextFreePosition(): TilePosition {
-        const isFree = (startingPoint: StartingPoint) => startingPoint.isFree;
-        const freeStartingPoints = this.startingPoints.filter(isFree);
+    numberOfStartingPoints(): number
+    {
+        return this.startingPoints.length;
+    }
 
-        const startingPoint = freeStartingPoints.shift();
+    reserveStartingPoint(): TilePosition
+    {
+        const startingPoint = this.getFreStartingPoints().shift();
+
         startingPoint.isFree = false;
-        
         return startingPoint.pos;
+    }
+
+    getTile(pos: Position): Tile
+    {
+        return this.tiles[pos.row][pos.col];
+    }
+
+    private getFreStartingPoints(): StartingPoint[]
+    {
+        const isFree = (startingPoint: StartingPoint) => startingPoint.isFree;
+        return this.startingPoints.filter(isFree);
     }
 
     freeStartingPoint(pos: Position): void
@@ -95,6 +109,14 @@ export class Board implements BoardState
         return this.validateAdjacency([playerPosition, ...path]);
     }
 
+    contains(position: Position)
+    {
+        return (position.row >= 0) && 
+            (position.row < this.tiles.length) && 
+            (position.col >= 0) && 
+            (position.col <= this.tiles[position.row].length);
+    }
+
     private validateAdjacency(path: TilePosition[]): PathValidationResult {
         for (let i = 1; i < path.length; i++) {
             const prev = path[i - 1];
@@ -127,7 +149,7 @@ export class Board implements BoardState
         }
     }
 
-    private isValid(position: Position): boolean {
+    isValid(position: Position): boolean {
         const tile: Tile = this.tiles[position.row][position.col];
         return tile.isWalkable();
     }

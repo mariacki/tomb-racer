@@ -16,6 +16,6 @@ export class GameCreatedEvent implements GameCreated
         this.origin = undefined;
         this.gameId = game.id;
         this.gameName = game.name;
-        this.numberOfPlayers = game.players.length;
+        this.numberOfPlayers = game.players.size();
     }
 }

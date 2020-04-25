@@ -19,14 +19,9 @@ export class AddPlayerService extends RepositoryService
     addPlayer(request: PlayerData)
     {
         const game = super.findGame(request.gameId);
-        const player = new Player(
-            request.userId,
-            request.userName
-        ); 
+        const events = game.addPlayer(request);
 
-        game.addPlayer(player);
-
-        super.persistGame(game);
-        this.event.dispatch(new PlayerJoinedEvent(request.gameId, player));
+        this.gameRepository.persist(game);
+        events.forEach((event) => this.event.dispatch(event));
     }
 }

@@ -23,7 +23,6 @@ export class CreateGameService extends RepositoryService
 
     createGame(data: CreateGame, boardDefinition: BoardDefinition[][]): string
     {
-        console.log("Creating game", data);
         this.assertValidData(data);
         
         const game = new Game(

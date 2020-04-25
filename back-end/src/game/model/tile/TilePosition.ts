@@ -23,4 +23,14 @@ export class TilePosition implements Position
                 (Math.abs(this.col - other.col) <= 1) 
             )
     }
+
+    equals(other: Position)
+    {
+        return ( 
+            (this.row === other.row) && 
+            (this.col === other.col)
+        );
+    }
+
+    
 }

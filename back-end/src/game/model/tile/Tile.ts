@@ -1,4 +1,4 @@
-import { TileType, Tile as ITile } from 'tr-common'
+import { TileType, Tile as ITile, Event } from 'tr-common'
 import { Player, Board, Game } from '../../model';
 import { Context } from '../../contract';
 import { TilePosition } from './TilePosition';
@@ -20,6 +20,6 @@ export class Tile implements ITile
             this.type == TileType.FINISH_POINT;
     }
 
-    onWalkThrough(player: Player, context: Context, game: Game) {}
+    onWalkThrough(player: Player, game: Game): Event[] { return [] }
     onPlaced(player: Player, board: Board, context: Context) {}
 }

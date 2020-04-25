@@ -47,6 +47,7 @@ describe('Starting the game', () => {
             ctx.gameService.startRequest(UserExample.first);
             ctx.gameService.startRequest(UserExample.first);
         }, (error) => {
+            console.log("ERROR", error);
             assert.equal(error.type, "CANNOT START GAME");
             assert.equal(error.reason.type, "GAME STARTED TWICE")
             assert.equal(error.reason.userId, UserExample.first.userId);

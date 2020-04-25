@@ -9,9 +9,9 @@ export class GameTurn implements Turn
     currentlyPlaying: string;
     stepPoints: number;
     
-    constructor(userId: string, rand: randomize) {
+    constructor(userId: string, diceRoll: number) {
         this.currentlyPlaying = userId;
-        this.stepPoints = rand(CUBE_START, CUBE_END);
+        this.stepPoints = diceRoll;
     }
     
 }

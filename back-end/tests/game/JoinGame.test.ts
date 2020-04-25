@@ -64,7 +64,7 @@ describe('Joining Game', () => {
             ctx.gameService.addPlayer(UserExample.first);
             ctx.gameService.addPlayer(UserExample.second);
 
-            const gameState = ctx.gameRepositorySpy.persistedGames[1];
+            const gameState = ctx.gameRepositorySpy.persistedGames[1].getState();
 
             const firstPlayer = gameState.players[0];
             const secondPlayer = gameState.players[1];
