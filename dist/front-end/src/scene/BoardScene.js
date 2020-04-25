@@ -208,7 +208,7 @@ class BoardTiles {
 }
 class PlayerSprite {
     constructor(scene, player, boardX, boardY, size, displayId, texture) {
-        this.colors = ['#f8007e', '#f80000', '#3b5d21', '#00fff9'];
+        this.colors = ['#f8007e', '#f80000', '#00fff9', '#3b5d21',];
         console.log('color ', this.colors[displayId - 1]);
         const textStyle = {
             fontSize: '15px',
