@@ -49,7 +49,7 @@ describe('Moving Player', () => {
     const exampleBoard = [
         [Tiles.startingPoint(), Tiles.startingPoint()],
         [Tiles.path(),          Tiles.startingPoint()],
-        [Tiles.wall(),          Tiles.path()]
+        [Tiles.w(),          Tiles.path()]
     ]
 
     it ('cannot be done through walls', () => {

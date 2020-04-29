@@ -18,7 +18,7 @@ export const Tiles = {
             return new Tile(TileType.PATH, new Position(row, col))
         }
     },
-    wall() {
+    w() {
         return (row: number, col: number) => {
             return new Tile(TileType.WALL, new Position(row, col))
         }

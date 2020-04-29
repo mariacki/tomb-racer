@@ -51,6 +51,7 @@ export interface Event
 export interface ItemPicked extends Event
 {
     item: string;
+    userId: string;
 }
 
 export interface GameCreated extends Event

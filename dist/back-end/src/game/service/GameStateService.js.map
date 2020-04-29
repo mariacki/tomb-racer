@@ -1,1 +1,0 @@
-{"version":3,"file":"GameStateService.js","sourceRoot":"","sources":["../../../../../back-end/src/game/service/GameStateService.ts"],"names":[],"mappings":";;AACA,2DAAwD;AAExD,MAAa,gBAAiB,SAAQ,qCAAiB;IAEnD,SAAS,CAAC,MAAc;QAEpB,OAAO,IAAI,CAAC,QAAQ,CAAC,MAAM,CAAC,CAAC,QAAQ,EAAE,CAAC;IAC5C,CAAC;CACJ;AAND,4CAMC"}

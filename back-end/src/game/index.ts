@@ -21,7 +21,7 @@ export const configure = (
         new GameStateService(ctx.repository),
         new CreateGameService(ctx.repository, ctx.idProvider, ctx.eventDispatcher),
         new AddPlayerService(ctx.repository, ctx.eventDispatcher),
-        new RemovePlayerService(ctx.repository, ctx.eventDispatcher),
+        new RemovePlayerService(ctx.repository, ctx.eventDispatcher, ctx.rnd),
         new StartGameService(ctx.repository, ctx.eventDispatcher, ctx.rnd),
         new MovementService(ctx.repository, ctx),
         new RemoveGameService(ctx.repository, ctx.eventDispatcher)

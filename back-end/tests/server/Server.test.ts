@@ -286,9 +286,27 @@ describe('Server', () => {
 
             server.connectionLost(user);
 
+
             const call = gameServiceSpy.removedGames[0];
 
             assert.equal(call, user.gameId);
+        })
+
+        it ('does not remove the game when some user are still playing', () => {
+            const user = new UserConnectionSpy();
+            user.id = "some-user-id";
+            user.gameId = "some-game-id";
+            gameServiceSpy.gameStateExample.players.push({
+                userId: "another user id",
+                userName: "some-user-name",
+                hp: 100,
+                position: { row: 0, col: 0}
+            })
+
+            server.connectionLost(user);
+
+            const call = gameServiceSpy.removedGames;
+            assert.equal(call.length, 0);
         })
 
         it ('only removes the game when connection has gameId', () => {

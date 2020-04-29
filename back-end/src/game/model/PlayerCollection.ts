@@ -1,33 +1,23 @@
 import { Player } from "./Player";
 
-interface PlayerItem
-{
-    player: Player,
-    index: number
-}
-
 export class PlayerCollection
 {
     private players: Player[] = [];
-    private playersById: Map<string, PlayerItem> = new Map();
-
     push(player: Player)
     {
-        const index = this.players.push(player) - 1;
-        this.playersById.set(player.userId, {index, player});
+        this.players.push(player) - 1;
     }
 
     removeHavingId(userId: string)
     {
-        const playerItem = this.playersById.get(userId);
-        
-        this.playersById.delete(userId);
-        this.players.splice(playerItem.index, 1);
+        this.players = this.players
+            .filter((player) => player.userId !== userId);
     }
 
     getByUserId(userId: string): Player
     {
-        return this.playersById.get(userId).player;
+        return this.players
+            .filter(player => player.userId === userId)[0];
     }
 
     getByIndex(index: number)
@@ -47,6 +37,8 @@ export class PlayerCollection
 
     has(userId: string)
     {
-        return this.playersById.has(userId);
+        return this.players
+            .filter(player => player.userId === userId)
+            .length >= 1;
     }
 }

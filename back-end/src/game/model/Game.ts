@@ -86,6 +86,20 @@ export class Game
         return [new PlayerLeftEvent(userId, this.id)]
     }
 
+    isCurrentlyPlaying(userId: string): boolean
+    {
+        if (this.state !== State.STARTED) return false;
+
+        return this
+            .currentTurn
+            .currentlyPlaying === userId;
+    }
+
+    hasPlayers(): boolean
+    {
+        return this.players.size() > 0;
+    }
+
     addStartRequest(userId: string)
     {
         this.assertPlayerExists(userId);

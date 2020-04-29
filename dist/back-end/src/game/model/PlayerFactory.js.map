@@ -1,1 +1,0 @@
-{"version":3,"file":"PlayerFactory.js","sourceRoot":"","sources":["../../../../../back-end/src/game/model/PlayerFactory.ts"],"names":[],"mappings":";;AACA,qCAAkC;AAGlC,MAAa,aAAa;IAEtB,MAAM,CAAC,MAAM,CAAC,UAAsB,EAAE,QAAsB;QAExD,OAAO,IAAI,eAAM,CACb,UAAU,CAAC,MAAM,EACjB,UAAU,CAAC,QAAQ,EACnB,QAAQ,CACX,CAAA;IACL,CAAC;CACJ;AAVD,sCAUC"}

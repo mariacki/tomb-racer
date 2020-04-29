@@ -42,17 +42,28 @@ export class Server
 
     connectionLost(caller: UserConnection)
     {
+        console.log('Removing: ', caller.userName);
+
         if (caller.gameId) {
             const playerData = new PlayerData(
                 caller.gameId,
                 caller.id,
                 caller.userName
-            ); 
+            );
+            
+            const game = this.gameService.gameState(caller.gameId);
+
+            console.log("Players before removing", game.players);
 
             this.gameService.removePlayer(playerData);
             this.channelManager.removeUser(caller.gameId, caller.id);
+    
+            const game2 = this.gameService.gameState(caller.gameId);
 
-            if (this.gameService.gameState(caller.gameId).players.length === 0) {
+            console.log("Players after removing", game2.players);
+
+            if (game2.players.length === 0) {
+                console.log("Removing game", game.name);
                 this.gameService.removeGame(caller.gameId);
             }
         }
@@ -60,12 +71,14 @@ export class Server
         if (caller.userName) {
             this.channelManager.removeUser("lobby", caller.id);
         }
+
+        console.log("End routing");
     }
 
     handleMesage(caller: UserConnection, event: Command)
     {
         try {
-            console.log("Input", event);
+            //console.log("Input", event);
             switch (event.type) {
                 case CommandType.CREATE_GAME: 
                     this.handleCreateGameCommand(caller, <CreateGame>event);

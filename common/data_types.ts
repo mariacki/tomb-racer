@@ -2,9 +2,10 @@ export enum TileType {
     PATH = "PATH",
     WALL = "WALL",
     STARTING_POINT = "STARTING_POINT",
-    SPIKES = "SPIKES", 
+    SPIKES = "SPIKES",
     FINISH_POINT = "FINISH_POINT",
-    
+    TREASURE = "TREASURE",
+   
     KEY_ONE = "K1",
     KEY_TWO = "K2",
     KEY_THREE = "K3",

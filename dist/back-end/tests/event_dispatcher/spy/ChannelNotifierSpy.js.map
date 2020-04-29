@@ -1,1 +1,0 @@
-{"version":3,"file":"ChannelNotifierSpy.js","sourceRoot":"","sources":["../../../../../back-end/tests/event_dispatcher/spy/ChannelNotifierSpy.ts"],"names":[],"mappings":";;AAGA,MAAa,kBAAkB;IAA/B;QAEI,kBAAa,GAGP,EAAE,CAAC;IAQb,CAAC;IANG,IAAI,CAAC,WAAmB,EAAE,OAAc;QAEpC,IAAI,CAAC,aAAa,CAAC,IAAI,CAAC;YACpB,WAAW,EAAE,OAAO;SACvB,CAAC,CAAA;IACN,CAAC;CACJ;AAbD,gDAaC"}

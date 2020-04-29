@@ -20,6 +20,19 @@ describe('Removing the came', () => {
         assert.equal(gameList.length, 0);
     })
 
+    it ('can select the right game to remove', () => {
+        const gameDef = new CreateGame("some game");
+        const gameDef2 = new CreateGame("some-game-2");
+        const gameId = ctx.gameService.createGame(gameDef, defaultBoard);
+        ctx.gameService.createGame(gameDef2, defaultBoard);
+
+        ctx.gameService.removeGame(gameId);
+        const gameList = ctx.gameService.gameList();
+
+        assert.equal(gameList.length, 1);
+        assert.equal(gameList[0].name, "some-game-2");
+    })
+
     it ('dispatches the game removed event', () => {
         const gameDef = new CreateGame("some game");
         const gameId = ctx.gameService.createGame(gameDef, defaultBoard);

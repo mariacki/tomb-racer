@@ -1,5 +1,6 @@
 import { GameService, PlayerData, Movement,  GameList, CreateGame, boardDefinition } from  './../../../src/game';
 import { Game, GameInfo } from '../../../../common';
+import { PlayerCollection } from '../../../src/game/model/PlayerCollection';
 
 export class GameServiceSpy implements GameService
 {

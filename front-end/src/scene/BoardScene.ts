@@ -219,7 +219,8 @@ class BoardTiles
             [TileType.KEY_ONE, "k1"],
             [TileType.KEY_TWO, "k2"],
             [TileType.KEY_THREE, "k3"],
-            [TileType.KEY_FOUR, "k4"]
+            [TileType.KEY_FOUR, "k4"],
+            [TileType.TREASURE, "finish"]
         ])
 
         for (let i = 0; i < tiles.length; i++) {

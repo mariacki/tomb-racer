@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { Turn, EventType, TurnStarted, MovePlayer, CommandType, Position, ItemPicked } from '../../../common';
+import { Turn, EventType, TurnStarted, MovePlayer, CommandType, Position, ItemPicked, PlayerJoined } from '../../../common';
 import { Client } from '../client/Client';
 import { State } from './BoardScene';
 
@@ -85,6 +85,10 @@ export class GUI extends Phaser.Scene
 
         actionsElement.setAlpha(0.2);
 
+        this.backend.on(EventType.PLAYER_JOINED, (event: PlayerJoined) => {
+            this.state.game.players.push(event.player);
+        });
+
         this.backend.on(EventType.NEXT_TURN, (event: TurnStarted) => {
             const player = this.state.game.players.filter(p => p.userId === event.turn.currentlyPlaying)[0];
             this.turnInfoText.text = player.userName;
@@ -94,6 +98,7 @@ export class GUI extends Phaser.Scene
         })
 
         this.backend.on(EventType.ITEM_PICKED, (event: ItemPicked) => {
+            if (this.state.userId != event.userId) return;
             this.add.sprite(actionsElement.x, actionsElement.y + 50, event.item)
         })
 

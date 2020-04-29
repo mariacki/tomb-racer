@@ -39,7 +39,7 @@ class KeyHole extends Tile
         if (player.inventory.includes(this.keyName))
         {
             game.board.tiles[this.opens.row][this.opens.col] = Tiles.path()(this.opens.row, this.opens.col);
-            
+            player.inventory.push("finish");
             const doorOpened: BoardChanged = {
                 type: EventType.BOARD_CHANGED,
                 isError: false,
@@ -114,30 +114,47 @@ class Key extends Tile
             type: EventType.ITEM_PICKED,
             isError: false,
             origin: game.id,
-            item: this.holds
+            item: this.holds,
+            userId: player.userId
         }
 
         return [doorOpened, itemPicked];
     }
 }
 
+class GameFinishPoint extends Tile
+{
+
+    onPlaced(player: Player, game: Game): Event[]
+    {
+        if (player.inventory.includes("finish"))
+        {
+            return game.finish();
+        }
+
+        return [];
+    }
+}
+
+const fp = (row: number, col: number) => new GameFinishPoint(TileType.TREASURE, TilePosition.fromDto({row, col}));
+
 
 const board = [
-    createNOfType(17, Tiles.wall),
-    [Tiles.wall(), Tiles.path(), Tiles.startingPoint(), ...createNOfType(11, Tiles.wall), Tiles.startingPoint(), Tiles.path(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), ...createNOfType(13, Tiles.path), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(), ...createNOfType(4, Tiles.wall), Tiles.path(), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(),...createNOfType(11, Tiles.wall),  Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), ...createNOfType(5, Tiles.path), Tiles.wall(), Tiles.finishPoint(), Tiles.wall(), ...createNOfType(5, Tiles.path), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.wall(), ...createNOfType(5, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(), ...createNOfType(3, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.path(),  ...createNOfType(5, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), Tiles.wall(), ...createNOfType(4, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), ...createNOfType(5, Tiles.wall), Tiles.path(), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.wall(), ...createNOfType(13, Tiles.path), Tiles.wall(), Tiles.wall()],
-    [Tiles.wall(), Tiles.path(), Tiles.startingPoint(), ...createNOfType(11, Tiles.wall), Tiles.startingPoint(), Tiles.path(), Tiles.wall()],
-    createNOfType(17, Tiles.wall),
+    createNOfType(17, Tiles.w),
+    [Tiles.w(), Tiles.path(), Tiles.startingPoint(), ...createNOfType(11, Tiles.w), Tiles.startingPoint(), Tiles.path(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), ...createNOfType(13, Tiles.path), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(), ...createNOfType(4, Tiles.w), Tiles.path(), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(),...createNOfType(11, Tiles.w),  Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), ...createNOfType(5, Tiles.path), Tiles.w(), fp, Tiles.w(), ...createNOfType(5, Tiles.path), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.w(), ...createNOfType(5, Tiles.w), Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(), ...createNOfType(3, Tiles.w), Tiles.path(), Tiles.w(), Tiles.path(),  ...createNOfType(5, Tiles.w), Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), Tiles.w(), ...createNOfType(4, Tiles.w), Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), ...createNOfType(5, Tiles.w), Tiles.path(), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.w(), ...createNOfType(13, Tiles.path), Tiles.w(), Tiles.w()],
+    [Tiles.w(), Tiles.path(), Tiles.startingPoint(), ...createNOfType(11, Tiles.w), Tiles.startingPoint(), Tiles.path(), Tiles.w()],
+    createNOfType(17, Tiles.w),
 ]
 
 const k2 = new Key(TileType.KEY_TWO, TilePosition.fromDto({row: 1, col: 1}));
@@ -190,6 +207,8 @@ board[2][12] = Tiles.spikes();
 
 board[12][4] = Tiles.spikes();
 board[12][12] = Tiles.spikes();
+
+
 
 
 export default () => board;
