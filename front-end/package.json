@@ -1,13 +1,13 @@
 {
   "devDependencies": {
-    "ts-loader": "^7.0.1",
+    "ts-loader": "^9.4.2",
     "typescript": "^3.8.3",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "dependencies": {
     "@types/node": "^13.13.2",
-    "phaser": "^3.22.0",
+    "phaser": "^3.55.2",
     "src": "^1.1.2",
     "tr-common": "file:../common"
   }
